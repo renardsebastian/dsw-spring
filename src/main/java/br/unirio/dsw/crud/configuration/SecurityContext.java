@@ -54,7 +54,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter
 			.antMatchers("/auth/**", "/login/**", "/signup/**", "/user/register/**").permitAll()
 			
 			// The rest of the our application is protected.
-			.antMatchers("/**").hasRole("USER")
+			.antMatchers("/**").hasRole("BASIC")
 			
 			// Adds the filter to Spring Security's filter chain.
 			.and().apply(new SpringSocialConfigurer());
@@ -81,6 +81,6 @@ public class SecurityContext extends WebSecurityConfigurerAdapter
 	@Bean
 	public UserDetailsService userDetailsService()
 	{
-		return new RepositoryUserDetailsService(userService);
+		return new RepositoryUserDetailsService();
 	}
 }

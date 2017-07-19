@@ -1,7 +1,7 @@
 package br.unirio.dsw.crud.view.login;
 
 import lombok.Data;
-import br.unirio.dsw.crud.model.User.SignInProvider;
+import br.unirio.dsw.crud.model.SignInProvider;
 
 /**
  * Classe do formulário de registro de um novo usuário
