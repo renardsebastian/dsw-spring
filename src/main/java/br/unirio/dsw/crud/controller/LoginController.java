@@ -17,7 +17,7 @@ import br.unirio.dsw.crud.utils.ValidationUtils;
 import br.unirio.dsw.crud.view.login.RegistrationForm;
 
 /**
- * Controller responsável pelas ações relacionadas ao login
+ * Controller responsável pelas ações de login
  * 
  * @author marciobarros
  */
@@ -26,13 +26,15 @@ public class LoginController
 {
     private PasswordEncoder passwordEncoder;
     
+    /**
+     * Inicializa o controlador
+     */
     @Autowired
     public LoginController(PasswordEncoder passwordEncoder) 
     {
         this.passwordEncoder = passwordEncoder;
     }
  
-
 	/**
 	 * Ação que redireciona o usuário para a página inicial da aplicação
 	 */

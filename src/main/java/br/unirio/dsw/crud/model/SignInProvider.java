@@ -3,7 +3,7 @@ package br.unirio.dsw.crud.model;
 import lombok.Getter;
 
 /**
- * Provedor de serviço de sign-in
+ * Enumeração dos provedores de serviço de sign-in
  * 
  * @author marciobarros
  */

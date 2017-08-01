@@ -3,7 +3,7 @@ package br.unirio.dsw.crud.model;
 import lombok.Getter;
 
 /**
- * Papéis que podem ser assumidos pelos usuários
+ * Enumeração dos papéis que podem ser assumidos pelos usuários
  * 
  * @author marciobarros
  */

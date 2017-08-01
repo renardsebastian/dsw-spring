@@ -18,7 +18,7 @@ import br.unirio.dsw.crud.model.User;
 import br.unirio.dsw.crud.service.UserService;
 
 /**
- * Controller para manipulação de usuários
+ * Controller responsável pelo CRUD de usuários
  * 
  * @author marciobarros
  */

@@ -36,14 +36,17 @@ public class User extends SocialUser
 	 */
 	public User(String name, String email, String password)
 	{
-        super(email, password, createAuthoritiesFromRole());
+        super(email, password, createAuthoritiesFromBasicRole());
 		this.id = -1;
 		this.name = name;
 		this.role = Role.ROLE_BASIC;
 		this.provider = null;
 	}
 
-	private static Set<GrantedAuthority> createAuthoritiesFromRole()
+	/**
+	 * Cria os direitos de acesso relacionado ao papel básico do usuário
+	 */
+	private static Set<GrantedAuthority> createAuthoritiesFromBasicRole()
 	{
 		Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
 		SimpleGrantedAuthority authority = new SimpleGrantedAuthority(Role.ROLE_BASIC.toString());
