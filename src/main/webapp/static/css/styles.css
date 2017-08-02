@@ -637,3 +637,6 @@ div.left {
 div.right {
 	float: right;
 }
+.mdl-card__title {
+	/* background: #BCC6CC; */
+}

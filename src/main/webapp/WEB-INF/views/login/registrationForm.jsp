@@ -1,21 +1,11 @@
-<!DOCTYPE html>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<html>
+<%@include file="/WEB-INF/views/helper/template.jsp" %>
 
-<head>
-    <title>Registration</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-</head>
-<body>
-    <div class="page-header">
-        <h1><spring:message code="label.user.registration.page.title"/></h1>
-    </div>
+<!-- nav id="sideMenu" class="mdl-navigation">
+    <a class="mdl-navigation__link" href="coding-piazza/index.html">Coding Piazza</a>
+</nav -->
 
-    <!-- If the user is anonymous (not logged in), show the registration form. -->
+<div id="contents">
     <sec:authorize access="isAnonymous()">
         <div class="panel panel-default">
             <div class="panel-body">
@@ -72,10 +62,4 @@
             </div>
         </div>
     </sec:authorize>
- 
-    <!-- If the user is authenticated, show a help message instead of registration form. -->
-    <sec:authorize access="isAuthenticated()">
-        <p><spring:message code="text.registration.page.authenticated.user.help"/></p>
-    </sec:authorize>
-</body>
-</html>
+</div>

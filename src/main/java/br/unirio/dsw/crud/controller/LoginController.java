@@ -50,7 +50,7 @@ public class LoginController
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String showLoginPage() 
     {
-        return "login/Login";
+        return "login/login";
     }
 
     /**
@@ -60,7 +60,7 @@ public class LoginController
 	public String showRegistrationFormPage(WebRequest request, Model model)
 	{
         model.addAttribute("user", new RegistrationForm());
-		return "login/RegistrationForm";
+		return "login/registrationForm";
 	}
 	
 	/**

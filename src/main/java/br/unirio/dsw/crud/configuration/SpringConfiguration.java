@@ -63,14 +63,4 @@ public class SpringConfiguration extends WebMvcConfigurerAdapter
  
         return exceptionResolver;
     }
-	 
-//    @Bean
-//    public ViewResolver viewResolver() 
-//    {
-//        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-//        viewResolver.setViewClass(JstlView.class);
-//        viewResolver.setPrefix("/WEB-INF/jsp/");
-//        viewResolver.setSuffix(".jsp");
-//        return viewResolver;
-//    }
 }
