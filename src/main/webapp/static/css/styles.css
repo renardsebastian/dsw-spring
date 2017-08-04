@@ -625,6 +625,15 @@ a img{
 .max-spacer-up {
 	margin-top: 64px;
 }
+.min-spacer-down {
+	margin-bottom: 16px;
+}
+.mid-spacer-down {
+	margin-bottom: 32px;
+}
+.max-spacer-down {
+	margin-bottom: 64px;
+}
 .mdl-subtitle-text {
 	font-size: 24px;
     font-weight: 300;
@@ -639,4 +648,8 @@ div.right {
 }
 .mdl-card__title {
 	/* background: #BCC6CC; */
+}
+span.error-block {
+	font-size: 10px;
+	color: red;
 }

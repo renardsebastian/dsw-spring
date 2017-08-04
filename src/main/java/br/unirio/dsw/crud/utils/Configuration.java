@@ -114,7 +114,7 @@ public class Configuration
 	/**
 	 * Verifica se esta executando em ambiente de homologacao
 	 */
-	public static boolean getStaggingEnvironment()
+	public static boolean isStaggingEnvironment()
 	{
 		return getEnvironmentName().trim().length() > 0; 
 	}

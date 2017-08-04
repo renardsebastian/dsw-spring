@@ -1,6 +1,5 @@
 package br.unirio.dsw.crud.configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -14,15 +13,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.social.security.SocialUserDetailsService;
 import org.springframework.social.security.SpringSocialConfigurer;
 
-import br.unirio.dsw.crud.service.UserService;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityContext extends WebSecurityConfigurerAdapter
 {
-	@Autowired
-	private UserService userService;
-
 	@Override
 	public void configure(WebSecurity web) throws Exception
 	{
