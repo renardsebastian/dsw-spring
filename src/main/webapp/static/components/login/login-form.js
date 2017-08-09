@@ -28,7 +28,7 @@ App.config(function($translateProvider) {
 		siging_twitter: 'Login with Twitter'
 	});
 	
-	$translateProvider.preferredLanguage('en');
+	$translateProvider.preferredLanguage('pt');
 });
 
 
@@ -45,7 +45,7 @@ var loginFormController = function ($scope, $window, $translate) {
 	}
 	  
 	$scope.create = function() {
-		$window.location.href = contextPath + "/login/register";
+		$window.location.href = contextPath + "/login/create";
 	}
 	  
 	$scope.loginTwitter = function() {
@@ -62,6 +62,6 @@ var loginFormController = function ($scope, $window, $translate) {
  * Componente
  */
 App.component('loginForm', {
-	templateUrl: '/crud/static/components/login/login-form.html',
+	templateUrl: '/selecaoppgi/static/components/login/login-form.html',
 	controller:  loginFormController
 });

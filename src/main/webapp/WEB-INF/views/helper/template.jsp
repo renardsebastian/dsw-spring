@@ -78,8 +78,16 @@ var contextPath = "${pageContext.request.contextPath}";
         </footer>
     </div>
   
+  
+  	<!-- Snackbar -->
+	<div id="demo-snackbar-example" class="mdl-js-snackbar mdl-snackbar">
+	  <div class="mdl-snackbar__text"><spring:message code='${param.message}'/></div>
+	  <button class="mdl-snackbar__action" type="button"></button>
+	</div>
+
+	
     <!-- Material design -->
-    <script src="https://code.getmdl.io/1.2.1/material.min.js"></script>
+    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
     <script src="${pageContext.request.contextPath}/static/third-party/ngTranslate/angular-translate.min.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/app.js"></script>
@@ -101,5 +109,20 @@ var contextPath = "${pageContext.request.contextPath}";
 		   sideBarElement.remove();
 	});
 	</script>
+
+	<c:if test="${not empty param.message}">
+		<script>
+		window.onload = function () {
+		    var snackbar = document.querySelector('#demo-snackbar-example');
+		    var message = snackbar.getElementsByClassName("mdl-snackbar__text")[0].textContent;
+		    snackbar.MaterialSnackbar.showSnackbar({ 
+		    	message: message, 
+		    	timeout: 20000,
+		        actionHandler: function() { snackbar.MaterialSnackbar.cleanup_() },
+		        actionText: 'x' 
+		    });
+        };
+		</script>
+	</c:if>
 </body>
 </html>

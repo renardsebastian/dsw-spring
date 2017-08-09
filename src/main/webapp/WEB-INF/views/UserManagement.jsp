@@ -3,7 +3,7 @@
 
 <html>
   <head>  
-    <title>Exemplo de Formul&aacute;rio CRUD</title>  
+    <title>Exemplo de Formul&aacute;rio de gerenciamento</title>  
      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
      <link href="<c:url value='/static/css/app.css'/>" rel="stylesheet"></link>
   </head>

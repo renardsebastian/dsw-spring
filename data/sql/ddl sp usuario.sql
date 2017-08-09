@@ -22,7 +22,7 @@ DROP PROCEDURE IF EXISTS UsuarioTrocaSenha;
 DELIMITER //
 CREATE PROCEDURE UsuarioTrocaSenha(vId INT, vSenha VARCHAR(1024))
 BEGIN
-	UPDATE Participante
+	UPDATE Usuario
 	SET senha = vSenha,
 	forcaResetSenha = 0
 	WHERE id = VId;
@@ -69,7 +69,7 @@ BEGIN
 	WHERE id = vId;
 
 	IF @tentativas >= 3 THEN 
-		UPDATE Participante
+		UPDATE Usuario
 		SET forcaResetSenha = 1
 		WHERE id = vId;
 	END IF;

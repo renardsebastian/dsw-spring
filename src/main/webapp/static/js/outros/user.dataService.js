@@ -2,7 +2,7 @@
  
 angular.module('myApp').factory('UserService', ['$http', '$q', function($http, $q) {
  
-    var REST_SERVICE_URI = '/crud/user/';
+    var REST_SERVICE_URI = '/selecaoppgi/user/';
  
     return {
         fetchAllUsers: fetchAllUsers,
