@@ -36,12 +36,12 @@ DELIMITER ;
 
 DROP PROCEDURE IF EXISTS UsuarioRegistraLoginSucesso;
 DELIMITER //
-CREATE PROCEDURE UsuarioRegistraLoginSucesso(vId INT)
+CREATE PROCEDURE UsuarioRegistraLoginSucesso(vEmail VARCHAR(80))
 BEGIN
 	UPDATE Usuario
 	SET dataUltimoLogin = NOW(),
 	contadorLoginFalha = 0
-	WHERE id = vId;
+	WHERE email = vEmail;
 END //
 DELIMITER ;
 
@@ -52,7 +52,7 @@ DELIMITER ;
 
 DROP PROCEDURE IF EXISTS UsuarioRegistraLoginFalha;
 DELIMITER //
-CREATE PROCEDURE UsuarioRegistraLoginFalha(vId INT)
+CREATE PROCEDURE UsuarioRegistraLoginFalha(vEmail VARCHAR(80))
 BEGIN
 	DECLARE lTentativas INT;
 
@@ -61,17 +61,17 @@ BEGIN
 
 	UPDATE Usuario
 	SET contadorLoginFalha = contadorLoginFalha + 1
-	WHERE id = vId;
+	WHERE email = vEmail;
 
 	SELECT contadorLoginFalha
 	INTO lTentativas
 	FROM Usuario
-	WHERE id = vId;
+	WHERE email = vEmail;
 
-	IF @tentativas >= 3 THEN 
+	IF lTentativas >= 3 THEN 
 		UPDATE Usuario
 		SET forcaResetSenha = 1
-		WHERE id = vId;
+		WHERE email = vEmail;
 	END IF;
 	
   	COMMIT;

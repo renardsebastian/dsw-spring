@@ -16,16 +16,14 @@ https://www.petrikainulainen.net/programming/spring-framework/adding-social-sign
 
 [ok] trocar host-path para /selecaoppgi
 
-* número de logins falhos e bem sucedidos (http://www.mkyong.com/spring-security/spring-security-limit-login-attempts-example/)
+[ok] número de logins falhos e bem sucedidos (http://www.mkyong.com/spring-security/spring-security-limit-login-attempts-example/)
 
-* IDEdtital no usuário
+[ok] mover componente para a página de login
 
-* conferir se mensagens estão completas
-
-* conferir uso de senhas na configuração
- 
 * simplificar o código
 
-* mover componente para a página de login
+* conferir uso de senhas na configuração - chave e-mail, senha BD
 
 * abrir uma conta SendGrid para o PPGI/UNIRIO
+
+* IDEdtital no usuário

@@ -3,8 +3,12 @@ package br.unirio.dsw.selecaoppgi.controller;
 import java.util.Locale;
 import java.util.Random;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,12 +17,14 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.ModelAndView;
 
-import br.unirio.dsw.selecaoppgi.dao.UserDAO;
+import br.unirio.dsw.selecaoppgi.configuration.ApplicationConfiguration;
 import br.unirio.dsw.selecaoppgi.model.User;
-import br.unirio.dsw.selecaoppgi.service.EmailService;
-import br.unirio.dsw.selecaoppgi.utils.Configuration;
+import br.unirio.dsw.selecaoppgi.service.dao.UserDAO;
+import br.unirio.dsw.selecaoppgi.service.email.EmailService;
 import br.unirio.dsw.selecaoppgi.utils.CryptoUtils;
 import br.unirio.dsw.selecaoppgi.utils.ValidationUtils;
 import br.unirio.dsw.selecaoppgi.view.login.ForgotPasswordForm;
@@ -41,6 +47,9 @@ public class LoginController
     
     @Autowired
 	private UserDAO userDAO;
+    
+    @Autowired
+	private EmailService emailService;
  
 	/**
 	 * Ação que redireciona o usuário para a página inicial da aplicação
@@ -55,11 +64,33 @@ public class LoginController
 	 * Ação que redireciona o usuário para a tela de login
 	 */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String showLoginPage() 
+    public ModelAndView showLoginPage(@RequestParam(value = "error", required = false) String error, HttpServletRequest request) 
     {
-        return "login/login";
+		ModelAndView model = new ModelAndView();
+	
+		if (error != null)
+			model.addObject("error", getErrorMessage(request, "SPRING_SECURITY_LAST_EXCEPTION"));
+
+		model.setViewName("login/login");
+		return model;
     }
 
+    /**
+     * Retorna a última mensagem de erro do processo de login
+     */
+	private String getErrorMessage(HttpServletRequest request, String key){
+
+		Exception exception = (Exception) request.getSession().getAttribute(key);
+
+		if (exception instanceof BadCredentialsException) 
+			return "login.login.message.invalid.credentials";
+		
+		if (exception instanceof LockedException) 
+			return "login.login.message.locked.account";
+
+		return "login.login.message.invalid.credentials";
+	}
+	
     /**
      * Ação que redireciona o usuário para a tela de criação de conta
      */
@@ -98,7 +129,7 @@ public class LoginController
             return "login/create";
  
         String encodedPassword = passwordEncoder.encode(form.getPassword());
-        User user = new User(form.getName(), form.getEmail(), encodedPassword);
+        User user = new User(form.getName(), form.getEmail(), encodedPassword, false);
         userDAO.createUser(user);
  
 //        SecurityUtils.logInUser(registered);
@@ -147,10 +178,10 @@ public class LoginController
 			String token = geraTokenTrocaSenha();
 			userDAO.saveLoginToken(user.getId(), token);
 			
-			String url = Configuration.getHostname() + "/login/reset.do?token=" + token + "&email=" + user.getUsername();		
+			String url = ApplicationConfiguration.getHostname() + "/login/reset.do?token=" + token + "&email=" + user.getUsername();		
 			String title = messageSource.getMessage("login.forgot.password.email.inicializacao.senha.titulo", null, locale);
 			String contents = messageSource.getMessage("login.forgot.password.email.inicializacao.senha.corpo", new String[] { url }, locale);
-			EmailService.getInstance().sendToUser(user.getName(), user.getUsername(), title, contents);
+			emailService.sendToUser(user.getName(), user.getUsername(), title, contents);
 		}
 		
         return "redirect:/login?message=login.forgot.password.success.email.sent";

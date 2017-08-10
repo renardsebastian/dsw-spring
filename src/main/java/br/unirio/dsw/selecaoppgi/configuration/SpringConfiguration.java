@@ -15,7 +15,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 /**
- * ???
+ * Classe que configura o framework Spring
  * 
  * @author marciobarros
  */
@@ -24,6 +24,9 @@ import org.springframework.web.servlet.view.JstlView;
 @ComponentScan(basePackages = "br.unirio.dsw.selecaoppgi")
 public class SpringConfiguration extends WebMvcConfigurerAdapter
 {
+	/**
+	 * Configura a classe que resolve o acesso aos arquivos JSP
+	 */
 	@Override
 	public void configureViewResolvers(ViewResolverRegistry registry)
 	{
@@ -34,19 +37,28 @@ public class SpringConfiguration extends WebMvcConfigurerAdapter
 		registry.viewResolver(viewResolver);
 	}
 
+	/**
+	 * Registra os diretórios onde são armazenados os recursos do sistema 
+	 */
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry)
 	{
 		registry.addResourceHandler("/static/**").addResourceLocations("/static/");
 	}
-	 
+
+	/**
+	 * Habilita a configuração do framework por anotações
+	 */
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) 
     {
         configurer.enable();
     }
  
-   @Bean
+    /**
+     * Configura a classe que resolve exceções do sistema
+     */
+    @Bean
     public SimpleMappingExceptionResolver exceptionResolver() 
     {
         SimpleMappingExceptionResolver exceptionResolver = new SimpleMappingExceptionResolver();

@@ -15,42 +15,37 @@ import org.springframework.social.connect.web.ConnectController;
 import org.springframework.social.facebook.connect.FacebookConnectionFactory;
 import org.springframework.social.security.AuthenticationNameUserIdSource;
 
+/**
+ * Classe que configura o acesso do Spring através de redes sociais
+ * 
+ * @author marciobarros
+ */
 @Configuration
 @EnableSocial
-public class SocialContext implements SocialConfigurer {
- 
-//    @Autowired
-//    private DataSource dataSource;
- 
-    @Override
-    public void addConnectionFactories(ConnectionFactoryConfigurer cfConfig, Environment env) {
-//        cfConfig.addConnectionFactory(new TwitterConnectionFactory(
-//                env.getProperty("twitter.consumer.key"),
-//                env.getProperty("twitter.consumer.secret")
-//        ));
-        cfConfig.addConnectionFactory(new FacebookConnectionFactory(
-                env.getProperty("facebook.app.id"),
-                env.getProperty("facebook.app.secret")
-        ));
-    }
- 
-    @Override
-    public UserIdSource getUserIdSource() {
-        return new AuthenticationNameUserIdSource();
-    }
- 
-    @Override
-    public UsersConnectionRepository getUsersConnectionRepository(ConnectionFactoryLocator connectionFactoryLocator) {
-    	return new InMemoryUsersConnectionRepository(connectionFactoryLocator);
-//        return new JdbcUsersConnectionRepository(
-//                dataSource,
-//                connectionFactoryLocator,
-//                Encryptors.noOpText()
-//        );
-    }
- 
-    @Bean
-    public ConnectController connectController(ConnectionFactoryLocator connectionFactoryLocator, ConnectionRepository connectionRepository) {
-        return new ConnectController(connectionFactoryLocator, connectionRepository);
-    }
+public class SocialContext implements SocialConfigurer
+{
+	@Override
+	public void addConnectionFactories(ConnectionFactoryConfigurer cfConfig, Environment env)
+	{
+		// cfConfig.addConnectionFactory(new TwitterConnectionFactory(env.getProperty("twitter.consumer.key"), env.getProperty("twitter.consumer.secret")));
+		cfConfig.addConnectionFactory(new FacebookConnectionFactory(env.getProperty("facebook.app.id"), env.getProperty("facebook.app.secret")));
+	}
+
+	@Override
+	public UserIdSource getUserIdSource()
+	{
+		return new AuthenticationNameUserIdSource();
+	}
+
+	@Override
+	public UsersConnectionRepository getUsersConnectionRepository(ConnectionFactoryLocator connectionFactoryLocator)
+	{
+		return new InMemoryUsersConnectionRepository(connectionFactoryLocator);
+	}
+
+	@Bean
+	public ConnectController connectController(ConnectionFactoryLocator connectionFactoryLocator, ConnectionRepository connectionRepository)
+	{
+		return new ConnectController(connectionFactoryLocator, connectionRepository);
+	}
 }

@@ -25,7 +25,6 @@ public class User extends SocialUser
 	private @Setter @Getter Role role;
 	private @Setter @Getter String socialId;
 	private @Setter @Getter SignInProvider provider;
-	private @Setter @Getter boolean mustResetPassword;
 	private @Setter @Getter DateTime lastLoginDate;
 	private @Setter @Getter int failedLoginCounter;
 	private @Setter @Getter String loginToken;
@@ -34,9 +33,9 @@ public class User extends SocialUser
 	/**
 	 * Inicializa um usuário
 	 */
-	public User(String name, String email, String password)
+	public User(String name, String email, String password, boolean locked)
 	{
-        super(email, password, createAuthoritiesFromBasicRole());
+        super(email, password, true, true, true, !locked, createAuthoritiesFromBasicRole());
 		this.id = -1;
 		this.name = name;
 		this.role = Role.ROLE_BASIC;
@@ -52,14 +51,5 @@ public class User extends SocialUser
 		SimpleGrantedAuthority authority = new SimpleGrantedAuthority(Role.ROLE_BASIC.toString());
         authorities.add(authority);
 		return authorities;
-	}
-
-	/**
-	 * Apresenta os dados do usuário em uma string
-	 */
-	@Override
-	public String toString()
-	{
-		return "User [id=" + id + ", email=" + getUsername() + "]";
 	}
 }

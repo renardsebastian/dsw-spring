@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.unirio.dsw.selecaoppgi.model.User;
-import br.unirio.dsw.selecaoppgi.service.UserService;
+import br.unirio.dsw.selecaoppgi.service.dao.UserDAO;
+import br.unirio.dsw.selecaoppgi.service.dao.UserDAO.UserOrderingCriteria;
+import br.unirio.dsw.selecaoppgi.service.dao.UserDAO.UserOrderingField;
 
 /**
  * Controller responsável pelo gerenciamento de usuários
@@ -26,7 +28,7 @@ import br.unirio.dsw.selecaoppgi.service.UserService;
 public class UserController
 {
 	@Autowired
-	UserService userService; 
+	private UserDAO userDAO; 
 
 	/**
 	 * Ação que lista todos os usuários
@@ -34,7 +36,7 @@ public class UserController
 	@RequestMapping(value = "/user/", method = RequestMethod.GET)
 	public ResponseEntity<List<User>> listAllUsers()
 	{
-		List<User> users = userService.findAllUsers();
+		List<User> users = userDAO.list(0, 10000, UserOrderingField.Name, UserOrderingCriteria.ASC, "", "");
 		
 		if (users.isEmpty())
 			return new ResponseEntity<List<User>>(HttpStatus.NO_CONTENT);
@@ -48,7 +50,7 @@ public class UserController
 	@RequestMapping(value = "/user/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<User> getUser(@PathVariable("id") int id)
 	{
-		User user = userService.findById(id);
+		User user = userDAO.getUserId(id);
 		
 		if (user == null)
 			return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
@@ -62,10 +64,10 @@ public class UserController
 	@RequestMapping(value = "/user/", method = RequestMethod.POST)
 	public ResponseEntity<Void> createUser(@RequestBody User user, UriComponentsBuilder ucBuilder)
 	{
-		if (userService.isUserExist(user))
+		if (userDAO.getUserEmail(user.getUsername()) != null)
 			return new ResponseEntity<Void>(HttpStatus.CONFLICT);
 
-		userService.saveUser(user);
+		userDAO.createUser(user);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setLocation(ucBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri());

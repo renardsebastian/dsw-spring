@@ -1,4 +1,4 @@
-package br.unirio.dsw.selecaoppgi.dao;
+package br.unirio.dsw.selecaoppgi.service.dao;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -24,7 +24,7 @@ import lombok.Getter;
  * @author Marcio Barros
  */
 @Service("userDAO")
-public class UserDAO
+public class UserDAO extends AbstractDAO
 {
 	/**
 	 * Carrega os dados de um usuário a partir do resultado de uma consulta
@@ -34,13 +34,13 @@ public class UserDAO
 		String name = rs.getString("nome");
 		String email = rs.getString("email");
 		String password = rs.getString("senha");
+		boolean locked = rs.getInt("forcaResetSenha") != 0;
 
-		User user = new User(name, email, password);
+		User user = new User(name, email, password, locked);
 		user.setId(rs.getInt("id"));
 		user.setRole(Role.get(rs.getInt("papel")));
 		user.setSocialId(rs.getString("socialID"));
 		user.setProvider(SignInProvider.get(rs.getInt("socialOrigem")));
-		user.setMustResetPassword(rs.getInt("forcaResetSenha") != 0);
 		user.setLastLoginDate(DateUtils.toDateTime(rs.getTimestamp("dataUltimoLogin")));
 		user.setFailedLoginCounter(rs.getInt("contadorLoginFalha"));
 		user.setLoginToken(rs.getString("tokenLogin"));
@@ -53,7 +53,7 @@ public class UserDAO
 	 */
 	public User getUserId(int id)
 	{
-		Connection c = SupportDAO.getConnection();
+		Connection c = getConnection();
 		
 		if (c == null)
 			return null;
@@ -69,7 +69,7 @@ public class UserDAO
 
 		} catch (SQLException e)
 		{
-			SupportDAO.log("UserDAO.getUserId: " + e.getMessage());
+			log("UserDAO.getUserId: " + e.getMessage());
 			return null;
 		}
 	}
@@ -79,7 +79,7 @@ public class UserDAO
 	 */
 	public User getUserEmail(String email)
 	{
-		Connection c = SupportDAO.getConnection();
+		Connection c = getConnection();
 		
 		if (c == null)
 			return null;
@@ -97,7 +97,7 @@ public class UserDAO
 
 		} catch (SQLException e)
 		{
-			SupportDAO.log("UserDAO.getUserEmail: " + e.getMessage());
+			log("UserDAO.getUserEmail: " + e.getMessage());
 			return null;
 		}
 	}
@@ -112,7 +112,7 @@ public class UserDAO
 					 "WHERE nome LIKE ? " + 
 					 "AND email LIKE ? ";
 		
-		Connection c = SupportDAO.getConnection();
+		Connection c = getConnection();
 		
 		if (c == null)
 			return 0;
@@ -131,7 +131,7 @@ public class UserDAO
 
 		} catch (SQLException e)
 		{
-			SupportDAO.log("UserDAO.conta: " + e.getMessage());
+			log("UserDAO.conta: " + e.getMessage());
 			return 0;
 		}
 	}
@@ -148,7 +148,7 @@ public class UserDAO
 		
 		String SQL_PAGE = "LIMIT ? OFFSET ?";
 
-		Connection c = SupportDAO.getConnection();
+		Connection c = getConnection();
 		
 		if (c == null)
 			return null;
@@ -174,7 +174,7 @@ public class UserDAO
 
 		} catch (SQLException e)
 		{
-			SupportDAO.log("UserDAO.lista: " + e.getMessage());
+			log("UserDAO.lista: " + e.getMessage());
 		}
 		    
 		return lista;
@@ -185,7 +185,7 @@ public class UserDAO
 	 */
 	public boolean createUser(User user)
 	{
-		Connection c = SupportDAO.getConnection();
+		Connection c = getConnection();
 		
 		if (c == null)
 			return false;
@@ -205,7 +205,7 @@ public class UserDAO
 
 		} catch (SQLException e)
 		{
-			SupportDAO.log("UserDAO.create: " + e.getMessage());
+			log("UserDAO.create: " + e.getMessage());
 			return false;
 		}
 	}
@@ -215,7 +215,7 @@ public class UserDAO
 	 */
 	public boolean updatePassword(int id, String password)
 	{
-		Connection c = SupportDAO.getConnection();
+		Connection c = getConnection();
 		
 		if (c == null)
 			return false;
@@ -231,7 +231,7 @@ public class UserDAO
 
 		} catch (SQLException e)
 		{
-			SupportDAO.log("UserDAO.updatePassword: " + e.getMessage());
+			log("UserDAO.updatePassword: " + e.getMessage());
 			return false;
 		}
 	}
@@ -239,9 +239,9 @@ public class UserDAO
 	/**
 	 * Registra o login de um usuário com sucesso
 	 */
-	public boolean registerSuccessfulLogin(int id)
+	public boolean registerSuccessfulLogin(String email)
 	{
-		Connection c = SupportDAO.getConnection();
+		Connection c = getConnection();
 		
 		if (c == null)
 			return false;
@@ -249,14 +249,14 @@ public class UserDAO
 		try
 		{
 			CallableStatement cs = c.prepareCall("{call UsuarioRegistraLoginSucesso(?)}");
-			cs.setInt(1, id);
+			cs.setString(1, email);
 			cs.executeUpdate();
 			c.close();
 			return true;
 
 		} catch (SQLException e)
 		{
-			SupportDAO.log("UserDAO.registerSuccessfulLogin: " + e.getMessage());
+			log("UserDAO.registerSuccessfulLogin: " + e.getMessage());
 			return false;
 		}
 	}
@@ -264,9 +264,9 @@ public class UserDAO
 	/**
 	 * Registra o login de um usuário com falha
 	 */
-	public boolean registerFailedLogin(int id)
+	public boolean registerFailedLogin(String email)
 	{
-		Connection c = SupportDAO.getConnection();
+		Connection c = getConnection();
 		
 		if (c == null)
 			return false;
@@ -274,14 +274,14 @@ public class UserDAO
 		try
 		{
 			CallableStatement cs = c.prepareCall("{call UsuarioRegistraLoginFalha(?)}");
-			cs.setInt(1, id);
+			cs.setString(1, email);
 			cs.executeUpdate();
 			c.close();
 			return true;
 
 		} catch (SQLException e)
 		{
-			SupportDAO.log("UserDAO.registerFailedLogin: " + e.getMessage());
+			log("UserDAO.registerFailedLogin: " + e.getMessage());
 			return false;
 		}
 	}
@@ -291,7 +291,7 @@ public class UserDAO
 	 */
 	public boolean saveLoginToken(int id, String token)
 	{
-		Connection c = SupportDAO.getConnection();
+		Connection c = getConnection();
 		
 		if (c == null)
 			return false;
@@ -307,7 +307,7 @@ public class UserDAO
 
 		} catch (SQLException e)
 		{
-			SupportDAO.log("UserDAO.saveLoginToken: " + e.getMessage());
+			log("UserDAO.saveLoginToken: " + e.getMessage());
 			return false;
 		}
 	}
@@ -322,7 +322,7 @@ public class UserDAO
 					 "WHERE email = ? " +
 					 "AND tokenLogin = ?";
 
-		Connection c = SupportDAO.getConnection();
+		Connection c = getConnection();
 		
 		if (c == null)
 			return false;
@@ -348,7 +348,7 @@ public class UserDAO
 
 		} catch (SQLException e)
 		{
-			SupportDAO.log("UserDAO.checkValidLoginToken: " + e.getMessage());
+			log("UserDAO.checkValidLoginToken: " + e.getMessage());
 			return false;
 		}
 	}

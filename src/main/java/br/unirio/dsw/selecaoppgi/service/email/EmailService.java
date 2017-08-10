@@ -1,6 +1,9 @@
-package br.unirio.dsw.selecaoppgi.service;
+package br.unirio.dsw.selecaoppgi.service.email;
 
 import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -11,15 +14,19 @@ import com.squareup.okhttp.Request.Builder;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
-import br.unirio.dsw.selecaoppgi.utils.Configuration;
+import br.unirio.dsw.selecaoppgi.configuration.ApplicationConfiguration;
 
 /**
  * Classe responsável pelo envio de e-mails
  * 
  * @author marciobarros
  */
+@Service("emailService")
 public class EmailService
 {
+	/**
+	 * Modelo padronizado dos e-mails transacionais
+	 */
 	private static final String EMAIL_PADRAO =
 		"<table style='width:100%;background-color:#F7F7F7;text-align:center;' cellspacing='0' cellpadding='0' border='0' align='center'>" +
 		"<tbody>" +
@@ -61,26 +68,27 @@ public class EmailService
 		"</table>";
 	
 	/**
-	 * Instância única do gerenciador de e-mails
+	 * Chave de autenticação aos serviços do Send Grid
 	 */
-	private static EmailService instance; 
-
+	private static final String SENDGRID_KEY = "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";
+	
 	/**
-	 * Inicializa o serviço de envio de e-mails
+	 * Prefixo para envio de e-mails, vindo do arquivo de configuração da aplicação
+	 */
+	@Value("${MAIL_NOTICE}")
+	private String mailNotice;
+	
+	/**
+	 * E-mail de origem das mensagens enviadas pela plataforma
+	 */
+	@Value("${EMAIL_SOURCE}")
+	private String emailSource;
+	
+	/**
+	 * Impede a instanciação direta do serviço de envio de e-mails
 	 */
 	private EmailService()
 	{
-	}
-
-	/**
-	 * Retorna a instância única do gerenciador de e-mails
-	 */
-	public static EmailService getInstance()
-	{
-		if (instance == null)
-			instance = new EmailService();
-		
-		return instance;
 	}
 
 	/**
@@ -117,12 +125,12 @@ public class EmailService
 		jsonContents.add(jsonBody);
 		
 		// Poca-yoke para evitar o envio de e-mails de desenvolvimento para usuários finais
-		if (Configuration.isStaggingEnvironment())
+		if (ApplicationConfiguration.isStaggingEnvironment())
 			email = "marcio.barros@gmail.com";
 		
 		// Registra assunto do email
 		JsonObject personalizacao = new JsonObject();
-		personalizacao.addProperty("subject", Configuration.getMailNotice() + title);
+		personalizacao.addProperty("subject", mailNotice + " " + title);
 		
 		// Registra os destinatarios
 		JsonArray jsonTo = new JsonArray();
@@ -137,7 +145,7 @@ public class EmailService
 		
 		// Registra a origem
 		JsonObject jsonFrom = new JsonObject();
-		jsonFrom.addProperty("email", Configuration.getEmailSource());
+		jsonFrom.addProperty("email", emailSource);
 		
 		// Monta objeto json do email para ser enviado na requisicao
 		jsonEmail.add("personalizations", personalizacoes);
@@ -160,7 +168,7 @@ public class EmailService
 	/**
 	 * Envia uma requisição POST com headers
 	 */
-	private static String post(String endereco, String body)
+	private String post(String endereco, String body)
 	{
 		OkHttpClient client = new OkHttpClient();
 		MediaType mediaType = MediaType.parse("application/json");
@@ -171,7 +179,7 @@ public class EmailService
 				.post(reqBody);
 		
 		builder.addHeader("Cache-Control", "no-cache");
-		builder.addHeader("Authorization", "Bearer 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");
+		builder.addHeader("Authorization", "Bearer " + SENDGRID_KEY);
 		builder.addHeader("Content-Type", "application/json");
 		
 		Request request = builder.build();

@@ -1,31 +1,47 @@
-package br.unirio.dsw.selecaoppgi.dao;
+package br.unirio.dsw.selecaoppgi.service.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import br.unirio.dsw.selecaoppgi.utils.Configuration;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
- * Classe de suporte a persistencia de informacoes
+ * Superclasse de todas as classes que realizam persistencia de informacoes. Todas
+ * as subclasses devem ser @Service ou @Bean gerenciados pelo Spring Framework, de
+ * modo que as configurações do banco de dados sejam injetadas nesta classe.
  * 
  * @author marcio.barros
  */
-public class SupportDAO
+abstract class AbstractDAO
 {
+	/**
+	 * String de conexão ao banco de dados
+	 */
+	@Value("${CONNECTION_STRING}")
+	private String databaseConnection;
+	
+	/**
+	 * Usuário do banco de dados
+	 */
+	@Value("${CONNECTION_USER}")
+	private String databaseUser;
+	
+	/**
+	 * Senha de acesso ao banco de dados
+	 */
+	@Value("${CONNECTION_PASSWORD}")
+	private String databasePassword;
+
 	/**
 	 * Cria uma conexao com o banco de dados
 	 */
-	public static Connection getConnection()
+	protected Connection getConnection()
 	{	
 		try
 		{
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
-			String connectionString = Configuration.getDatabaseConnectionString();
-			String connectionUser = Configuration.getDatabaseUser();
-			String connectionPassword = Configuration.getDatabasePassword();
-			Connection conexao = DriverManager.getConnection(connectionString, connectionUser, connectionPassword);
-			return conexao;
+			return DriverManager.getConnection(databaseConnection, databaseUser, databasePassword);
 			
 		} catch (SQLException e)
 		{
@@ -50,7 +66,7 @@ public class SupportDAO
 	/**
 	 * Apresenta uma mensagem no log do sistema
 	 */
-	public static void log(String mensagem)
+	protected void log(String mensagem)
 	{
 		System.out.println(mensagem);
 	}

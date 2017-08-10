@@ -9,13 +9,21 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ResourceBundleMessageSource;
  
+/**
+ * Classe que representa a configuração da aplicação
+ * 
+ * @author marciobarros
+ */
 @Configuration
 @ComponentScan(basePackages = {"br.unirio.dsw.selecaoppgi.service", "br.unirio.dsw.selecaoppgi.dao"})
 @Import({SpringConfiguration.class, SecurityContext.class, SocialContext.class})
 @PropertySource("classpath:configuration.properties")
 public class ApplicationContext 
-{ 
-    @Bean
+{
+	/**
+	 * Retorna o resource bundle responsável pela tradução de textos
+	 */
+	@Bean
     public MessageSource messageSource() 
     {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
@@ -24,6 +32,9 @@ public class ApplicationContext
         return messageSource;
     }
  
+	/**
+	 * Prepara a leitura do arquivo de propriedades
+	 */
     @Bean
     public PropertySourcesPlaceholderConfigurer propertyPlaceHolderConfigurer() 
     {
