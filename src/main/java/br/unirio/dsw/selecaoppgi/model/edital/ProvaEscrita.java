@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -68,29 +67,9 @@ public class ProvaEscrita
 	}
 
 	/**
-	 * Gera a representação JSON
-	 */
-	public JsonObject toJson()
-	{
-		JsonObject json = new JsonObject();
-		json.addProperty("sigla", sigla);
-		json.addProperty("nome", nome);
-		json.addProperty("dispensavel", dispensavel);
-		json.addProperty("notaMinima", notaMinimaAprovacao);
-
-		JsonArray jsonQuestoes = new JsonArray();
-		
-		for (Integer peso : pesosQuestoes)
-			jsonQuestoes.add(new JsonPrimitive(peso));
-
-		json.add("questoes", jsonQuestoes);
-		return json;
-	}
-
-	/**
 	 * Carrega a partir da representação JSON
 	 */
-	public void formJson(JsonObject json)
+	public void fromJson(JsonObject json)
 	{
 		this.sigla = json.get("sigla").getAsString();
 		this.nome = json.get("nome").getAsString();
@@ -104,5 +83,10 @@ public class ProvaEscrita
 			int peso = jsonQuestoes.get(i).getAsInt();
 			pesosQuestoes.add(peso);
 		}
+	}
+
+	public Iterable<Integer> getPesosQuestoes()
+	{
+		return pesosQuestoes;
 	}
 }

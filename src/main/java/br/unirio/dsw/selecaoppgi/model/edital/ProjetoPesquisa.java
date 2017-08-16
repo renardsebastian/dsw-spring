@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 
 import br.unirio.dsw.selecaoppgi.model.User;
 import br.unirio.dsw.selecaoppgi.service.dao.UserDAO;
@@ -35,51 +34,6 @@ public class ProjetoPesquisa
 		this.exigeProvaOral = false;
 		this.professores = new ArrayList<User>();
 		this.provasEscritas = new ArrayList<ProvaEscrita>();
-	}
-	
-	/**
-	 * Gera a representação JSON
-	 */
-	public JsonObject toJson()
-	{
-		JsonObject json = new JsonObject();
-		json.addProperty("codigo", codigo);
-		json.addProperty("nome", nome);
-		json.addProperty("exigeProvaOral", exigeProvaOral);
-		json.add("professores", geraRepresentacaoProfessores());
-		json.add("provas", geraRepresentacaoProvasEscritas());
-		return json;
-	}
-
-	/**
-	 * Gera a representação JSON da lista de professores
-	 */
-	private JsonArray geraRepresentacaoProfessores()
-	{
-		JsonArray jsonProfessores = new JsonArray();
-		
-		for (User professor : professores)
-		{
-			JsonObject jsonProfessor = new JsonObject();
-			jsonProfessor.addProperty("id", professor.getId());
-			jsonProfessor.addProperty("nome", professor.getName());
-			jsonProfessores.add(jsonProfessor);
-		}
-		
-		return jsonProfessores;
-	}
-
-	/**
-	 * Gera a representação JSON da lista de provas escritas
-	 */
-	private JsonArray geraRepresentacaoProvasEscritas()
-	{
-		JsonArray jsonProvas = new JsonArray();
-		
-		for (ProvaEscrita prova : provasEscritas)
-			jsonProvas.add(new JsonPrimitive(prova.getSigla()));
-		
-		return jsonProvas;
 	}
 
 	/**
@@ -127,5 +81,15 @@ public class ProjetoPesquisa
 			if (prova != null)
 				provasEscritas.add(prova);
 		}
+	}
+
+	public Iterable<User> getProfessores()
+	{
+		return professores;
+	}
+
+	public Iterable<ProvaEscrita> getProvasEscritas()
+	{
+		return provasEscritas;
 	}
 }

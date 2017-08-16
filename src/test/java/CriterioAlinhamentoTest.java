@@ -41,7 +41,7 @@ public class CriterioAlinhamentoTest
 		JsonObject json = parser.parse("{\"nome\":\"Nome da prova\",\"pesoComProvaOral\":70,\"pesoSemProvaOral\":80,\"pertenceProvaOral\":true,\"subcriterios\":[{\"nome\":\"Subcritério 1\",\"descricao\":\"Descrição subcritério 1\",\"peso\":30},{\"nome\":\"Subcritério 2\",\"descricao\":\"Descrição subcritério 2\",\"peso\":70}]}").getAsJsonObject();
 
 		CriterioAlinhamento criterios = new CriterioAlinhamento();
-		criterios.formJson(json);
+		criterios.fromJson(json);
 
 		assertEquals(criterios.getNome(), "Nome da prova");
 		assertEquals(criterios.getPesoComProvaOral(), 70);

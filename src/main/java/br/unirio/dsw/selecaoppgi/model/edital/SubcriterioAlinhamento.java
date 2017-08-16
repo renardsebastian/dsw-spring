@@ -26,18 +26,6 @@ public @Data class SubcriterioAlinhamento
 	}
 
 	/**
-	 * Gera a representação JSON
-	 */
-	public JsonObject toJson()
-	{
-		JsonObject json = new JsonObject();
-		json.addProperty("nome", nome);
-		json.addProperty("descricao", descricao);
-		json.addProperty("peso", peso);
-		return json;
-	}
-
-	/**
 	 * Carrega a partir da representação JSON
 	 */
 	public void formJson(JsonObject json)

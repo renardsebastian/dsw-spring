@@ -49,6 +49,14 @@ public class CriterioAlinhamento
 	{
 		return subcriterios.get(indice);
 	}
+
+	/**
+	 * Retorna a lista de subcritérios de avaliação do alinhamento
+	 */
+	public Iterable<SubcriterioAlinhamento> getSubcriterios()
+	{
+		return subcriterios;
+	}
 	
 	/**
 	 * Adiciona um subcritério de alinhamento
@@ -59,29 +67,9 @@ public class CriterioAlinhamento
 	}
 
 	/**
-	 * Gera a representação JSON
-	 */
-	public JsonObject toJson()
-	{
-		JsonObject json = new JsonObject();
-		json.addProperty("nome", nome);
-		json.addProperty("pesoComProvaOral", pesoComProvaOral);
-		json.addProperty("pesoSemProvaOral", pesoSemProvaOral);
-		json.addProperty("pertenceProvaOral", pertenceProvaOral);
-
-		JsonArray jsonSubcriterios = new JsonArray();
-		
-		for (SubcriterioAlinhamento subcriterio : subcriterios)
-			jsonSubcriterios.add(subcriterio.toJson());
-
-		json.add("subcriterios", jsonSubcriterios);
-		return json;
-	}
-
-	/**
 	 * Carrega a partir da representação JSON
 	 */
-	public void formJson(JsonObject json)
+	public void fromJson(JsonObject json)
 	{
 		this.nome = json.get("nome").getAsString();
 		this.pesoComProvaOral = json.get("pesoComProvaOral").getAsInt();

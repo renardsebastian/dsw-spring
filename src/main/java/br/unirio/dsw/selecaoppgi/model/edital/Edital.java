@@ -65,100 +65,6 @@ public class Edital
 	}
 
 	/**
-	 * Gera a representação JSON
-	 */
-	public JsonObject toJson()
-	{
-		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
-		
-		JsonObject json = new JsonObject();
-		json.addProperty("notaMinimaAlinhamento", notaMinimaAlinhamento);
-		json.addProperty("dataInicio", fmt.print(dataInicio));
-		json.addProperty("dataTermino", fmt.print(dataTermino));
-		json.add("selecao", geraRepresentacaoComissaoSelecao());
-		json.add("recursos", geraRepresentacaoComissaoRecursos());
-		json.add("provas", geraRepresentacaoProvasEscritas());
-		json.add("projetos", geraRepresentacaoProjetosPesquisa());
-		json.add("criterios", geraRepresentacaoCriteriosAlinhamento());
-		return json;
-	}
-
-	/**
-	 * Gera a representação JSON da comissão de seleção
-	 */
-	private JsonArray geraRepresentacaoComissaoSelecao()
-	{
-		JsonArray jsonComissao = new JsonArray();
-		
-		for (User professor : comissaoSelecao)
-		{
-			JsonObject jsonProfessor = new JsonObject();
-			jsonProfessor.addProperty("id", professor.getId());
-			jsonProfessor.addProperty("nome", professor.getName());
-			jsonComissao.add(jsonProfessor);
-		}
-		
-		return jsonComissao;
-	}
-
-	/**
-	 * Gera a representação JSON da comissão de recursos
-	 */
-	private JsonArray geraRepresentacaoComissaoRecursos()
-	{
-		JsonArray jsonComissao = new JsonArray();
-		
-		for (User professor : comissaoRecursos)
-		{
-			JsonObject jsonProfessor = new JsonObject();
-			jsonProfessor.addProperty("id", professor.getId());
-			jsonProfessor.addProperty("nome", professor.getName());
-			jsonComissao.add(jsonProfessor);
-		}
-		
-		return jsonComissao;
-	}
-
-	/**
-	 * Gera a representação JSON da lista de provas escritas
-	 */
-	private JsonArray geraRepresentacaoProvasEscritas()
-	{
-		JsonArray jsonProvas = new JsonArray();
-		
-		for (ProvaEscrita prova : provasEscritas)
-			jsonProvas.add(prova.toJson());
-		
-		return jsonProvas;
-	}
-
-	/**
-	 * Gera a representação JSON da lista de projetos de pesquisa
-	 */
-	private JsonArray geraRepresentacaoProjetosPesquisa()
-	{
-		JsonArray jsonProjetos = new JsonArray();
-		
-		for (ProjetoPesquisa projeto : projetosPesquisa)
-			jsonProjetos.add(projeto.toJson());
-		
-		return jsonProjetos;
-	}
-
-	/**
-	 * Gera a representação JSON da lista de projetos de pesquisa
-	 */
-	private JsonArray geraRepresentacaoCriteriosAlinhamento()
-	{
-		JsonArray jsonCriterios = new JsonArray();
-		
-		for (CriterioAlinhamento criterio : criteriosAlinhamento)
-			jsonCriterios.add(criterio.toJson());
-		
-		return jsonCriterios;
-	}
-
-	/**
 	 * Carrega a partir da representação JSON
 	 */
 	public void fromJson(JsonObject json, UserDAO userDAO)
@@ -221,18 +127,15 @@ public class Edital
 	 */
 	private void carregaRepresentacaoProvasEscritas(JsonObject json)
 	{
-		// TODO terminar
+		JsonArray jsonProvas = json.getAsJsonArray("provas");
 		
-//		JsonArray jsonProvas = json.getAsJsonArray("provas");
-//		
-//		for (int i = 0; i < jsonProvas.size(); i++)
-//		{
-//			String sigla = jsonProvas.get(i).getAsString();
-//			ProvaEscrita prova = edital.pegaProvaEscritaSigla(sigla);
-//			
-//			if (prova != null)
-//				provasEscritas.add(prova);
-//		}
+		for (int i = 0; i < jsonProvas.size(); i++)
+		{
+			JsonObject jsonProva = jsonProvas.get(i).getAsJsonObject();
+			ProvaEscrita prova = new ProvaEscrita();
+			prova.fromJson(jsonProva);
+			provasEscritas.add(prova);
+		}
 	}
 
 	/**
@@ -240,18 +143,15 @@ public class Edital
 	 */
 	private void carregaRepresentacaoProjetosPesquisa(JsonObject json, UserDAO userDAO)
 	{
-		// TODO terminar
+		JsonArray jsonProjetos = json.getAsJsonArray("projetos");
 		
-//		JsonArray jsonProvas = json.getAsJsonArray("projetos");
-//		
-//		for (int i = 0; i < jsonProvas.size(); i++)
-//		{
-//			String sigla = jsonProvas.get(i).getAsString();
-//			ProvaEscrita prova = edital.pegaProvaEscritaSigla(sigla);
-//			
-//			if (prova != null)
-//				provasEscritas.add(prova);
-//		}
+		for (int i = 0; i < jsonProjetos.size(); i++)
+		{
+			JsonObject jsonProjeto = jsonProjetos.get(i).getAsJsonObject();
+			ProjetoPesquisa projeto = new ProjetoPesquisa();
+			projeto.fromJson(jsonProjeto, this, userDAO);
+			projetosPesquisa.add(projeto);
+		}
 	}
 
 	/**
@@ -259,17 +159,39 @@ public class Edital
 	 */
 	private void carregaRepresentacaoCriteriosAlinhamento(JsonObject json)
 	{
-		// TODO terminar
+		JsonArray jsonCriterios = json.getAsJsonArray("criterios");
 		
-//		JsonArray jsonProvas = json.getAsJsonArray("criterios");
-//		
-//		for (int i = 0; i < jsonProvas.size(); i++)
-//		{
-//			String sigla = jsonProvas.get(i).getAsString();
-//			ProvaEscrita prova = edital.pegaProvaEscritaSigla(sigla);
-//			
-//			if (prova != null)
-//				provasEscritas.add(prova);
-//		}
+		for (int i = 0; i < jsonCriterios.size(); i++)
+		{
+			JsonObject jsonCriterio = jsonCriterios.get(i).getAsJsonObject();
+			CriterioAlinhamento criterio = new CriterioAlinhamento();
+			criterio.fromJson(jsonCriterio);
+			criteriosAlinhamento.add(criterio);
+		}
+	}
+
+	public Iterable<User> getComissaoSelecao()
+	{
+		return comissaoSelecao;
+	}
+
+	public Iterable<User> getComissaoRecursos()
+	{
+		return comissaoRecursos;
+	}
+
+	public Iterable<ProvaEscrita> getProvasEscritas()
+	{
+		return provasEscritas;
+	}
+
+	public Iterable<ProjetoPesquisa> getProjetosPesquisa()
+	{
+		return projetosPesquisa;
+	}
+
+	public Iterable<CriterioAlinhamento> getCriteriosAlinhamento()
+	{
+		return criteriosAlinhamento;
 	}
 }

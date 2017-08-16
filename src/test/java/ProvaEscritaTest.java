@@ -30,7 +30,7 @@ public class ProvaEscritaTest
 		JsonObject json = parser.parse("{\"sigla\":\"ABC\",\"nome\":\"Nome da prova\",\"dispensavel\":true,\"notaMinima\":70,\"questoes\":[30,30,40]}").getAsJsonObject();
 
 		ProvaEscrita prova = new ProvaEscrita();
-		prova.formJson(json);
+		prova.fromJson(json);
 
 		assertEquals(prova.getSigla(), "ABC");
 		assertEquals(prova.getNome(), "Nome da prova");
