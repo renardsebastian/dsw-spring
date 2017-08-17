@@ -1,4 +1,4 @@
-package br.unirio.dsw.selecaoppgi.model;
+package br.unirio.dsw.selecaoppgi.model.usuario;
 
 import java.util.HashSet;
 import java.util.Set;

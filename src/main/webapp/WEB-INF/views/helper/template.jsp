@@ -68,12 +68,6 @@ var contextPath = "${pageContext.request.contextPath}";
                 <div class="mdl-mega-footer--left-section">
                   <p class="mdl-typography--font-light">PPGI/UNIRIO: ©2017</p>
                 </div>
-                <div class="mdl-mega-footer--right-section">
-                  <a class="mdl-typography--font-light" href="#top">
-                    Volta para o topo
-                    <i class="material-icons">expand_less</i>
-                  </a>
-                </div>
             </div>
         </footer>
     </div>
@@ -90,7 +84,7 @@ var contextPath = "${pageContext.request.contextPath}";
     <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
     <script src="${pageContext.request.contextPath}/static/third-party/ngTranslate/angular-translate.min.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/app.js"></script>
+<x-script src="${pageContext.request.contextPath}/static/js/app.js"></x-script>
 
 	<script>
 	angular.element(document).ready(function () {

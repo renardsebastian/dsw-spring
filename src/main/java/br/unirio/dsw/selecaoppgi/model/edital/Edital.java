@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 
-import br.unirio.dsw.selecaoppgi.model.User;
+import br.unirio.dsw.selecaoppgi.model.usuario.User;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -9,24 +9,26 @@ import lombok.Getter;
  */
 public enum StatusEdital
 {
-	Preparacao("PR"),
-	Aberto("AB"),
-	Homologacao("HM"),
-	ProvaEscrita("PE"),
-	ProvaAlinhamento("PA"),
-	Finalizado("FN");
+	Preparacao(0, "Em preparação"),
+	Aberto(1, "Aberto"),
+	Homologacao(2, "Em homologação"),
+	ProvaEscrita(3, "Em provas escritas"),
+	ProvaAlinhamento(4, "Em provas de alinhamento"),
+	Finalizado(5, "Finalizado");
 	
-	private @Getter String codigo;
+	private @Getter int codigo;
+	private @Getter String nome;
 	
-	private StatusEdital(String codigo)
+	private StatusEdital(int codigo, String nome)
 	{
 		this.codigo = codigo;
+		this.nome = nome;
 	}
 	
-	public static StatusEdital get(String codigo)
+	public static StatusEdital get(int codigo)
 	{
 		for (StatusEdital status : values())
-			if (status.getCodigo().compareTo(codigo) == 0)
+			if (status.getCodigo() == codigo)
 				return status;
 		
 		return null;

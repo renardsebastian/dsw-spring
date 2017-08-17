@@ -35,128 +35,22 @@ CREATE TABLE IF NOT EXISTS Edital
 	dataRegistro DATETIME NOT NULL,
 	dataAtualizacao DATETIME NOT NULL,
 	nome VARCHAR(80) NOT NULL,
-	dataInicio DATETIME,
-	dataTermino DATETIME,
 	status INT NOT NULL DEFAULT 0,
-	notaMinimaAlinhamento INT,
+	json LONGTEXT,
 	
 	PRIMARY KEY(id)
 );
 
-CREATE TABLE IF NOT EXISTS EditalComissaoSelecao
-(
-	id INT NOT NULL AUTO_INCREMENT,
-	idEdital INT NOT NULL,
-	idProfessor INT NOT NULL,
-	
-	PRIMARY KEY(id),
-    FOREIGN KEY(idEdital) REFERENCES Edital(id),
-    FOREIGN KEY(idProfessor) REFERENCES Usuario(id)  
-);
-
-CREATE TABLE IF NOT EXISTS EditalComissaoRecursos
-(
-	id INT NOT NULL AUTO_INCREMENT,
-	idEdital INT NOT NULL,
-	idProfessor INT NOT NULL,
-	
-	PRIMARY KEY(id),
-    FOREIGN KEY(idEdital) REFERENCES Edital(id),
-    FOREIGN KEY(idProfessor) REFERENCES Usuario(id)  
-);
-
-CREATE TABLE IF NOT EXISTS EditalProvaEscrita
-(
-	id INT NOT NULL AUTO_INCREMENT,
-	dataRegistro DATETIME NOT NULL,
-	dataAtualizacao DATETIME NOT NULL,
-	idEdital INT NOT NULL,
-	sigla CHAR(4) NOT NULL,
-	nome VARCHAR(80) NOT NULL,
-	dispensavel INT NOT NULL,
-	notaMinimaAprovacao INT NOT NULL,
-
-	PRIMARY KEY(id),
-    FOREIGN KEY(idEdital) REFERENCES Edital(id)
-);
-
-CREATE TABLE IF NOT EXISTS EditalProvaEscritaQuestao
-(
-	id INT NOT NULL AUTO_INCREMENT,
-	idProvaEscrita INT NOT NULL,
-	numeroOrdem INT NOT NULL,
-	peso INT NOT NULL,
-
-	PRIMARY KEY(id),
-    FOREIGN KEY(idProvaEscrita) REFERENCES EditalProvaEscrita(id)
-);
-
-CREATE TABLE IF NOT EXISTS EditalProjetoPesquisa
-(
-	id INT NOT NULL AUTO_INCREMENT,
-	dataRegistro DATETIME NOT NULL,
-	dataAtualizacao DATETIME NOT NULL,
-	idEdital INT NOT NULL,
-	codigo CHAR(4) NOT NULL,
-	nome VARCHAR(80) NOT NULL,
-	exigeProvaOral INT NOT NULL,
-
-	PRIMARY KEY(id),
-    FOREIGN KEY(idEdital) REFERENCES Edital(id)
-);
-
-CREATE TABLE IF NOT EXISTS EditalProjetoPesquisaProfessor
-(
-	id INT NOT NULL AUTO_INCREMENT,
-	idProjetoPesquisa INT NOT NULL,
-	idProfessor INT NOT NULL,
-
-	PRIMARY KEY(id),
-    FOREIGN KEY(idProjetoPesquisa) REFERENCES EditalProjetoPesquisa(id),
-    FOREIGN KEY(idProfessor) REFERENCES Usuario(id)
-);
-
-CREATE TABLE IF NOT EXISTS EditalProjetoPesquisaProvaEscrita
-(
-	id INT NOT NULL AUTO_INCREMENT,
-	idProjetoPesquisa INT NOT NULL,
-	idProvaEscrita INT NOT NULL,
-
-	PRIMARY KEY(id),
-    FOREIGN KEY(idProjetoPesquisa) REFERENCES EditalProjetoPesquisa(id),
-    FOREIGN KEY(idProvaEscrita) REFERENCES EditalProvaEscrita(id)
-);
-
-CREATE TABLE IF NOT EXISTS EditalCriterioAlinhamento
-(
-	id INT NOT NULL AUTO_INCREMENT,
-	dataRegistro DATETIME NOT NULL,
-	dataAtualizacao DATETIME NOT NULL,
-	idEdital INT NOT NULL,
-	numeroOrdem INT NOT NULL,
-	nome VARCHAR(80) NOT NULL,
-	pesoComProvaOral INT NOT NULL,
-	pesoSemProvaOral INT NOT NULL,
-	pertenceProvaOral INT NOT NULL,
-
-	PRIMARY KEY(id),
-    FOREIGN KEY(idEdital) REFERENCES Edital(id)
-);
-
-CREATE TABLE IF NOT EXISTS EditalSubcriterioAlinhamento
-(
-	id INT NOT NULL AUTO_INCREMENT,
-	dataRegistro DATETIME NOT NULL,
-	dataAtualizacao DATETIME NOT NULL,
-	idCriterio INT NOT NULL,
-	numeroOrdem INT NOT NULL,
-	nome VARCHAR(80) NOT NULL,
-	descricao VARCHAR(8192) NOT NULL,
-	peso INT NOT NULL,
-
-	PRIMARY KEY(id),
-    FOREIGN KEY(idCriterio) REFERENCES EditalCriterioAlinhamento(id)
-);
+-- DROP TABLE EditalComissaoSelecao;
+-- DROP TABLE EditalComissaoRecursos;
+-- DROP TABLE EditalSubcriterioAlinhamento;
+-- DROP TABLE EditalCriterioAlinhamento;
+-- DROP TABLE EditalProvaEscritaQuestao;
+-- DROP TABLE EditalProvaEscrita;
+-- DROP TABLE EditalProjetoPesquisaProfessor;
+-- DROP TABLE EditalProjetoPesquisaProvaEscrita;
+-- DROP TABLE EditalProjetoPesquisa;
+-- DROP TABLE Edital;
 
 CREATE TABLE IF NOT EXISTS Inscricao
 (
@@ -185,26 +79,24 @@ CREATE TABLE IF NOT EXISTS InscricaoProjetoPesquisa
 (
 	id INT NOT NULL AUTO_INCREMENT,
 	idInscricao INT NOT NULL,
-	idProjetoPesquisa INT NOT NULL,
 	numeroOrdem INT NOT NULL,
+	codigoProjetoPesquisa VARCHAR(8) NOT NULL,
 	intencoes VARCHAR(8192) NOT NULL,
 	
 	PRIMARY KEY(id),
-    FOREIGN KEY(idInscricao) REFERENCES Inscricao(id),
-    FOREIGN KEY(idProjetoPesquisa) REFERENCES EditalProjetoPesquisa(id)
+    FOREIGN KEY(idInscricao) REFERENCES Inscricao(id)
 );
 
 CREATE TABLE IF NOT EXISTS InscricaoProvaEscrita
 (
 	id INT NOT NULL AUTO_INCREMENT,
 	idInscricao INT NOT NULL,
-	idProvaEscrita INT NOT NULL,
+	codigoProvaEscrita VARCHAR(8) NOT NULL,
 	presente INT NOT NULL,
 	notaFinal INT,
 	
 	PRIMARY KEY(id),
-    FOREIGN KEY(idInscricao) REFERENCES Inscricao(id),
-    FOREIGN KEY(idProvaEscrita) REFERENCES EditalProvaEscrita(id)
+    FOREIGN KEY(idInscricao) REFERENCES Inscricao(id)
 );
 
 CREATE TABLE IF NOT EXISTS InscricaoProvaEscritaQuestao
@@ -224,35 +116,33 @@ CREATE TABLE IF NOT EXISTS InscricaoProvaAlinhamento
 (
 	id INT NOT NULL AUTO_INCREMENT,
 	idInscricao INT NOT NULL,
-	idProjetoPesquisa INT NOT NULL,
+	codigoProjetoPesquisa VARCHAR(8) NOT NULL,
 	presenteProvaOral INT,
 	justificativaNotasInicial VARCHAR(4096),
 	justificativaNotasRecurso VARCHAR(4096),
 	notaFinal INT,
 	
 	PRIMARY KEY(id),
-    FOREIGN KEY(idInscricao) REFERENCES Inscricao(id),
-    FOREIGN KEY(idProjetoPesquisa) REFERENCES EditalProjetoPesquisa(id)
+    FOREIGN KEY(idInscricao) REFERENCES Inscricao(id)
 );
 
 CREATE TABLE IF NOT EXISTS InscricaoProvaAlinhamentoSubcriterio
 (
 	id INT NOT NULL AUTO_INCREMENT,
 	idInscricaoAlinhamento INT NOT NULL,
-	idSubcriterio INT NOT NULL,
+	codigoSubcriterio VARCHAR(8) NOT NULL,
 	notaInicial INT,
 	notaRecurso INT,
 	
 	PRIMARY KEY(id),
-    FOREIGN KEY(idInscricaoAlinhamento) REFERENCES InscricaoProvaAlinhamento(id),
-    FOREIGN KEY(idSubcriterio) REFERENCES EditalSubcriterioAlinhamento(id)
+    FOREIGN KEY(idInscricaoAlinhamento) REFERENCES InscricaoProvaAlinhamento(id)
 );
 
 CREATE TABLE IF NOT EXISTS InscricaoSelecao
 (
 	id INT NOT NULL AUTO_INCREMENT,
 	idInscricao INT NOT NULL,
-	idProjetoPesquisa INT NOT NULL,
+	codigoProjetoPesquisa VARCHAR(8) NOT NULL,
 	numeroOrdem INT,
 	classificado INT,
 	idOrientador INT,
@@ -260,7 +150,6 @@ CREATE TABLE IF NOT EXISTS InscricaoSelecao
 	
 	PRIMARY KEY(id),
     FOREIGN KEY(idInscricao) REFERENCES Inscricao(id),
-    FOREIGN KEY(idProjetoPesquisa) REFERENCES EditalProjetoPesquisa(id),
     FOREIGN KEY(idOrientador) REFERENCES Usuario(id),
     FOREIGN KEY(idCoorientador) REFERENCES Usuario(id)
 );

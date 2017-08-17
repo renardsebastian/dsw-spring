@@ -7,12 +7,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-import br.unirio.dsw.selecaoppgi.model.User;
 import br.unirio.dsw.selecaoppgi.model.edital.CriterioAlinhamento;
 import br.unirio.dsw.selecaoppgi.model.edital.Edital;
 import br.unirio.dsw.selecaoppgi.model.edital.ProjetoPesquisa;
 import br.unirio.dsw.selecaoppgi.model.edital.ProvaEscrita;
 import br.unirio.dsw.selecaoppgi.model.edital.SubcriterioAlinhamento;
+import br.unirio.dsw.selecaoppgi.model.usuario.User;
 
 /**
  * Classe que publica os dados de um edital em formato JSON
@@ -29,6 +29,10 @@ public class JsonEditalWriter
 		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
 		
 		JsonObject json = new JsonObject();
+		json.addProperty("id", edital.getId());
+		json.addProperty("nome", edital.getNome());
+		json.addProperty("status", edital.getStatus().getCodigo());
+		json.addProperty("nomeStatus", edital.getStatus().getNome());
 		json.addProperty("notaMinimaAlinhamento", edital.getNotaMinimaAlinhamento());
 		json.addProperty("dataInicio", fmt.print(edital.getDataInicio()));
 		json.addProperty("dataTermino", fmt.print(edital.getDataTermino()));

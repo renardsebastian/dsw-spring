@@ -22,7 +22,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import br.unirio.dsw.selecaoppgi.configuration.ApplicationConfiguration;
-import br.unirio.dsw.selecaoppgi.model.User;
+import br.unirio.dsw.selecaoppgi.model.usuario.User;
 import br.unirio.dsw.selecaoppgi.service.dao.UserDAO;
 import br.unirio.dsw.selecaoppgi.service.email.EmailService;
 import br.unirio.dsw.selecaoppgi.utils.CryptoUtils;

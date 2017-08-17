@@ -12,9 +12,9 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 
-import br.unirio.dsw.selecaoppgi.model.Role;
-import br.unirio.dsw.selecaoppgi.model.SignInProvider;
-import br.unirio.dsw.selecaoppgi.model.User;
+import br.unirio.dsw.selecaoppgi.model.usuario.Role;
+import br.unirio.dsw.selecaoppgi.model.usuario.SignInProvider;
+import br.unirio.dsw.selecaoppgi.model.usuario.User;
 import br.unirio.dsw.selecaoppgi.utils.DateUtils;
 import lombok.Getter;
 

@@ -3,7 +3,7 @@ package br.unirio.dsw.selecaoppgi.model.edital;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.unirio.dsw.selecaoppgi.model.User;
+import br.unirio.dsw.selecaoppgi.model.usuario.User;
 import lombok.Getter;
 import lombok.Setter;
 

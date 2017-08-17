@@ -6,12 +6,13 @@ import org.joda.time.format.DateTimeFormatter;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import br.unirio.dsw.selecaoppgi.model.User;
 import br.unirio.dsw.selecaoppgi.model.edital.CriterioAlinhamento;
 import br.unirio.dsw.selecaoppgi.model.edital.Edital;
 import br.unirio.dsw.selecaoppgi.model.edital.ProjetoPesquisa;
 import br.unirio.dsw.selecaoppgi.model.edital.ProvaEscrita;
+import br.unirio.dsw.selecaoppgi.model.edital.StatusEdital;
 import br.unirio.dsw.selecaoppgi.model.edital.SubcriterioAlinhamento;
+import br.unirio.dsw.selecaoppgi.model.usuario.User;
 import br.unirio.dsw.selecaoppgi.service.dao.UserDAO;
 
 /**
@@ -27,6 +28,15 @@ public class JsonEditalReader
 	public void execute(JsonObject json, Edital edital, UserDAO userDAO)
 	{
 		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
+
+		int id = json.get("id").getAsInt();
+		edital.setId(id);
+
+		String nome = json.get("nome").getAsString();
+		edital.setNome(nome);
+
+		StatusEdital status = StatusEdital.get(json.get("status").getAsInt());
+		edital.setStatus(status);
 
 		String sDataInicio = json.get("dataInicio").getAsString();
 		edital.setDataInicio(fmt.parseDateTime(sDataInicio));
@@ -98,7 +108,7 @@ public class JsonEditalReader
 	/**
 	 * Carrega uma prova escrita a partir da representação JSON
 	 */
-	public ProvaEscrita carregaRepresentacaoProvaEscrita(JsonObject json)
+	private ProvaEscrita carregaRepresentacaoProvaEscrita(JsonObject json)
 	{
 		ProvaEscrita prova = new ProvaEscrita();
 		prova.setSigla(json.get("sigla").getAsString());
@@ -135,7 +145,7 @@ public class JsonEditalReader
 	/**
 	 * Carrega um projeto de pesquisa a partir da representação JSON
 	 */
-	public ProjetoPesquisa carregaRepresentacaoProjetoPesquisa(JsonObject json, Edital edital, UserDAO userDAO)
+	private ProjetoPesquisa carregaRepresentacaoProjetoPesquisa(JsonObject json, Edital edital, UserDAO userDAO)
 	{
 		ProjetoPesquisa projeto = new ProjetoPesquisa();
 		projeto.setCodigo(json.get("codigo").getAsString());
@@ -199,7 +209,7 @@ public class JsonEditalReader
 	/**
 	 * Carrega um criterio de alinhamento de pesquisa a partir da representação JSON
 	 */
-	public CriterioAlinhamento carregaRepresentacaoCriterioAlinhamento(JsonObject json)
+	private CriterioAlinhamento carregaRepresentacaoCriterioAlinhamento(JsonObject json)
 	{
 		CriterioAlinhamento criterio = new CriterioAlinhamento();
 		criterio.setNome(json.get("nome").getAsString());
@@ -222,7 +232,7 @@ public class JsonEditalReader
 	/**
 	 * Carrega um subcriterio de alinhamento de pesquisa a partir da representação JSON
 	 */
-	public SubcriterioAlinhamento carregaRepresentacaoSubcriterioAlinhamento(JsonObject json)
+	private SubcriterioAlinhamento carregaRepresentacaoSubcriterioAlinhamento(JsonObject json)
 	{
 		SubcriterioAlinhamento subcriterio = new SubcriterioAlinhamento();
 		subcriterio.setNome(json.get("nome").getAsString());
