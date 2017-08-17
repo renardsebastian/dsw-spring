@@ -3,9 +3,6 @@ package br.unirio.dsw.selecaoppgi.model.edital;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -51,6 +48,14 @@ public class ProvaEscrita
 	}
 
 	/**
+	 * Retorna os pesos das questões da prova escrita
+	 */
+	public Iterable<Integer> getPesosQuestoes()
+	{
+		return pesosQuestoes;
+	}
+
+	/**
 	 * Adiciona uma questão na prova, dado seu peso
 	 */
 	public void adicionaQuestao(int peso)
@@ -64,29 +69,5 @@ public class ProvaEscrita
 	public void removeQuestao(int indice)
 	{
 		pesosQuestoes.remove(indice);
-	}
-
-	/**
-	 * Carrega a partir da representação JSON
-	 */
-	public void fromJson(JsonObject json)
-	{
-		this.sigla = json.get("sigla").getAsString();
-		this.nome = json.get("nome").getAsString();
-		this.dispensavel = json.get("dispensavel").getAsBoolean();
-		this.notaMinimaAprovacao = json.get("notaMinima").getAsInt();
-		
-		JsonArray jsonQuestoes = json.getAsJsonArray("questoes");
-		
-		for (int i = 0; i < jsonQuestoes.size(); i++)
-		{
-			int peso = jsonQuestoes.get(i).getAsInt();
-			pesosQuestoes.add(peso);
-		}
-	}
-
-	public Iterable<Integer> getPesosQuestoes()
-	{
-		return pesosQuestoes;
 	}
 }

@@ -1,7 +1,5 @@
 package br.unirio.dsw.selecaoppgi.model.edital;
 
-import com.google.gson.JsonObject;
-
 import lombok.Data;
 
 /**
@@ -23,15 +21,5 @@ public @Data class SubcriterioAlinhamento
 		this.nome = "";
 		this.descricao = "";
 		this.peso = 0;
-	}
-
-	/**
-	 * Carrega a partir da representação JSON
-	 */
-	public void formJson(JsonObject json)
-	{
-		this.nome = json.get("nome").getAsString();
-		this.descricao = json.get("descricao").getAsString();
-		this.peso = json.get("peso").getAsInt();
 	}
 }

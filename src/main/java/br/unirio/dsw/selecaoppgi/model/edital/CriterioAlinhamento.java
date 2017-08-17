@@ -3,9 +3,6 @@ package br.unirio.dsw.selecaoppgi.model.edital;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -64,26 +61,5 @@ public class CriterioAlinhamento
 	public void adicionaSubcriterio(SubcriterioAlinhamento subcriterio)
 	{
 		subcriterios.add(subcriterio);
-	}
-
-	/**
-	 * Carrega a partir da representação JSON
-	 */
-	public void fromJson(JsonObject json)
-	{
-		this.nome = json.get("nome").getAsString();
-		this.pesoComProvaOral = json.get("pesoComProvaOral").getAsInt();
-		this.pesoSemProvaOral = json.get("pesoSemProvaOral").getAsInt();
-		this.pertenceProvaOral = json.get("pertenceProvaOral").getAsBoolean();
-		
-		JsonArray jsonSubcriterios = json.getAsJsonArray("subcriterios");
-		
-		for (int i = 0; i < jsonSubcriterios.size(); i++)
-		{
-			JsonObject jsonSubcriterio = jsonSubcriterios.get(i).getAsJsonObject();
-			SubcriterioAlinhamento subcriterio = new SubcriterioAlinhamento(); 
-			subcriterio.formJson(jsonSubcriterio);
-			subcriterios.add(subcriterio);
-		}
 	}
 }
