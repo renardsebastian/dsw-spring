@@ -1,4 +1,4 @@
-# dsw-spring
+﻿# dsw-spring
 
 https://www.petrikainulainen.net/programming/spring-framework/adding-social-sign-in-to-a-spring-mvc-web-application-configuration/
 
@@ -15,3 +15,9 @@ https://www.petrikainulainen.net/programming/spring-framework/adding-social-sign
 * fazer a tela de edição de edital
 
 * rever comentários
+
+* seleção de edital por usuário logado
+
+* opção de logout e troca de senha por usuário logado
+
+* acesso a tela e ações de editais somente com direito de administrador
