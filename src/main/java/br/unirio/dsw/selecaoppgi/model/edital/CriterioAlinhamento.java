@@ -13,6 +13,7 @@ import lombok.Setter;
  */
 public class CriterioAlinhamento
 {
+	private @Getter @Setter String codigo;
 	private @Getter @Setter String nome;
 	private @Getter @Setter int pesoComProvaOral;
 	private @Getter @Setter int pesoSemProvaOral;
@@ -24,6 +25,7 @@ public class CriterioAlinhamento
 	 */
 	public CriterioAlinhamento()
 	{
+		this.codigo = "";
 		this.nome = "";
 		this.pesoComProvaOral = 0;
 		this.pesoSemProvaOral = 0;

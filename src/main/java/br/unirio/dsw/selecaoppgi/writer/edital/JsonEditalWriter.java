@@ -99,7 +99,7 @@ public class JsonEditalWriter
 	private JsonObject geraRepresentacaoProvaEscrita(ProvaEscrita prova)
 	{
 		JsonObject json = new JsonObject();
-		json.addProperty("sigla", prova.getSigla());
+		json.addProperty("sigla", prova.getCodigo());
 		json.addProperty("nome", prova.getNome());
 		json.addProperty("dispensavel", prova.isDispensavel());
 		json.addProperty("notaMinima", prova.getNotaMinimaAprovacao());
@@ -166,7 +166,7 @@ public class JsonEditalWriter
 		JsonArray jsonProvas = new JsonArray();
 		
 		for (ProvaEscrita prova : projeto.getProvasEscritas())
-			jsonProvas.add(new JsonPrimitive(prova.getSigla()));
+			jsonProvas.add(new JsonPrimitive(prova.getCodigo()));
 		
 		return jsonProvas;
 	}
@@ -190,6 +190,7 @@ public class JsonEditalWriter
 	private JsonObject geraRepresentacaoCriterioAlinhamento(CriterioAlinhamento criterio)
 	{
 		JsonObject json = new JsonObject();
+		json.addProperty("codigo", criterio.getCodigo());
 		json.addProperty("nome", criterio.getNome());
 		json.addProperty("pesoComProvaOral", criterio.getPesoComProvaOral());
 		json.addProperty("pesoSemProvaOral", criterio.getPesoSemProvaOral());
@@ -210,6 +211,7 @@ public class JsonEditalWriter
 	private JsonObject geraRepresentacaoSubcriterioAlinhamento(SubcriterioAlinhamento subcriterio)
 	{
 		JsonObject json = new JsonObject();
+		json.addProperty("codigo", subcriterio.getCodigo());
 		json.addProperty("nome", subcriterio.getNome());
 		json.addProperty("descricao", subcriterio.getDescricao());
 		json.addProperty("peso", subcriterio.getPeso());

@@ -47,62 +47,92 @@ public class Edital
 	}
 	
 	/**
-	 * Retorna uma prova escrita, dada sua sigla
+	 * Retorna uma prova escrita, dado seu código
 	 */
-	public ProvaEscrita pegaProvaEscritaSigla(String sigla)
+	public ProvaEscrita pegaProvaEscritaCodigo(String codigo)
 	{
 		for (ProvaEscrita prova : provasEscritas)
-			if (prova.getSigla().compareToIgnoreCase(sigla) == 0)
+			if (prova.getCodigo().compareToIgnoreCase(codigo) == 0)
 				return prova;
 		
 		return null;
 	}
 
+	/**
+	 * Retorna a composição da comissão de seleção
+	 */
 	public Iterable<User> getComissaoSelecao()
 	{
 		return comissaoSelecao;
 	}
 
+	/**
+	 * Adiciona um membro na comissão de seleção
+	 */
 	public void adicionaComissaoSelecao(User professor)
 	{
 		this.comissaoSelecao.add(professor);
 	}
 
+	/**
+	 * Retorna a composição da comissão de recursos
+	 */
 	public Iterable<User> getComissaoRecursos()
 	{
 		return comissaoRecurso;
 	}
 
+	/**
+	 * Adiciona um membro na comissão de recursos
+	 */
 	public void adicionaComissaoRecurso(User professor)
 	{
 		this.comissaoRecurso.add(professor);
 	}
 
+	/**
+	 * Retorna a lista de provas escritas
+	 */
 	public Iterable<ProvaEscrita> getProvasEscritas()
 	{
 		return provasEscritas;
 	}
 
+	/**
+	 * Adiciona uma prova escrita no edital
+	 */
 	public void adicionaProvasEscrita(ProvaEscrita prova)
 	{
 		this.provasEscritas.add(prova);
 	}
 
+	/**
+	 * Retorna a lista de projetos de pesquisa
+	 */
 	public Iterable<ProjetoPesquisa> getProjetosPesquisa()
 	{
 		return projetosPesquisa;
 	}
 
+	/**
+	 * Adiciona um projeto de pesquisa no edital
+	 */
 	public void adicionaProjetoPesquisa(ProjetoPesquisa projeto)
 	{
 		this.projetosPesquisa.add(projeto);
 	}
 
+	/**
+	 * Retorna a lista de critérios de alinhamento
+	 */
 	public Iterable<CriterioAlinhamento> getCriteriosAlinhamento()
 	{
 		return criteriosAlinhamento;
 	}
 
+	/**
+	 * Adiciona um novo critério de alinhamento
+	 */
 	public void adicionaCriterioAlinhamento(CriterioAlinhamento criterio)
 	{
 		this.criteriosAlinhamento.add(criterio);

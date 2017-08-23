@@ -32,21 +32,33 @@ public class ProjetoPesquisa
 		this.provasEscritas = new ArrayList<ProvaEscrita>();
 	}
 
+	/**
+	 * Retorna a lista de professores do projeto de pesquisa
+	 */
 	public Iterable<User> getProfessores()
 	{
 		return professores;
 	}
 
+	/**
+	 * Adiciona um professor no projeto de pesquisa
+	 */
 	public void adicionaProfessor(User professor)
 	{
 		this.professores.add(professor);
 	}
 
+	/**
+	 * Retorna a lista de provas escritas do projeto de pesquisa
+	 */
 	public Iterable<ProvaEscrita> getProvasEscritas()
 	{
 		return provasEscritas;
 	}
 
+	/**
+	 * Adiciona uma prova escrita no projeto de pesquisa
+	 */
 	public void adicionaProvaEscrita(ProvaEscrita prova)
 	{
 		this.provasEscritas.add(prova);

@@ -128,6 +128,22 @@ public class InscricaoEdital
 		}
 		return provasEscritas;
 	}
+	
+	/**
+	 * Conta o número de avaliações de provas escritas
+	 */
+	public int contaAvaliacoesProvaEscrita()
+	{
+		return provasEscritas.size();
+	}
+	
+	/**
+	 * Retorna a avaliação de uma prova escrita, dado seu índice
+	 */
+	public AvaliacaoProvaEscrita pegaAvaliacaoProvaEscrita(int indice)
+	{
+		return provasEscritas.get(indice);
+	}
 
 	/**
 	 * Retorna a avaliação de uma prova escrita
@@ -139,6 +155,14 @@ public class InscricaoEdital
 				return avaliacaoProva;
 		
 		return null;
+	}
+	
+	/**
+	 * Retorna todas as avaliações de provas escritas
+	 */
+	public Iterable<AvaliacaoProvaEscrita> getAvaliacoesProvasEscritas()
+	{
+		return provasEscritas;
 	}
 
 	/**

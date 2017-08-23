@@ -13,7 +13,7 @@ import lombok.Setter;
  */
 public class ProvaEscrita
 {
-	private @Getter @Setter String sigla;
+	private @Getter @Setter String codigo;
 	private @Getter @Setter String nome;
 	private @Getter @Setter boolean dispensavel;
 	private @Getter @Setter int notaMinimaAprovacao;
@@ -24,7 +24,7 @@ public class ProvaEscrita
 	 */
 	public ProvaEscrita()
 	{
-		this.sigla = "";
+		this.codigo = "";
 		this.nome = "";
 		this.dispensavel = false;
 		this.notaMinimaAprovacao = 0;

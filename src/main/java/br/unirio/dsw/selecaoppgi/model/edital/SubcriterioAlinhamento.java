@@ -9,6 +9,7 @@ import lombok.Data;
  */
 public @Data class SubcriterioAlinhamento
 {
+	private String codigo;
 	private String nome;
 	private String descricao;
 	private int peso;
@@ -18,6 +19,7 @@ public @Data class SubcriterioAlinhamento
 	 */
 	public SubcriterioAlinhamento()
 	{
+		this.codigo = "";
 		this.nome = "";
 		this.descricao = "";
 		this.peso = 0;

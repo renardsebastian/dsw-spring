@@ -28,6 +28,14 @@ public class AvaliacaoProvaEscrita
 	}
 	
 	/**
+	 * Verifica se tem uma nota da avaliação original para uma questão da prova
+	 */
+	public boolean possuiNotaOriginalQuestao(int indiceQuestao)
+	{
+		return notasOriginalQuestao[indiceQuestao] != null;
+	}
+	
+	/**
 	 * Retorna uma nota da avaliação original para uma questão da prova
 	 */
 	public int getNotaOriginalQuestao(int indiceQuestao)
@@ -41,6 +49,14 @@ public class AvaliacaoProvaEscrita
 	public void setNotaOriginalQuestao(int indiceQuestao, int nota)
 	{
 		notasOriginalQuestao[indiceQuestao] = nota;
+	}
+	
+	/**
+	 * Verifica se tem uma nota da avaliação de recurso para uma questão da prova
+	 */
+	public boolean possuiNotaRecursoQuestao(int indiceQuestao)
+	{
+		return notasRecursoQuestao[indiceQuestao] != null;
 	}
 	
 	/**

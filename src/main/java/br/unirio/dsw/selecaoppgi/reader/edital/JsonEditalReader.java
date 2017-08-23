@@ -111,7 +111,7 @@ public class JsonEditalReader
 	private ProvaEscrita carregaRepresentacaoProvaEscrita(JsonObject json)
 	{
 		ProvaEscrita prova = new ProvaEscrita();
-		prova.setSigla(json.get("sigla").getAsString());
+		prova.setCodigo(json.get("codigo").getAsString());
 		prova.setNome(json.get("nome").getAsString());
 		prova.setDispensavel(json.get("dispensavel").getAsBoolean());
 		prova.setNotaMinimaAprovacao(json.get("notaMinima").getAsInt());
@@ -183,8 +183,8 @@ public class JsonEditalReader
 		
 		for (int i = 0; i < jsonProvas.size(); i++)
 		{
-			String sigla = jsonProvas.get(i).getAsString();
-			ProvaEscrita prova = edital.pegaProvaEscritaSigla(sigla);
+			String codigo = jsonProvas.get(i).getAsString();
+			ProvaEscrita prova = edital.pegaProvaEscritaCodigo(codigo);
 			
 			if (prova != null)
 				projeto.adicionaProvaEscrita(prova);
@@ -212,6 +212,7 @@ public class JsonEditalReader
 	private CriterioAlinhamento carregaRepresentacaoCriterioAlinhamento(JsonObject json)
 	{
 		CriterioAlinhamento criterio = new CriterioAlinhamento();
+		criterio.setCodigo(json.get("codigo").getAsString());
 		criterio.setNome(json.get("nome").getAsString());
 		criterio.setPesoComProvaOral(json.get("pesoComProvaOral").getAsInt());
 		criterio.setPesoSemProvaOral(json.get("pesoSemProvaOral").getAsInt());
@@ -235,6 +236,7 @@ public class JsonEditalReader
 	private SubcriterioAlinhamento carregaRepresentacaoSubcriterioAlinhamento(JsonObject json)
 	{
 		SubcriterioAlinhamento subcriterio = new SubcriterioAlinhamento();
+		subcriterio.setCodigo(json.get("codigo").getAsString());
 		subcriterio.setNome(json.get("nome").getAsString());
 		subcriterio.setDescricao(json.get("descricao").getAsString());
 		subcriterio.setPeso(json.get("peso").getAsInt());
