@@ -115,6 +115,18 @@ public class Edital
 	}
 
 	/**
+	 * Retorna um projeto de pesquisa, dado seu código
+	 */
+	public ProjetoPesquisa pegaProjetoPesquisaCodigo(String codigo)
+	{
+		for (ProjetoPesquisa projeto : projetosPesquisa)
+			if (projeto.getCodigo().compareToIgnoreCase(codigo) == 0)
+				return projeto;
+		
+		return null;
+	}
+
+	/**
 	 * Adiciona um projeto de pesquisa no edital
 	 */
 	public void adicionaProjetoPesquisa(ProjetoPesquisa projeto)

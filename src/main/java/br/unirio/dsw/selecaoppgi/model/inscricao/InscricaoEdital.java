@@ -83,7 +83,7 @@ public class InscricaoEdital
 	/**
 	 * Adiciona a inscrição em um projeto de pesquisa
 	 */
-	public void adicionaInscricaoProjetoPesquisa(ProjetoPesquisa projeto, String intencoes)
+	public InscricaoProjetoPesquisa adicionaInscricaoProjetoPesquisa(ProjetoPesquisa projeto, String intencoes)
 	{
 		InscricaoProjetoPesquisa inscricaoProjeto = new InscricaoProjetoPesquisa(projeto, edital);
 		inscricaoProjeto.setIntencoes(intencoes);
@@ -92,6 +92,9 @@ public class InscricaoEdital
 		for (ProvaEscrita prova : projeto.getProvasEscritas())
 			if (pegaAvaliacaoProvaEscrita(prova) == null)
 				provasEscritas.add(new AvaliacaoProvaEscrita(prova));
+		
+		
+		return inscricaoProjeto;
 	}
 	
 
