@@ -163,7 +163,7 @@ public class JsonInscricaoWriter
 	private JsonObject geraRepresentacaoAvaliacaoProvaEscrita(AvaliacaoProvaEscrita avaliacao)
 	{
 		JsonObject json = new JsonObject();
-		json.addProperty("sigla", avaliacao.getProvaEscrita().getCodigo());
+		json.addProperty("codigo", avaliacao.getProvaEscrita().getCodigo());
 
 		if (avaliacao.getPresente() != null)
 		{

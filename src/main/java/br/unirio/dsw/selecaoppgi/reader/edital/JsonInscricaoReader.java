@@ -8,13 +8,14 @@ import br.unirio.dsw.selecaoppgi.model.edital.Edital;
 import br.unirio.dsw.selecaoppgi.model.edital.ProjetoPesquisa;
 import br.unirio.dsw.selecaoppgi.model.edital.ProvaEscrita;
 import br.unirio.dsw.selecaoppgi.model.edital.SubcriterioAlinhamento;
+import br.unirio.dsw.selecaoppgi.model.inscricao.AvaliacaoCriterioAlinhamento;
+import br.unirio.dsw.selecaoppgi.model.inscricao.AvaliacaoProvaEscrita;
+import br.unirio.dsw.selecaoppgi.model.inscricao.AvaliacaoSubcriterioAlinhamento;
 import br.unirio.dsw.selecaoppgi.model.inscricao.InscricaoEdital;
 import br.unirio.dsw.selecaoppgi.model.inscricao.InscricaoProjetoPesquisa;
-import br.unirio.dsw.selecaoppgi.model.usuario.User;
-import br.unirio.dsw.selecaoppgi.service.dao.UserDAO;
 
 /**
- * Classe responsável por carregar um inscrição em edital a partir da sua representação JSON
+ * Classe responsável por carregar uma inscrição em edital a partir da sua representação JSON
  * 
  * @author marciobarros
  */
@@ -23,7 +24,7 @@ public class JsonInscricaoReader
 	/**
 	 * Carrega uma inscrição em edital a partir da representação JSON
 	 */
-	public boolean execute(JsonObject json, InscricaoEdital inscricao, Edital edital, UserDAO userDAO)
+	public boolean execute(JsonObject json, InscricaoEdital inscricao, Edital edital)
 	{
 		int id = json.get("id").getAsInt();
 		inscricao.setId(id);
@@ -45,8 +46,12 @@ public class JsonInscricaoReader
 		carregaRepresentacaoDispensaOriginal(json, inscricao);
 		carregaRepresentacaoDispensaRecurso(json, inscricao);
 
-		carregaRepresentacaoProjetosPesquisa(json, inscricao, edital, userDAO);
-		carregaRepresentacaoProvasEscritas(json, edital);
+		if (!carregaRepresentacaoInscricaoProjetosPesquisa(json, inscricao, edital))
+			return false;
+		
+		if (!carregaRepresentacaoAvaliacaoProvasEscritas(json, inscricao, edital))
+			return false;
+		
 		return true;
 	}
 
@@ -121,7 +126,7 @@ public class JsonInscricaoReader
 	/**
 	 * Carrega a lista de inscrições em projetos de pesquisa a partir da representação JSON
 	 */
-	private boolean carregaRepresentacaoProjetosPesquisa(JsonObject json, InscricaoEdital inscricao, Edital edital, UserDAO userDAO)
+	private boolean carregaRepresentacaoInscricaoProjetosPesquisa(JsonObject json, InscricaoEdital inscricao, Edital edital)
 	{
 		JsonArray jsonProjetos = json.getAsJsonArray("projetos");
 		
@@ -138,7 +143,7 @@ public class JsonInscricaoReader
 			String intencoes = jsonProjeto.get("intencoes").getAsString();
 			InscricaoProjetoPesquisa inscricaoProjeto = inscricao.adicionaInscricaoProjetoPesquisa(projeto, intencoes);
 			
-			if (!carregaRepresentacaoCriteriosAlinhamento(jsonProjeto, inscricaoProjeto, edital, userDAO))
+			if (!carregaRepresentacaoCriteriosAlinhamento(jsonProjeto, inscricaoProjeto, edital))
 				return false;
 		}
 		
@@ -148,149 +153,159 @@ public class JsonInscricaoReader
 	/**
 	 * Carrega a lista de avaliações de critérios de alinhamento em projetos de pesquisa a partir da representação JSON
 	 */
-	private boolean carregaRepresentacaoCriteriosAlinhamento(JsonObject json, InscricaoProjetoPesquisa inscricaoProjeto, Edital edital, UserDAO userDAO)
+	private boolean carregaRepresentacaoCriteriosAlinhamento(JsonObject json, InscricaoProjetoPesquisa inscricaoProjeto, Edital edital)
 	{
 		JsonArray jsonCriterios = json.getAsJsonArray("criterios");
 		
 		for (int i = 0; i < jsonCriterios.size(); i++)
 		{
 			JsonObject jsonCriterio = jsonCriterios.get(i).getAsJsonObject();
-			// TODO continuar daqui ...
 			
 			String codigo = jsonCriterio.get("codigo").getAsString();
-			ProjetoPesquisa projeto = edital.pegaProjetoPesquisaCodigo(codigo);
+			CriterioAlinhamento criterio = edital.pegaCriterioAlinhamentoCodigo(codigo);
 			
-			if (projeto == null)
+			if (criterio == null)
 				return false;
 			
-			String intencoes = jsonCriterio.get("intencoes").getAsString();
-//			InscricaoProjetoPesquisa inscricaoProjeto = inscricao.adicionaInscricaoProjetoPesquisa(projeto, intencoes);
+			AvaliacaoCriterioAlinhamento avaliacaoCriterio = inscricaoProjeto.pegaAvaliacaoCriterioAlinhamento(criterio);
+			
+			if (jsonCriterio.has("presente"))
+			{
+				boolean presente = jsonCriterio.get("presente").getAsBoolean();
+				avaliacaoCriterio.setPresenteProvaOral(presente);
+			}
+
+			String justificativaOriginal = jsonCriterio.get("justificativaOriginal").getAsString();
+			avaliacaoCriterio.setJustificativaNotasOriginal(justificativaOriginal);
+			
+			String justificativaRecurso = jsonCriterio.get("justificativaRecurso").getAsString();
+			avaliacaoCriterio.setJustificativaNotasRecurso(justificativaRecurso);
+			
+			if (!carregaRepresentacaoSubcriteriosAlinhamento(jsonCriterio, avaliacaoCriterio, edital))
+				return false;
 		}
 		
 		return true;
 	}
 
 	/**
-	 * Carrega a lista de provas escritas a partir da representação JSON
+	 * Carrega a lista de avaliações de subcritérios de alinhamento em projetos de pesquisa a partir da representação JSON
 	 */
-	private void carregaRepresentacaoProvasEscritas(JsonObject json, Edital edital)
+	private boolean carregaRepresentacaoSubcriteriosAlinhamento(JsonObject json, AvaliacaoCriterioAlinhamento avaliacaoCriterio, Edital edital)
+	{
+		JsonArray jsonSubcriterios = json.getAsJsonArray("subcriterios");
+		
+		for (int i = 0; i < jsonSubcriterios.size(); i++)
+		{
+			JsonObject jsonSubcriterio = jsonSubcriterios.get(i).getAsJsonObject();
+			
+			String codigo = jsonSubcriterio.get("codigo").getAsString();
+			SubcriterioAlinhamento subcriterio = avaliacaoCriterio.getCriterioAlinhamento().pegaSubcriterioAlinhamentoCodigo(codigo);
+			
+			if (subcriterio == null)
+				return false;
+			
+			AvaliacaoSubcriterioAlinhamento avaliacaoSubcriterio = avaliacaoCriterio.pegaAvaliacaoSubcriterioAlinhamento(subcriterio);
+			
+			if (avaliacaoSubcriterio == null)
+				return false;
+			
+			if (jsonSubcriterio.has("notaOriginal"))
+			{
+				int notaOriginal = jsonSubcriterio.get("notaOriginal").getAsInt();
+				avaliacaoSubcriterio.setNotaOriginal(notaOriginal);
+			}
+			
+			if (jsonSubcriterio.has("notaRecurso"))
+			{
+				int notaRecurso = jsonSubcriterio.get("notaRecurso").getAsInt();
+				avaliacaoSubcriterio.setNotaRecurso(notaRecurso);
+			}
+		}
+		
+		return true;
+	}
+
+	/**
+	 * Carrega a lista de avaliações de provas escritas a partir da representação JSON
+	 */
+	private boolean carregaRepresentacaoAvaliacaoProvasEscritas(JsonObject json, InscricaoEdital inscricao, Edital edital)
 	{
 		JsonArray jsonProvas = json.getAsJsonArray("provas");
 		
 		for (int i = 0; i < jsonProvas.size(); i++)
 		{
 			JsonObject jsonProva = jsonProvas.get(i).getAsJsonObject();
-			ProvaEscrita prova = carregaRepresentacaoProvaEscrita(jsonProva);
-			edital.adicionaProvasEscrita(prova);
-		}
-	}
 
-	/**
-	 * Carrega uma prova escrita a partir da representação JSON
-	 */
-	private ProvaEscrita carregaRepresentacaoProvaEscrita(JsonObject json)
-	{
-		ProvaEscrita prova = new ProvaEscrita();
-		prova.setCodigo(json.get("codigo").getAsString());
-		prova.setNome(json.get("nome").getAsString());
-		prova.setDispensavel(json.get("dispensavel").getAsBoolean());
-		prova.setNotaMinimaAprovacao(json.get("notaMinima").getAsInt());
-		
-		JsonArray jsonQuestoes = json.getAsJsonArray("questoes");
-		
-		for (int i = 0; i < jsonQuestoes.size(); i++)
-		{
-			int peso = jsonQuestoes.get(i).getAsInt();
-			prova.adicionaQuestao(peso);
-		}
-		
-		return prova;
-	}
-
-	/**
-	 * Carrega a lista de professores de um projeto de pesquisa a partir da representação JSON
-	 */
-	private void carregaRepresentacaoProfessoresProjetoPesquisa(JsonObject json, ProjetoPesquisa projeto, UserDAO userDAO)
-	{
-		JsonArray jsonProfessores = json.getAsJsonArray("professores");
-		
-		for (int i = 0; i < jsonProfessores.size(); i++)
-		{
-			JsonObject jsonProfessor = jsonProfessores.get(i).getAsJsonObject();
-			int id = jsonProfessor.get("id").getAsInt();
-			User professor = userDAO.getUserId(id);
-			
-			if (professor != null)
-				projeto.adicionaProfessor(professor);
-		}
-	}
-
-	/**
-	 * Carrega a lista de provas escritas a partir da representação JSON
-	 */
-	private void carregaRepresentacaoProvasEscritasProjetoPesquisa(JsonObject json, ProjetoPesquisa projeto, Edital edital)
-	{
-		JsonArray jsonProvas = json.getAsJsonArray("provas");
-		
-		for (int i = 0; i < jsonProvas.size(); i++)
-		{
-			String codigo = jsonProvas.get(i).getAsString();
+			String codigo = jsonProva.get("codigo").getAsString();
 			ProvaEscrita prova = edital.pegaProvaEscritaCodigo(codigo);
 			
-			if (prova != null)
-				projeto.adicionaProvaEscrita(prova);
+			if (prova == null)
+				return false;
+			
+			AvaliacaoProvaEscrita avaliacaoProva = inscricao.pegaAvaliacaoProvaEscrita(prova);
+			
+			if (avaliacaoProva == null)
+				return false;
+			
+			if (jsonProva.has("presente"))
+			{
+				boolean presente = jsonProva.get("presente").getAsBoolean();
+				avaliacaoProva.setPresente(presente);
+				
+				if (presente)
+				{
+					if (!carregaRepresentacaoNotasOriginaisProvaEscrita(jsonProva, prova, avaliacaoProva))
+						return false;
+
+					if (!carregaRepresentacaoNotasRecursoProvaEscrita(jsonProva, prova, avaliacaoProva))
+						return false;
+				}
+			}
 		}
+		
+		return true;
 	}
 
 	/**
-	 * Carrega a lista de critérios de alinhamento a partir da representação JSON
+	 * Carrega as notas originais das avaliações de provas escritas a partir da sua representação JSON
 	 */
-	private void carregaRepresentacaoCriteriosAlinhamento(JsonObject json, Edital edital)
+	private boolean carregaRepresentacaoNotasOriginaisProvaEscrita(JsonObject jsonProva, ProvaEscrita prova, AvaliacaoProvaEscrita avaliacaoProva)
 	{
-		JsonArray jsonCriterios = json.getAsJsonArray("criterios");
+		JsonArray jsonNotas = jsonProva.getAsJsonArray("notasOriginal");
 		
-		for (int i = 0; i < jsonCriterios.size(); i++)
+		if (jsonNotas.size() != prova.contaQuestoes())
+			return false;
+		
+		for (int i = 0; i < prova.contaQuestoes(); i++)
 		{
-			JsonObject jsonCriterio = jsonCriterios.get(i).getAsJsonObject();
-			CriterioAlinhamento criterio = carregaRepresentacaoCriterioAlinhamento(jsonCriterio);
-			edital.adicionaCriterioAlinhamento(criterio);
+			int nota = jsonNotas.get(i).getAsInt();
+			
+			if (nota >= 0)
+				avaliacaoProva.setNotaOriginalQuestao(i, nota);
 		}
+		
+		return true;
 	}
 
 	/**
-	 * Carrega um criterio de alinhamento de pesquisa a partir da representação JSON
+	 * Carrega as notas de recurso das avaliações de provas escritas a partir da sua representação JSON
 	 */
-	private CriterioAlinhamento carregaRepresentacaoCriterioAlinhamento(JsonObject json)
+	private boolean carregaRepresentacaoNotasRecursoProvaEscrita(JsonObject jsonProva, ProvaEscrita prova, AvaliacaoProvaEscrita avaliacaoProva)
 	{
-		CriterioAlinhamento criterio = new CriterioAlinhamento();
-		criterio.setCodigo(json.get("codigo").getAsString());
-		criterio.setNome(json.get("nome").getAsString());
-		criterio.setPesoComProvaOral(json.get("pesoComProvaOral").getAsInt());
-		criterio.setPesoSemProvaOral(json.get("pesoSemProvaOral").getAsInt());
-		criterio.setPertenceProvaOral(json.get("pertenceProvaOral").getAsBoolean());
+		JsonArray jsonNotas = jsonProva.getAsJsonArray("notasRecurso");
 		
-		JsonArray jsonSubcriterios = json.getAsJsonArray("subcriterios");
+		if (jsonNotas.size() != prova.contaQuestoes())
+			return false;
 		
-		for (int i = 0; i < jsonSubcriterios.size(); i++)
+		for (int i = 0; i < prova.contaQuestoes(); i++)
 		{
-			JsonObject jsonSubcriterio = jsonSubcriterios.get(i).getAsJsonObject();
-			SubcriterioAlinhamento subcriterio = carregaRepresentacaoSubcriterioAlinhamento(jsonSubcriterio); 
-			criterio.adicionaSubcriterio(subcriterio);
+			int nota = jsonNotas.get(i).getAsInt();
+			
+			if (nota >= 0)
+				avaliacaoProva.setNotaRecursoQuestao(i, nota);
 		}
 		
-		return criterio;
-	}
-
-	/**
-	 * Carrega um subcriterio de alinhamento de pesquisa a partir da representação JSON
-	 */
-	private SubcriterioAlinhamento carregaRepresentacaoSubcriterioAlinhamento(JsonObject json)
-	{
-		SubcriterioAlinhamento subcriterio = new SubcriterioAlinhamento();
-		subcriterio.setCodigo(json.get("codigo").getAsString());
-		subcriterio.setNome(json.get("nome").getAsString());
-		subcriterio.setDescricao(json.get("descricao").getAsString());
-		subcriterio.setPeso(json.get("peso").getAsInt());
-		return subcriterio;
+		return true;
 	}
 }

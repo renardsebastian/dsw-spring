@@ -62,6 +62,18 @@ public class AvaliacaoCriterioAlinhamento
 	}
 	
 	/**
+	 * Retorna uma avaliação de subcritério de alinhamento, dado o subcritério
+	 */
+	public AvaliacaoSubcriterioAlinhamento pegaAvaliacaoSubcriterioAlinhamento(SubcriterioAlinhamento subcriterio)
+	{
+		for (AvaliacaoSubcriterioAlinhamento avaliacao : subcriterios)
+			if (avaliacao.getSubcriterio() == subcriterio)
+				return avaliacao;
+		
+		return null;
+	}
+
+	/**
 	 * Retorna todas as avaliações de subcritérios de alinhamento
 	 */
 	public Iterable<AvaliacaoSubcriterioAlinhamento> getAvaliacoesSubcriterioAlinhamento()

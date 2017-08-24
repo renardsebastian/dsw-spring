@@ -50,6 +50,18 @@ public class CriterioAlinhamento
 	}
 
 	/**
+	 * Retorna um subcritério de alinhamento, dado seu código
+	 */
+	public SubcriterioAlinhamento pegaSubcriterioAlinhamentoCodigo(String codigo2)
+	{
+		for (SubcriterioAlinhamento subcriterio : subcriterios)
+			if (subcriterio.getCodigo().compareToIgnoreCase(codigo) == 0)
+				return subcriterio;
+		
+		return null;
+	}
+
+	/**
 	 * Retorna a lista de subcritérios de avaliação do alinhamento
 	 */
 	public Iterable<SubcriterioAlinhamento> getSubcriterios()

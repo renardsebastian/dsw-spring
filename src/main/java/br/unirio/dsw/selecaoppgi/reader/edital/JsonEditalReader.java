@@ -38,11 +38,17 @@ public class JsonEditalReader
 		StatusEdital status = StatusEdital.get(json.get("status").getAsInt());
 		edital.setStatus(status);
 
-		String sDataInicio = json.get("dataInicio").getAsString();
-		edital.setDataInicio(fmt.parseDateTime(sDataInicio));
-
-		String sDataTermino = json.get("dataTermino").getAsString();
-		edital.setDataTermino(fmt.parseDateTime(sDataTermino));
+		if (json.has("dataInicio"))
+		{
+			String sDataInicio = json.get("dataInicio").getAsString();
+			edital.setDataInicio(fmt.parseDateTime(sDataInicio));
+		}
+		
+		if (json.has("dataTermino"))
+		{
+			String sDataTermino = json.get("dataTermino").getAsString();
+			edital.setDataTermino(fmt.parseDateTime(sDataTermino));
+		}
 		
 		int notaMinima = json.get("notaMinimaAlinhamento").getAsInt();
 		edital.setNotaMinimaAlinhamento(notaMinima);
@@ -60,6 +66,9 @@ public class JsonEditalReader
 	private void carregaRepresentacaoComissaoSelecao(JsonObject json, Edital edital, UserDAO userDAO)
 	{
 		JsonArray jsonProfessores = json.getAsJsonArray("selecao");
+		
+		if (jsonProfessores == null)
+			return;
 		
 		for (int i = 0; i < jsonProfessores.size(); i++)
 		{
@@ -79,6 +88,9 @@ public class JsonEditalReader
 	{
 		JsonArray jsonProfessores = json.getAsJsonArray("recursos");
 		
+		if (jsonProfessores == null)
+			return;
+		
 		for (int i = 0; i < jsonProfessores.size(); i++)
 		{
 			JsonObject jsonProfessor = jsonProfessores.get(i).getAsJsonObject();
@@ -96,6 +108,9 @@ public class JsonEditalReader
 	private void carregaRepresentacaoProvasEscritas(JsonObject json, Edital edital)
 	{
 		JsonArray jsonProvas = json.getAsJsonArray("provas");
+		
+		if (jsonProvas == null)
+			return;
 		
 		for (int i = 0; i < jsonProvas.size(); i++)
 		{
@@ -134,6 +149,9 @@ public class JsonEditalReader
 	{
 		JsonArray jsonProjetos = json.getAsJsonArray("projetos");
 		
+		if (jsonProjetos == null)
+			return;
+		
 		for (int i = 0; i < jsonProjetos.size(); i++)
 		{
 			JsonObject jsonProjeto = jsonProjetos.get(i).getAsJsonObject();
@@ -162,6 +180,9 @@ public class JsonEditalReader
 	private void carregaRepresentacaoProfessoresProjetoPesquisa(JsonObject json, ProjetoPesquisa projeto, UserDAO userDAO)
 	{
 		JsonArray jsonProfessores = json.getAsJsonArray("professores");
+		
+		if (jsonProfessores == null)
+			return;
 		
 		for (int i = 0; i < jsonProfessores.size(); i++)
 		{
@@ -197,6 +218,9 @@ public class JsonEditalReader
 	private void carregaRepresentacaoCriteriosAlinhamento(JsonObject json, Edital edital)
 	{
 		JsonArray jsonCriterios = json.getAsJsonArray("criterios");
+		
+		if (jsonCriterios == null)
+			return;
 		
 		for (int i = 0; i < jsonCriterios.size(); i++)
 		{

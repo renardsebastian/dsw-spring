@@ -143,6 +143,18 @@ public class Edital
 	}
 
 	/**
+	 * Retorna um critério de alinhamento de pesquisa, dado seu código
+	 */
+	public CriterioAlinhamento pegaCriterioAlinhamentoCodigo(String codigo)
+	{
+		for (CriterioAlinhamento criterio : criteriosAlinhamento)
+			if (criterio.getCodigo().compareToIgnoreCase(codigo) == 0)
+				return criterio;
+		
+		return null;
+	}
+
+	/**
 	 * Adiciona um novo critério de alinhamento
 	 */
 	public void adicionaCriterioAlinhamento(CriterioAlinhamento criterio)

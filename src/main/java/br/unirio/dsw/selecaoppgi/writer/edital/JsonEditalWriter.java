@@ -34,13 +34,38 @@ public class JsonEditalWriter
 		json.addProperty("status", edital.getStatus().getCodigo());
 		json.addProperty("nomeStatus", edital.getStatus().getNome());
 		json.addProperty("notaMinimaAlinhamento", edital.getNotaMinimaAlinhamento());
-		json.addProperty("dataInicio", fmt.print(edital.getDataInicio()));
-		json.addProperty("dataTermino", fmt.print(edital.getDataTermino()));
-		json.add("selecao", geraRepresentacaoComissaoSelecao(edital));
-		json.add("recursos", geraRepresentacaoComissaoRecursos(edital));
-		json.add("provas", geraRepresentacaoProvasEscritas(edital));
-		json.add("projetos", geraRepresentacaoProjetosPesquisa(edital));
-		json.add("criterios", geraRepresentacaoCriteriosAlinhamento(edital));
+		
+		if (edital.getDataInicio() != null)
+			json.addProperty("dataInicio", fmt.print(edital.getDataInicio()));
+
+		if (edital.getDataTermino() != null)
+			json.addProperty("dataTermino", fmt.print(edital.getDataTermino()));
+		
+		JsonArray jsonSelecao = geraRepresentacaoComissaoSelecao(edital);
+		
+		if (jsonSelecao.size() > 0)
+			json.add("selecao", jsonSelecao);
+		
+		JsonArray jsonRecursos = geraRepresentacaoComissaoRecursos(edital);
+		
+		if (jsonRecursos.size() > 0)
+			json.add("recursos", jsonRecursos);
+		
+		JsonArray jsonProvas = geraRepresentacaoProvasEscritas(edital);
+		
+		if (jsonProvas.size() > 0)
+			json.add("provas", jsonProvas);
+		
+		JsonArray jsonProjetos = geraRepresentacaoProjetosPesquisa(edital);
+
+		if (jsonProjetos.size() > 0)
+			json.add("projetos", jsonProjetos);
+		
+		JsonArray jsonCriterios = geraRepresentacaoCriteriosAlinhamento(edital);
+
+		if (jsonCriterios.size() > 0)
+			json.add("criterios", jsonCriterios);
+		
 		return json;
 	}
 

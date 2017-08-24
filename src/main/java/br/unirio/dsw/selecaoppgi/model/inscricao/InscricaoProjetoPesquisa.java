@@ -60,6 +60,18 @@ public class InscricaoProjetoPesquisa
 	{
 		return criteriosAlinhamento.get(indice);
 	}
+
+	/**
+	 * Retorna uma avaliação de critério de alinhamento, dado o critério
+	 */
+	public AvaliacaoCriterioAlinhamento pegaAvaliacaoCriterioAlinhamento(CriterioAlinhamento criterio)
+	{
+		for (AvaliacaoCriterioAlinhamento avaliacao : criteriosAlinhamento)
+			if (avaliacao.getCriterioAlinhamento() == criterio)
+				return avaliacao;
+		
+		return null;
+	}
 	
 	/**
 	 * Retorna todas as avaliações de critérios de alinhamento

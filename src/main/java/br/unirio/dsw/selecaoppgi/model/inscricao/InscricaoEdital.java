@@ -151,7 +151,7 @@ public class InscricaoEdital
 	/**
 	 * Retorna a avaliação de uma prova escrita
 	 */
-	private AvaliacaoProvaEscrita pegaAvaliacaoProvaEscrita(ProvaEscrita prova)
+	public AvaliacaoProvaEscrita pegaAvaliacaoProvaEscrita(ProvaEscrita prova)
 	{
 		for (AvaliacaoProvaEscrita avaliacaoProva : provasEscritas)
 			if (avaliacaoProva.getProvaEscrita() == prova)
