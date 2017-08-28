@@ -12,7 +12,7 @@ import br.unirio.dsw.selecaoppgi.model.edital.Edital;
 import br.unirio.dsw.selecaoppgi.model.edital.ProjetoPesquisa;
 import br.unirio.dsw.selecaoppgi.model.edital.ProvaEscrita;
 import br.unirio.dsw.selecaoppgi.model.edital.SubcriterioAlinhamento;
-import br.unirio.dsw.selecaoppgi.model.usuario.User;
+import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
 
 /**
  * Classe que publica os dados de um edital em formato JSON
@@ -76,11 +76,11 @@ public class JsonEditalWriter
 	{
 		JsonArray jsonComissao = new JsonArray();
 		
-		for (User professor : edital.getComissaoSelecao())
+		for (Usuario professor : edital.getComissaoSelecao())
 		{
 			JsonObject jsonProfessor = new JsonObject();
 			jsonProfessor.addProperty("id", professor.getId());
-			jsonProfessor.addProperty("nome", professor.getName());
+			jsonProfessor.addProperty("nome", professor.getNome());
 			jsonComissao.add(jsonProfessor);
 		}
 		
@@ -94,11 +94,11 @@ public class JsonEditalWriter
 	{
 		JsonArray jsonComissao = new JsonArray();
 		
-		for (User professor : edital.getComissaoRecursos())
+		for (Usuario professor : edital.getComissaoRecursos())
 		{
 			JsonObject jsonProfessor = new JsonObject();
 			jsonProfessor.addProperty("id", professor.getId());
-			jsonProfessor.addProperty("nome", professor.getName());
+			jsonProfessor.addProperty("nome", professor.getNome());
 			jsonComissao.add(jsonProfessor);
 		}
 		
@@ -124,7 +124,7 @@ public class JsonEditalWriter
 	private JsonObject geraRepresentacaoProvaEscrita(ProvaEscrita prova)
 	{
 		JsonObject json = new JsonObject();
-		json.addProperty("sigla", prova.getCodigo());
+		json.addProperty("codigo", prova.getCodigo());
 		json.addProperty("nome", prova.getNome());
 		json.addProperty("dispensavel", prova.isDispensavel());
 		json.addProperty("notaMinima", prova.getNotaMinimaAprovacao());
@@ -172,11 +172,11 @@ public class JsonEditalWriter
 	{
 		JsonArray jsonProfessores = new JsonArray();
 		
-		for (User professor : projeto.getProfessores())
+		for (Usuario professor : projeto.getProfessores())
 		{
 			JsonObject jsonProfessor = new JsonObject();
 			jsonProfessor.addProperty("id", professor.getId());
-			jsonProfessor.addProperty("nome", professor.getName());
+			jsonProfessor.addProperty("nome", professor.getNome());
 			jsonProfessores.add(jsonProfessor);
 		}
 		

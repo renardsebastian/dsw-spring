@@ -16,7 +16,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
  */
 @Configuration
 @ComponentScan(basePackages = {"br.unirio.dsw.selecaoppgi.service", "br.unirio.dsw.selecaoppgi.dao"})
-@Import({SpringConfiguration.class, SecurityContext.class, SocialContext.class})
+@Import({SpringConfiguration.class, SecurityContext.class})
 @PropertySource("classpath:configuration.properties")
 public class ApplicationContext 
 {

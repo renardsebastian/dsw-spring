@@ -3,7 +3,7 @@ package br.unirio.dsw.selecaoppgi.model.edital;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.unirio.dsw.selecaoppgi.model.usuario.User;
+import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +17,7 @@ public class ProjetoPesquisa
 	private @Getter @Setter String codigo;
 	private @Getter @Setter String nome;
 	private @Getter @Setter boolean exigeProvaOral;
-	private List<User> professores;
+	private List<Usuario> professores;
 	private List<ProvaEscrita> provasEscritas;
 	
 	/**
@@ -28,14 +28,14 @@ public class ProjetoPesquisa
 		this.codigo = "";
 		this.nome = "";
 		this.exigeProvaOral = false;
-		this.professores = new ArrayList<User>();
+		this.professores = new ArrayList<Usuario>();
 		this.provasEscritas = new ArrayList<ProvaEscrita>();
 	}
 
 	/**
 	 * Retorna a lista de professores do projeto de pesquisa
 	 */
-	public Iterable<User> getProfessores()
+	public Iterable<Usuario> getProfessores()
 	{
 		return professores;
 	}
@@ -43,7 +43,7 @@ public class ProjetoPesquisa
 	/**
 	 * Adiciona um professor no projeto de pesquisa
 	 */
-	public void adicionaProfessor(User professor)
+	public void adicionaProfessor(Usuario professor)
 	{
 		this.professores.add(professor);
 	}

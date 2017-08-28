@@ -18,10 +18,6 @@ CREATE TABLE IF NOT EXISTS Usuario
 	tokenLogin VARCHAR(256) NOT NULL DEFAULT "",
 	dataTokenLogin DATETIME,
 
-	-- login social
-	socialID VARCHAR(500) NOT NULL DEFAULT "",
-	socialOrigem INT NOT NULL DEFAULT 0,
-	
 	-- edital selecionado
 	idEditalSelecionado INT,
 

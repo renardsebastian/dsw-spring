@@ -7,7 +7,7 @@ import lombok.Getter;
  * 
  * @author marciobarros
  */
-public enum Role 
+public enum PapelUsuario 
 {
     ROLE_BASIC(0),
     ROLE_OFFICE(1),
@@ -16,14 +16,14 @@ public enum Role
     
     private @Getter int codigo;
     
-    private Role(int codigo)
+    private PapelUsuario(int codigo)
     {
     	this.codigo = codigo;
     }
     
-    public static Role get(int codigo)
+    public static PapelUsuario get(int codigo)
     {
-    	for (Role role : values())
+    	for (PapelUsuario role : values())
     		if (role.getCodigo() == codigo)
     			return role;
     	

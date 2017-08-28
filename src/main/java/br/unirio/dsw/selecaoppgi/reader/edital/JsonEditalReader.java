@@ -12,7 +12,7 @@ import br.unirio.dsw.selecaoppgi.model.edital.ProjetoPesquisa;
 import br.unirio.dsw.selecaoppgi.model.edital.ProvaEscrita;
 import br.unirio.dsw.selecaoppgi.model.edital.StatusEdital;
 import br.unirio.dsw.selecaoppgi.model.edital.SubcriterioAlinhamento;
-import br.unirio.dsw.selecaoppgi.model.usuario.User;
+import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
 import br.unirio.dsw.selecaoppgi.service.dao.UserDAO;
 
 /**
@@ -74,7 +74,7 @@ public class JsonEditalReader
 		{
 			JsonObject jsonProfessor = jsonProfessores.get(i).getAsJsonObject();
 			int id = jsonProfessor.get("id").getAsInt();
-			User professor = userDAO.getUserId(id);
+			Usuario professor = userDAO.getUserId(id);
 			
 			if (professor != null)
 				edital.adicionaComissaoSelecao(professor);
@@ -95,7 +95,7 @@ public class JsonEditalReader
 		{
 			JsonObject jsonProfessor = jsonProfessores.get(i).getAsJsonObject();
 			int id = jsonProfessor.get("id").getAsInt();
-			User professor = userDAO.getUserId(id);
+			Usuario professor = userDAO.getUserId(id);
 			
 			if (professor != null)
 				edital.adicionaComissaoRecurso(professor);
@@ -116,7 +116,7 @@ public class JsonEditalReader
 		{
 			JsonObject jsonProva = jsonProvas.get(i).getAsJsonObject();
 			ProvaEscrita prova = carregaRepresentacaoProvaEscrita(jsonProva);
-			edital.adicionaProvasEscrita(prova);
+			edital.adicionaProvaEscrita(prova);
 		}
 	}
 
@@ -188,7 +188,7 @@ public class JsonEditalReader
 		{
 			JsonObject jsonProfessor = jsonProfessores.get(i).getAsJsonObject();
 			int id = jsonProfessor.get("id").getAsInt();
-			User professor = userDAO.getUserId(id);
+			Usuario professor = userDAO.getUserId(id);
 			
 			if (professor != null)
 				projeto.adicionaProfessor(professor);

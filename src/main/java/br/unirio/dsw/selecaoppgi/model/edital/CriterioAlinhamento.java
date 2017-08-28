@@ -76,4 +76,17 @@ public class CriterioAlinhamento
 	{
 		subcriterios.add(subcriterio);
 	}
+	
+	/**
+	 * Adiciona um subcritério de alinhamento
+	 */
+	public void adicionaSubcriterio(String codigo, String nome, String descricao, int peso)
+	{
+		SubcriterioAlinhamento subcriterio = new SubcriterioAlinhamento();
+		subcriterio.setCodigo(codigo);
+		subcriterio.setNome(nome);
+		subcriterio.setDescricao(descricao);
+		subcriterio.setPeso(peso);
+		subcriterios.add(subcriterio);
+	}
 }

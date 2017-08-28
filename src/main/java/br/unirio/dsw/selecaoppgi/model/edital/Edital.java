@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 
-import br.unirio.dsw.selecaoppgi.model.usuario.User;
+import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,8 +22,8 @@ public class Edital
 	private @Getter @Setter DateTime dataTermino;
 	private @Getter @Setter StatusEdital status;
 	private @Getter @Setter int notaMinimaAlinhamento;
-	private List<User> comissaoSelecao;
-	private List<User> comissaoRecurso;
+	private List<Usuario> comissaoSelecao;
+	private List<Usuario> comissaoRecurso;
 	private List<ProvaEscrita> provasEscritas;
 	private List<ProjetoPesquisa> projetosPesquisa;
 	private List<CriterioAlinhamento> criteriosAlinhamento;
@@ -39,8 +39,8 @@ public class Edital
 		this.dataTermino = null;
 		this.status = StatusEdital.Preparacao;
 		this.notaMinimaAlinhamento = 70;
-		this.comissaoSelecao = new ArrayList<User>();
-		this.comissaoRecurso = new ArrayList<User>();
+		this.comissaoSelecao = new ArrayList<Usuario>();
+		this.comissaoRecurso = new ArrayList<Usuario>();
 		this.provasEscritas = new ArrayList<ProvaEscrita>();
 		this.projetosPesquisa = new ArrayList<ProjetoPesquisa>();
 		this.criteriosAlinhamento = new ArrayList<CriterioAlinhamento>();
@@ -61,7 +61,7 @@ public class Edital
 	/**
 	 * Retorna a composição da comissão de seleção
 	 */
-	public Iterable<User> getComissaoSelecao()
+	public Iterable<Usuario> getComissaoSelecao()
 	{
 		return comissaoSelecao;
 	}
@@ -69,7 +69,7 @@ public class Edital
 	/**
 	 * Adiciona um membro na comissão de seleção
 	 */
-	public void adicionaComissaoSelecao(User professor)
+	public void adicionaComissaoSelecao(Usuario professor)
 	{
 		this.comissaoSelecao.add(professor);
 	}
@@ -77,7 +77,7 @@ public class Edital
 	/**
 	 * Retorna a composição da comissão de recursos
 	 */
-	public Iterable<User> getComissaoRecursos()
+	public Iterable<Usuario> getComissaoRecursos()
 	{
 		return comissaoRecurso;
 	}
@@ -85,7 +85,7 @@ public class Edital
 	/**
 	 * Adiciona um membro na comissão de recursos
 	 */
-	public void adicionaComissaoRecurso(User professor)
+	public void adicionaComissaoRecurso(Usuario professor)
 	{
 		this.comissaoRecurso.add(professor);
 	}
@@ -101,9 +101,23 @@ public class Edital
 	/**
 	 * Adiciona uma prova escrita no edital
 	 */
-	public void adicionaProvasEscrita(ProvaEscrita prova)
+	public void adicionaProvaEscrita(ProvaEscrita prova)
 	{
 		this.provasEscritas.add(prova);
+	}
+
+	/**
+	 * Adiciona uma prova escrita no edital
+	 */
+	public ProvaEscrita adicionaProvaEscrita(String codigo, String nome, boolean dispensavel, int notaMinimaAprovacao)
+	{
+		ProvaEscrita prova = new ProvaEscrita();
+		prova.setCodigo(codigo);
+		prova.setNome(nome);
+		prova.setDispensavel(dispensavel);
+		prova.setNotaMinimaAprovacao(notaMinimaAprovacao);
+		this.provasEscritas.add(prova);
+		return prova;
 	}
 
 	/**
@@ -135,6 +149,19 @@ public class Edital
 	}
 
 	/**
+	 * Adiciona um projeto de pesquisa no edital
+	 */
+	public ProjetoPesquisa adicionaProjetoPesquisa(String codigo, String nome, boolean exigeProvaOral)
+	{
+		ProjetoPesquisa projeto = new ProjetoPesquisa();
+		projeto.setCodigo(codigo);
+		projeto.setNome(nome);
+		projeto.setExigeProvaOral(exigeProvaOral);
+		this.projetosPesquisa.add(projeto);
+		return projeto;
+	}
+
+	/**
 	 * Retorna a lista de critérios de alinhamento
 	 */
 	public Iterable<CriterioAlinhamento> getCriteriosAlinhamento()
@@ -160,5 +187,20 @@ public class Edital
 	public void adicionaCriterioAlinhamento(CriterioAlinhamento criterio)
 	{
 		this.criteriosAlinhamento.add(criterio);
+	}
+
+	/**
+	 * Adiciona um novo critério de alinhamento
+	 */
+	public CriterioAlinhamento adicionaCriterioAlinhamento(String codigo, String nome, int pesoComProvaOral, int pesoSemProvaOral, boolean pertenceProvaOral)
+	{
+		CriterioAlinhamento criterio = new CriterioAlinhamento();
+		criterio.setCodigo(codigo);
+		criterio.setNome(nome);
+		criterio.setPesoComProvaOral(pesoComProvaOral);
+		criterio.setPesoSemProvaOral(pesoSemProvaOral);
+		criterio.setPertenceProvaOral(pertenceProvaOral);
+		this.criteriosAlinhamento.add(criterio);
+		return criterio;
 	}
 }

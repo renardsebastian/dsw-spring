@@ -1,22 +1,16 @@
 ﻿# dsw-spring
 
-https://www.petrikainulainen.net/programming/spring-framework/adding-social-sign-in-to-a-spring-mvc-web-application-configuration/
+[ok] remover o Spring Social e sua configuração do projeto
+
+[ok] remover as colunas do Spring Social da tabela de usuários
+
+[ok] renomear as classes de usuários para português
 
 * não salvar a inscrição em bloco por conta do acesso concorrente
 
-* terminar testes dos readers e writers de JSON de edital e inscrição
-
 * implementar o DAO de inscrição
 
-* campo de dispensável? nas provas escritas
-
 * remover os botões de FACEBOOK e TWITTER da tela de login
-
-* remover o Spring Social e sua configuração do projeto
-
-* remover as colunas do Spring Social da tabela de usuários
-
-* renomear as classes de usuários para português
 
 * revisar as tabelas de inscrição no Edital
 
@@ -39,10 +33,6 @@ https://www.petrikainulainen.net/programming/spring-framework/adding-social-sign
 * além dos relatórios, temos as atas das Comissões, certo?
 
 ====
-
-* nome da classe User e suas classes associadas em portugues
-
-* desligar o Spring Social, removendo colunas da tabela do usuário, atributos da classe User, ajustando a tela de login e o POM.xml
 
 * conferir uso de senhas na configuração - chave e-mail, senha BD
 
