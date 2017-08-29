@@ -13,6 +13,7 @@ import lombok.Setter;
  */
 public class CriterioAlinhamento
 {
+	private @Getter @Setter String codigo;
 	private @Getter @Setter String nome;
 	private @Getter @Setter int pesoComProvaOral;
 	private @Getter @Setter int pesoSemProvaOral;
@@ -24,6 +25,7 @@ public class CriterioAlinhamento
 	 */
 	public CriterioAlinhamento()
 	{
+		this.codigo = "";
 		this.nome = "";
 		this.pesoComProvaOral = 0;
 		this.pesoSemProvaOral = 0;
@@ -48,6 +50,18 @@ public class CriterioAlinhamento
 	}
 
 	/**
+	 * Retorna um subcritério de alinhamento, dado seu código
+	 */
+	public SubcriterioAlinhamento pegaSubcriterioAlinhamentoCodigo(String codigo2)
+	{
+		for (SubcriterioAlinhamento subcriterio : subcriterios)
+			if (subcriterio.getCodigo().compareToIgnoreCase(codigo) == 0)
+				return subcriterio;
+		
+		return null;
+	}
+
+	/**
 	 * Retorna a lista de subcritérios de avaliação do alinhamento
 	 */
 	public Iterable<SubcriterioAlinhamento> getSubcriterios()
@@ -60,6 +74,19 @@ public class CriterioAlinhamento
 	 */
 	public void adicionaSubcriterio(SubcriterioAlinhamento subcriterio)
 	{
+		subcriterios.add(subcriterio);
+	}
+	
+	/**
+	 * Adiciona um subcritério de alinhamento
+	 */
+	public void adicionaSubcriterio(String codigo, String nome, String descricao, int peso)
+	{
+		SubcriterioAlinhamento subcriterio = new SubcriterioAlinhamento();
+		subcriterio.setCodigo(codigo);
+		subcriterio.setNome(nome);
+		subcriterio.setDescricao(descricao);
+		subcriterio.setPeso(peso);
 		subcriterios.add(subcriterio);
 	}
 }

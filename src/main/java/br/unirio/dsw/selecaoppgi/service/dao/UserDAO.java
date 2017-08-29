@@ -12,9 +12,8 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 
-import br.unirio.dsw.selecaoppgi.model.usuario.Role;
-import br.unirio.dsw.selecaoppgi.model.usuario.SignInProvider;
-import br.unirio.dsw.selecaoppgi.model.usuario.User;
+import br.unirio.dsw.selecaoppgi.model.usuario.PapelUsuario;
+import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
 import br.unirio.dsw.selecaoppgi.utils.DateUtils;
 import lombok.Getter;
 
@@ -29,29 +28,27 @@ public class UserDAO extends AbstractDAO
 	/**
 	 * Carrega os dados de um usuário a partir do resultado de uma consulta
 	 */
-	private User load(ResultSet rs) throws SQLException
+	private Usuario load(ResultSet rs) throws SQLException
 	{
 		String name = rs.getString("nome");
 		String email = rs.getString("email");
 		String password = rs.getString("senha");
 		boolean locked = rs.getInt("forcaResetSenha") != 0;
 
-		User user = new User(name, email, password, locked);
+		Usuario user = new Usuario(name, email, password, locked);
 		user.setId(rs.getInt("id"));
-		user.setRole(Role.get(rs.getInt("papel")));
-		user.setSocialId(rs.getString("socialID"));
-		user.setProvider(SignInProvider.get(rs.getInt("socialOrigem")));
-		user.setLastLoginDate(DateUtils.toDateTime(rs.getTimestamp("dataUltimoLogin")));
-		user.setFailedLoginCounter(rs.getInt("contadorLoginFalha"));
-		user.setLoginToken(rs.getString("tokenLogin"));
-		user.setLoginTokenDate(DateUtils.toDateTime(rs.getTimestamp("dataTokenLogin")));
+		user.setPapel(PapelUsuario.get(rs.getInt("papel")));
+		user.setDataUltimoLogin(DateUtils.toDateTime(rs.getTimestamp("dataUltimoLogin")));
+		user.setContadorLoginFalhas(rs.getInt("contadorLoginFalha"));
+		user.setTokenLogin(rs.getString("tokenLogin"));
+		user.setDataTokenLogin(DateUtils.toDateTime(rs.getTimestamp("dataTokenLogin")));
 		return user;
 	}
 
 	/**
 	 * Carrega um usuário, dado seu identificador
 	 */
-	public User getUserId(int id)
+	public Usuario getUserId(int id)
 	{
 		Connection c = getConnection();
 		
@@ -63,7 +60,7 @@ public class UserDAO extends AbstractDAO
 			PreparedStatement ps = c.prepareStatement("SELECT * FROM Usuario WHERE id = ?");
 			ps.setLong(1, id);
 			ResultSet rs = ps.executeQuery();
-			User item = rs.next() ? load(rs) : null;
+			Usuario item = rs.next() ? load(rs) : null;
 			c.close();
 			return item;
 
@@ -77,7 +74,7 @@ public class UserDAO extends AbstractDAO
 	/**
 	 * Carrega um usuário, dado seu e-mail
 	 */
-	public User getUserEmail(String email)
+	public Usuario getUserEmail(String email)
 	{
 		Connection c = getConnection();
 		
@@ -90,7 +87,7 @@ public class UserDAO extends AbstractDAO
 			ps.setString(1, email);
 
 			ResultSet rs = ps.executeQuery();
-			User item = rs.next() ? load(rs) : null;
+			Usuario item = rs.next() ? load(rs) : null;
 			
 			c.close();
 			return item;
@@ -139,7 +136,7 @@ public class UserDAO extends AbstractDAO
 	/**
 	 * Retorna a lista de usuários registrados no sistema que atendem a um filtro
 	 */
-	public List<User> list(int pageNumber, int pageSize, UserOrderingField orderingField, UserOrderingCriteria orderingCriteria, String nameFilter, String emailFilter)
+	public List<Usuario> list(int pageNumber, int pageSize, UserOrderingField orderingField, UserOrderingCriteria orderingCriteria, String nameFilter, String emailFilter)
 	{
 		String SQL = "SELECT * " + 
 					 "FROM User " + 
@@ -153,7 +150,7 @@ public class UserDAO extends AbstractDAO
 		if (c == null)
 			return null;
 		
-		List<User> lista = new ArrayList<User>();
+		List<Usuario> lista = new ArrayList<Usuario>();
 		
 		try
 		{
@@ -166,7 +163,7 @@ public class UserDAO extends AbstractDAO
 
 			while (rs.next())
 			{
-				User item = load(rs);
+				Usuario item = load(rs);
 				lista.add(item);
 			}
 
@@ -183,7 +180,7 @@ public class UserDAO extends AbstractDAO
 	/**
 	 * Adiciona um usuário no sistema
 	 */
-	public boolean createUser(User user)
+	public boolean createUser(Usuario user)
 	{
 		Connection c = getConnection();
 		
@@ -193,10 +190,10 @@ public class UserDAO extends AbstractDAO
 		try
 		{
 			CallableStatement cs = c.prepareCall("{call UsuarioInsere(?, ?, ?, ?, ?)}");
-			cs.setString(1, user.getName());
+			cs.setString(1, user.getNome());
 			cs.setString(2, user.getUsername());
 			cs.setString(3, user.getPassword());
-			cs.setInt(4, user.getRole().getCodigo());
+			cs.setInt(4, user.getPapel().getCodigo());
 			cs.registerOutParameter(5, Types.INTEGER);
 			cs.execute();
 			user.setId(cs.getInt(5));

@@ -12,7 +12,7 @@ import br.unirio.dsw.selecaoppgi.model.edital.Edital;
 import br.unirio.dsw.selecaoppgi.model.edital.ProjetoPesquisa;
 import br.unirio.dsw.selecaoppgi.model.edital.ProvaEscrita;
 import br.unirio.dsw.selecaoppgi.model.edital.SubcriterioAlinhamento;
-import br.unirio.dsw.selecaoppgi.model.usuario.User;
+import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
 
 /**
  * Classe que publica os dados de um edital em formato JSON
@@ -34,13 +34,38 @@ public class JsonEditalWriter
 		json.addProperty("status", edital.getStatus().getCodigo());
 		json.addProperty("nomeStatus", edital.getStatus().getNome());
 		json.addProperty("notaMinimaAlinhamento", edital.getNotaMinimaAlinhamento());
-		json.addProperty("dataInicio", fmt.print(edital.getDataInicio()));
-		json.addProperty("dataTermino", fmt.print(edital.getDataTermino()));
-		json.add("selecao", geraRepresentacaoComissaoSelecao(edital));
-		json.add("recursos", geraRepresentacaoComissaoRecursos(edital));
-		json.add("provas", geraRepresentacaoProvasEscritas(edital));
-		json.add("projetos", geraRepresentacaoProjetosPesquisa(edital));
-		json.add("criterios", geraRepresentacaoCriteriosAlinhamento(edital));
+		
+		if (edital.getDataInicio() != null)
+			json.addProperty("dataInicio", fmt.print(edital.getDataInicio()));
+
+		if (edital.getDataTermino() != null)
+			json.addProperty("dataTermino", fmt.print(edital.getDataTermino()));
+		
+		JsonArray jsonSelecao = geraRepresentacaoComissaoSelecao(edital);
+		
+		if (jsonSelecao.size() > 0)
+			json.add("selecao", jsonSelecao);
+		
+		JsonArray jsonRecursos = geraRepresentacaoComissaoRecursos(edital);
+		
+		if (jsonRecursos.size() > 0)
+			json.add("recursos", jsonRecursos);
+		
+		JsonArray jsonProvas = geraRepresentacaoProvasEscritas(edital);
+		
+		if (jsonProvas.size() > 0)
+			json.add("provas", jsonProvas);
+		
+		JsonArray jsonProjetos = geraRepresentacaoProjetosPesquisa(edital);
+
+		if (jsonProjetos.size() > 0)
+			json.add("projetos", jsonProjetos);
+		
+		JsonArray jsonCriterios = geraRepresentacaoCriteriosAlinhamento(edital);
+
+		if (jsonCriterios.size() > 0)
+			json.add("criterios", jsonCriterios);
+		
 		return json;
 	}
 
@@ -51,11 +76,11 @@ public class JsonEditalWriter
 	{
 		JsonArray jsonComissao = new JsonArray();
 		
-		for (User professor : edital.getComissaoSelecao())
+		for (Usuario professor : edital.getComissaoSelecao())
 		{
 			JsonObject jsonProfessor = new JsonObject();
 			jsonProfessor.addProperty("id", professor.getId());
-			jsonProfessor.addProperty("nome", professor.getName());
+			jsonProfessor.addProperty("nome", professor.getNome());
 			jsonComissao.add(jsonProfessor);
 		}
 		
@@ -69,11 +94,11 @@ public class JsonEditalWriter
 	{
 		JsonArray jsonComissao = new JsonArray();
 		
-		for (User professor : edital.getComissaoRecursos())
+		for (Usuario professor : edital.getComissaoRecursos())
 		{
 			JsonObject jsonProfessor = new JsonObject();
 			jsonProfessor.addProperty("id", professor.getId());
-			jsonProfessor.addProperty("nome", professor.getName());
+			jsonProfessor.addProperty("nome", professor.getNome());
 			jsonComissao.add(jsonProfessor);
 		}
 		
@@ -99,7 +124,7 @@ public class JsonEditalWriter
 	private JsonObject geraRepresentacaoProvaEscrita(ProvaEscrita prova)
 	{
 		JsonObject json = new JsonObject();
-		json.addProperty("sigla", prova.getSigla());
+		json.addProperty("codigo", prova.getCodigo());
 		json.addProperty("nome", prova.getNome());
 		json.addProperty("dispensavel", prova.isDispensavel());
 		json.addProperty("notaMinima", prova.getNotaMinimaAprovacao());
@@ -147,11 +172,11 @@ public class JsonEditalWriter
 	{
 		JsonArray jsonProfessores = new JsonArray();
 		
-		for (User professor : projeto.getProfessores())
+		for (Usuario professor : projeto.getProfessores())
 		{
 			JsonObject jsonProfessor = new JsonObject();
 			jsonProfessor.addProperty("id", professor.getId());
-			jsonProfessor.addProperty("nome", professor.getName());
+			jsonProfessor.addProperty("nome", professor.getNome());
 			jsonProfessores.add(jsonProfessor);
 		}
 		
@@ -166,7 +191,7 @@ public class JsonEditalWriter
 		JsonArray jsonProvas = new JsonArray();
 		
 		for (ProvaEscrita prova : projeto.getProvasEscritas())
-			jsonProvas.add(new JsonPrimitive(prova.getSigla()));
+			jsonProvas.add(new JsonPrimitive(prova.getCodigo()));
 		
 		return jsonProvas;
 	}
@@ -190,6 +215,7 @@ public class JsonEditalWriter
 	private JsonObject geraRepresentacaoCriterioAlinhamento(CriterioAlinhamento criterio)
 	{
 		JsonObject json = new JsonObject();
+		json.addProperty("codigo", criterio.getCodigo());
 		json.addProperty("nome", criterio.getNome());
 		json.addProperty("pesoComProvaOral", criterio.getPesoComProvaOral());
 		json.addProperty("pesoSemProvaOral", criterio.getPesoSemProvaOral());
@@ -210,6 +236,7 @@ public class JsonEditalWriter
 	private JsonObject geraRepresentacaoSubcriterioAlinhamento(SubcriterioAlinhamento subcriterio)
 	{
 		JsonObject json = new JsonObject();
+		json.addProperty("codigo", subcriterio.getCodigo());
 		json.addProperty("nome", subcriterio.getNome());
 		json.addProperty("descricao", subcriterio.getDescricao());
 		json.addProperty("peso", subcriterio.getPeso());

@@ -3,7 +3,6 @@ package br.unirio.dsw.selecaoppgi.configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.dao.DataAccessException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -19,9 +18,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.social.security.SocialUserDetails;
-import org.springframework.social.security.SocialUserDetailsService;
-import org.springframework.social.security.SpringSocialConfigurer;
 
 import br.unirio.dsw.selecaoppgi.service.dao.UserDAO;
 
@@ -82,10 +78,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter
 			.and()
 			.authorizeRequests()
 			.antMatchers("/auth/**", "/login/**").permitAll()
-			.antMatchers("/**").hasRole("BASIC")
-			
-			// Adds the filter to Spring Security's filter chain.
-			.and().apply(new SpringSocialConfigurer());
+			.antMatchers("/**").hasRole("BASIC");
 	}
 
 	/**
@@ -109,28 +102,28 @@ public class SecurityContext extends WebSecurityConfigurerAdapter
 	/**
 	 * Retorna o objeto que permite acesso aos dados dos usuários nas redes sociais
 	 */
-	@Bean
-	public SocialUserDetailsService socialUserDetailsService()
-	{
-		return new SocialNetworkUserDetailsService();
-	}
+//	@Bean
+//	public SocialUserDetailsService socialUserDetailsService()
+//	{
+//		return new SocialNetworkUserDetailsService();
+//	}
 
 	/**
 	 * Classe de acesso aos dados dos usuários em redes sociais para o Spring Security
 	 * 
 	 * @author marciobarros
 	 */
-	private class SocialNetworkUserDetailsService implements SocialUserDetailsService 
-	{
-		@Autowired
-		private UserDAO userDAO;
-		
-	    @Override
-	    public SocialUserDetails loadUserByUserId(String username) throws UsernameNotFoundException, DataAccessException 
-	    {
-	        return (SocialUserDetails) userDAO.getUserEmail(username);
-	    }
-	}
+//	private class SocialNetworkUserDetailsService implements SocialUserDetailsService 
+//	{
+//		@Autowired
+//		private UserDAO userDAO;
+//		
+//	    @Override
+//	    public SocialUserDetails loadUserByUserId(String username) throws UsernameNotFoundException, DataAccessException 
+//	    {
+//	        return (SocialUserDetails) userDAO.getUserEmail(username);
+//	    }
+//	}
 	
 	/**
 	 * Classe de acesso aos dados dos usuários na base local para o Spring Security

@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 
-import br.unirio.dsw.selecaoppgi.model.usuario.User;
+import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,8 +22,8 @@ public class Edital
 	private @Getter @Setter DateTime dataTermino;
 	private @Getter @Setter StatusEdital status;
 	private @Getter @Setter int notaMinimaAlinhamento;
-	private List<User> comissaoSelecao;
-	private List<User> comissaoRecurso;
+	private List<Usuario> comissaoSelecao;
+	private List<Usuario> comissaoRecurso;
 	private List<ProvaEscrita> provasEscritas;
 	private List<ProjetoPesquisa> projetosPesquisa;
 	private List<CriterioAlinhamento> criteriosAlinhamento;
@@ -39,72 +39,168 @@ public class Edital
 		this.dataTermino = null;
 		this.status = StatusEdital.Preparacao;
 		this.notaMinimaAlinhamento = 70;
-		this.comissaoSelecao = new ArrayList<User>();
-		this.comissaoRecurso = new ArrayList<User>();
+		this.comissaoSelecao = new ArrayList<Usuario>();
+		this.comissaoRecurso = new ArrayList<Usuario>();
 		this.provasEscritas = new ArrayList<ProvaEscrita>();
 		this.projetosPesquisa = new ArrayList<ProjetoPesquisa>();
 		this.criteriosAlinhamento = new ArrayList<CriterioAlinhamento>();
 	}
 	
 	/**
-	 * Retorna uma prova escrita, dada sua sigla
+	 * Retorna uma prova escrita, dado seu código
 	 */
-	public ProvaEscrita pegaProvaEscritaSigla(String sigla)
+	public ProvaEscrita pegaProvaEscritaCodigo(String codigo)
 	{
 		for (ProvaEscrita prova : provasEscritas)
-			if (prova.getSigla().compareToIgnoreCase(sigla) == 0)
+			if (prova.getCodigo().compareToIgnoreCase(codigo) == 0)
 				return prova;
 		
 		return null;
 	}
 
-	public Iterable<User> getComissaoSelecao()
+	/**
+	 * Retorna a composição da comissão de seleção
+	 */
+	public Iterable<Usuario> getComissaoSelecao()
 	{
 		return comissaoSelecao;
 	}
 
-	public void adicionaComissaoSelecao(User professor)
+	/**
+	 * Adiciona um membro na comissão de seleção
+	 */
+	public void adicionaComissaoSelecao(Usuario professor)
 	{
 		this.comissaoSelecao.add(professor);
 	}
 
-	public Iterable<User> getComissaoRecursos()
+	/**
+	 * Retorna a composição da comissão de recursos
+	 */
+	public Iterable<Usuario> getComissaoRecursos()
 	{
 		return comissaoRecurso;
 	}
 
-	public void adicionaComissaoRecurso(User professor)
+	/**
+	 * Adiciona um membro na comissão de recursos
+	 */
+	public void adicionaComissaoRecurso(Usuario professor)
 	{
 		this.comissaoRecurso.add(professor);
 	}
 
+	/**
+	 * Retorna a lista de provas escritas
+	 */
 	public Iterable<ProvaEscrita> getProvasEscritas()
 	{
 		return provasEscritas;
 	}
 
-	public void adicionaProvasEscrita(ProvaEscrita prova)
+	/**
+	 * Adiciona uma prova escrita no edital
+	 */
+	public void adicionaProvaEscrita(ProvaEscrita prova)
 	{
 		this.provasEscritas.add(prova);
 	}
 
+	/**
+	 * Adiciona uma prova escrita no edital
+	 */
+	public ProvaEscrita adicionaProvaEscrita(String codigo, String nome, boolean dispensavel, int notaMinimaAprovacao)
+	{
+		ProvaEscrita prova = new ProvaEscrita();
+		prova.setCodigo(codigo);
+		prova.setNome(nome);
+		prova.setDispensavel(dispensavel);
+		prova.setNotaMinimaAprovacao(notaMinimaAprovacao);
+		this.provasEscritas.add(prova);
+		return prova;
+	}
+
+	/**
+	 * Retorna a lista de projetos de pesquisa
+	 */
 	public Iterable<ProjetoPesquisa> getProjetosPesquisa()
 	{
 		return projetosPesquisa;
 	}
 
+	/**
+	 * Retorna um projeto de pesquisa, dado seu código
+	 */
+	public ProjetoPesquisa pegaProjetoPesquisaCodigo(String codigo)
+	{
+		for (ProjetoPesquisa projeto : projetosPesquisa)
+			if (projeto.getCodigo().compareToIgnoreCase(codigo) == 0)
+				return projeto;
+		
+		return null;
+	}
+
+	/**
+	 * Adiciona um projeto de pesquisa no edital
+	 */
 	public void adicionaProjetoPesquisa(ProjetoPesquisa projeto)
 	{
 		this.projetosPesquisa.add(projeto);
 	}
 
+	/**
+	 * Adiciona um projeto de pesquisa no edital
+	 */
+	public ProjetoPesquisa adicionaProjetoPesquisa(String codigo, String nome, boolean exigeProvaOral)
+	{
+		ProjetoPesquisa projeto = new ProjetoPesquisa();
+		projeto.setCodigo(codigo);
+		projeto.setNome(nome);
+		projeto.setExigeProvaOral(exigeProvaOral);
+		this.projetosPesquisa.add(projeto);
+		return projeto;
+	}
+
+	/**
+	 * Retorna a lista de critérios de alinhamento
+	 */
 	public Iterable<CriterioAlinhamento> getCriteriosAlinhamento()
 	{
 		return criteriosAlinhamento;
 	}
 
+	/**
+	 * Retorna um critério de alinhamento de pesquisa, dado seu código
+	 */
+	public CriterioAlinhamento pegaCriterioAlinhamentoCodigo(String codigo)
+	{
+		for (CriterioAlinhamento criterio : criteriosAlinhamento)
+			if (criterio.getCodigo().compareToIgnoreCase(codigo) == 0)
+				return criterio;
+		
+		return null;
+	}
+
+	/**
+	 * Adiciona um novo critério de alinhamento
+	 */
 	public void adicionaCriterioAlinhamento(CriterioAlinhamento criterio)
 	{
 		this.criteriosAlinhamento.add(criterio);
+	}
+
+	/**
+	 * Adiciona um novo critério de alinhamento
+	 */
+	public CriterioAlinhamento adicionaCriterioAlinhamento(String codigo, String nome, int pesoComProvaOral, int pesoSemProvaOral, boolean pertenceProvaOral)
+	{
+		CriterioAlinhamento criterio = new CriterioAlinhamento();
+		criterio.setCodigo(codigo);
+		criterio.setNome(nome);
+		criterio.setPesoComProvaOral(pesoComProvaOral);
+		criterio.setPesoSemProvaOral(pesoSemProvaOral);
+		criterio.setPertenceProvaOral(pertenceProvaOral);
+		this.criteriosAlinhamento.add(criterio);
+		return criterio;
 	}
 }

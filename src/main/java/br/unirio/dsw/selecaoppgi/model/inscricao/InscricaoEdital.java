@@ -83,7 +83,7 @@ public class InscricaoEdital
 	/**
 	 * Adiciona a inscrição em um projeto de pesquisa
 	 */
-	public void adicionaInscricaoProjetoPesquisa(ProjetoPesquisa projeto, String intencoes)
+	public InscricaoProjetoPesquisa adicionaInscricaoProjetoPesquisa(ProjetoPesquisa projeto, String intencoes)
 	{
 		InscricaoProjetoPesquisa inscricaoProjeto = new InscricaoProjetoPesquisa(projeto, edital);
 		inscricaoProjeto.setIntencoes(intencoes);
@@ -92,6 +92,9 @@ public class InscricaoEdital
 		for (ProvaEscrita prova : projeto.getProvasEscritas())
 			if (pegaAvaliacaoProvaEscrita(prova) == null)
 				provasEscritas.add(new AvaliacaoProvaEscrita(prova));
+		
+		
+		return inscricaoProjeto;
 	}
 	
 
@@ -128,17 +131,41 @@ public class InscricaoEdital
 		}
 		return provasEscritas;
 	}
+	
+	/**
+	 * Conta o número de avaliações de provas escritas
+	 */
+	public int contaAvaliacoesProvaEscrita()
+	{
+		return provasEscritas.size();
+	}
+	
+	/**
+	 * Retorna a avaliação de uma prova escrita, dado seu índice
+	 */
+	public AvaliacaoProvaEscrita pegaAvaliacaoProvaEscrita(int indice)
+	{
+		return provasEscritas.get(indice);
+	}
 
 	/**
 	 * Retorna a avaliação de uma prova escrita
 	 */
-	private AvaliacaoProvaEscrita pegaAvaliacaoProvaEscrita(ProvaEscrita prova)
+	public AvaliacaoProvaEscrita pegaAvaliacaoProvaEscrita(ProvaEscrita prova)
 	{
 		for (AvaliacaoProvaEscrita avaliacaoProva : provasEscritas)
 			if (avaliacaoProva.getProvaEscrita() == prova)
 				return avaliacaoProva;
 		
 		return null;
+	}
+	
+	/**
+	 * Retorna todas as avaliações de provas escritas
+	 */
+	public Iterable<AvaliacaoProvaEscrita> getAvaliacoesProvasEscritas()
+	{
+		return provasEscritas;
 	}
 
 	/**

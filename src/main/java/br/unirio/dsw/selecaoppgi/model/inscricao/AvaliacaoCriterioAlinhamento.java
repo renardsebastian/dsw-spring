@@ -44,4 +44,40 @@ public class AvaliacaoCriterioAlinhamento
 		for (SubcriterioAlinhamento subcriterio : criterio.getSubcriterios())
 			this.subcriterios.add(new AvaliacaoSubcriterioAlinhamento(subcriterio));
 	}
+	
+	/**
+	 * Conta o número de avaliações de subcritério de alinhamento
+	 */
+	public int contaAvaliacoesSubcriteriosAlinhamento()
+	{
+		return subcriterios.size();
+	}
+	
+	/**
+	 * Retorna uma avaliação de subcritério de alinhamento, dado seu índice
+	 */
+	public AvaliacaoSubcriterioAlinhamento pegaAvaliacaoSubcriterioAlinhamento(int indice)
+	{
+		return subcriterios.get(indice);
+	}
+	
+	/**
+	 * Retorna uma avaliação de subcritério de alinhamento, dado o subcritério
+	 */
+	public AvaliacaoSubcriterioAlinhamento pegaAvaliacaoSubcriterioAlinhamento(SubcriterioAlinhamento subcriterio)
+	{
+		for (AvaliacaoSubcriterioAlinhamento avaliacao : subcriterios)
+			if (avaliacao.getSubcriterio() == subcriterio)
+				return avaliacao;
+		
+		return null;
+	}
+
+	/**
+	 * Retorna todas as avaliações de subcritérios de alinhamento
+	 */
+	public Iterable<AvaliacaoSubcriterioAlinhamento> getAvaliacoesSubcriterioAlinhamento()
+	{
+		return subcriterios;
+	}
 }

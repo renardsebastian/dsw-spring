@@ -12,7 +12,7 @@ import br.unirio.dsw.selecaoppgi.model.edital.ProjetoPesquisa;
 import br.unirio.dsw.selecaoppgi.model.edital.ProvaEscrita;
 import br.unirio.dsw.selecaoppgi.model.edital.StatusEdital;
 import br.unirio.dsw.selecaoppgi.model.edital.SubcriterioAlinhamento;
-import br.unirio.dsw.selecaoppgi.model.usuario.User;
+import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
 import br.unirio.dsw.selecaoppgi.service.dao.UserDAO;
 
 /**
@@ -38,11 +38,17 @@ public class JsonEditalReader
 		StatusEdital status = StatusEdital.get(json.get("status").getAsInt());
 		edital.setStatus(status);
 
-		String sDataInicio = json.get("dataInicio").getAsString();
-		edital.setDataInicio(fmt.parseDateTime(sDataInicio));
-
-		String sDataTermino = json.get("dataTermino").getAsString();
-		edital.setDataTermino(fmt.parseDateTime(sDataTermino));
+		if (json.has("dataInicio"))
+		{
+			String sDataInicio = json.get("dataInicio").getAsString();
+			edital.setDataInicio(fmt.parseDateTime(sDataInicio));
+		}
+		
+		if (json.has("dataTermino"))
+		{
+			String sDataTermino = json.get("dataTermino").getAsString();
+			edital.setDataTermino(fmt.parseDateTime(sDataTermino));
+		}
 		
 		int notaMinima = json.get("notaMinimaAlinhamento").getAsInt();
 		edital.setNotaMinimaAlinhamento(notaMinima);
@@ -61,11 +67,14 @@ public class JsonEditalReader
 	{
 		JsonArray jsonProfessores = json.getAsJsonArray("selecao");
 		
+		if (jsonProfessores == null)
+			return;
+		
 		for (int i = 0; i < jsonProfessores.size(); i++)
 		{
 			JsonObject jsonProfessor = jsonProfessores.get(i).getAsJsonObject();
 			int id = jsonProfessor.get("id").getAsInt();
-			User professor = userDAO.getUserId(id);
+			Usuario professor = userDAO.getUserId(id);
 			
 			if (professor != null)
 				edital.adicionaComissaoSelecao(professor);
@@ -79,11 +88,14 @@ public class JsonEditalReader
 	{
 		JsonArray jsonProfessores = json.getAsJsonArray("recursos");
 		
+		if (jsonProfessores == null)
+			return;
+		
 		for (int i = 0; i < jsonProfessores.size(); i++)
 		{
 			JsonObject jsonProfessor = jsonProfessores.get(i).getAsJsonObject();
 			int id = jsonProfessor.get("id").getAsInt();
-			User professor = userDAO.getUserId(id);
+			Usuario professor = userDAO.getUserId(id);
 			
 			if (professor != null)
 				edital.adicionaComissaoRecurso(professor);
@@ -97,11 +109,14 @@ public class JsonEditalReader
 	{
 		JsonArray jsonProvas = json.getAsJsonArray("provas");
 		
+		if (jsonProvas == null)
+			return;
+		
 		for (int i = 0; i < jsonProvas.size(); i++)
 		{
 			JsonObject jsonProva = jsonProvas.get(i).getAsJsonObject();
 			ProvaEscrita prova = carregaRepresentacaoProvaEscrita(jsonProva);
-			edital.adicionaProvasEscrita(prova);
+			edital.adicionaProvaEscrita(prova);
 		}
 	}
 
@@ -111,7 +126,7 @@ public class JsonEditalReader
 	private ProvaEscrita carregaRepresentacaoProvaEscrita(JsonObject json)
 	{
 		ProvaEscrita prova = new ProvaEscrita();
-		prova.setSigla(json.get("sigla").getAsString());
+		prova.setCodigo(json.get("codigo").getAsString());
 		prova.setNome(json.get("nome").getAsString());
 		prova.setDispensavel(json.get("dispensavel").getAsBoolean());
 		prova.setNotaMinimaAprovacao(json.get("notaMinima").getAsInt());
@@ -133,6 +148,9 @@ public class JsonEditalReader
 	private void carregaRepresentacaoProjetosPesquisa(JsonObject json, Edital edital, UserDAO userDAO)
 	{
 		JsonArray jsonProjetos = json.getAsJsonArray("projetos");
+		
+		if (jsonProjetos == null)
+			return;
 		
 		for (int i = 0; i < jsonProjetos.size(); i++)
 		{
@@ -163,11 +181,14 @@ public class JsonEditalReader
 	{
 		JsonArray jsonProfessores = json.getAsJsonArray("professores");
 		
+		if (jsonProfessores == null)
+			return;
+		
 		for (int i = 0; i < jsonProfessores.size(); i++)
 		{
 			JsonObject jsonProfessor = jsonProfessores.get(i).getAsJsonObject();
 			int id = jsonProfessor.get("id").getAsInt();
-			User professor = userDAO.getUserId(id);
+			Usuario professor = userDAO.getUserId(id);
 			
 			if (professor != null)
 				projeto.adicionaProfessor(professor);
@@ -183,8 +204,8 @@ public class JsonEditalReader
 		
 		for (int i = 0; i < jsonProvas.size(); i++)
 		{
-			String sigla = jsonProvas.get(i).getAsString();
-			ProvaEscrita prova = edital.pegaProvaEscritaSigla(sigla);
+			String codigo = jsonProvas.get(i).getAsString();
+			ProvaEscrita prova = edital.pegaProvaEscritaCodigo(codigo);
 			
 			if (prova != null)
 				projeto.adicionaProvaEscrita(prova);
@@ -197,6 +218,9 @@ public class JsonEditalReader
 	private void carregaRepresentacaoCriteriosAlinhamento(JsonObject json, Edital edital)
 	{
 		JsonArray jsonCriterios = json.getAsJsonArray("criterios");
+		
+		if (jsonCriterios == null)
+			return;
 		
 		for (int i = 0; i < jsonCriterios.size(); i++)
 		{
@@ -212,6 +236,7 @@ public class JsonEditalReader
 	private CriterioAlinhamento carregaRepresentacaoCriterioAlinhamento(JsonObject json)
 	{
 		CriterioAlinhamento criterio = new CriterioAlinhamento();
+		criterio.setCodigo(json.get("codigo").getAsString());
 		criterio.setNome(json.get("nome").getAsString());
 		criterio.setPesoComProvaOral(json.get("pesoComProvaOral").getAsInt());
 		criterio.setPesoSemProvaOral(json.get("pesoSemProvaOral").getAsInt());
@@ -235,6 +260,7 @@ public class JsonEditalReader
 	private SubcriterioAlinhamento carregaRepresentacaoSubcriterioAlinhamento(JsonObject json)
 	{
 		SubcriterioAlinhamento subcriterio = new SubcriterioAlinhamento();
+		subcriterio.setCodigo(json.get("codigo").getAsString());
 		subcriterio.setNome(json.get("nome").getAsString());
 		subcriterio.setDescricao(json.get("descricao").getAsString());
 		subcriterio.setPeso(json.get("peso").getAsInt());

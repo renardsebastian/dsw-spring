@@ -16,7 +16,25 @@
     </properties>
  
     <dependencies>
-  	  	<!-- Spring Framework -->
+    	<!-- Servlets e JSP -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+	<dependency>
+	    <groupId>javax.servlet.jsp</groupId>
+	    <artifactId>jsp-api</artifactId>
+	    <version>2.0</version>
+	    <scope>provided</scope>
+	</dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+    	<!-- Spring Framework -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
@@ -27,118 +45,86 @@
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
-        </dependency>
-		<dependency>
-		    <groupId>javax.servlet.jsp</groupId>
-		    <artifactId>jsp-api</artifactId>
-		    <version>2.0</version>
-		    <scope>provided</scope>
-		</dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.2</version>
-        </dependency>
 
-  	  	<!-- Spring Security -->
-		<dependency>
-		    <groupId>org.springframework.security</groupId>
-		    <artifactId>spring-security-core</artifactId>
+    	<!-- Spring Security -->
+	<dependency>
+	    <groupId>org.springframework.security</groupId>
+	    <artifactId>spring-security-core</artifactId>
             <version>${springsecurity.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.springframework.security</groupId>
-		    <artifactId>spring-security-config</artifactId>
+	</dependency>
+	<dependency>
+	    <groupId>org.springframework.security</groupId>
+	    <artifactId>spring-security-config</artifactId>
             <version>${springsecurity.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.springframework.security</groupId>
-		    <artifactId>spring-security-taglibs</artifactId>
+	</dependency>
+	<dependency>
+	    <groupId>org.springframework.security</groupId>
+	    <artifactId>spring-security-taglibs</artifactId>
             <version>${springsecurity.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.springframework.security</groupId>
-		    <artifactId>spring-security-web</artifactId>
+	</dependency>
+	<dependency>
+	    <groupId>org.springframework.security</groupId>
+	    <artifactId>spring-security-web</artifactId>
             <version>${springsecurity.version}</version>
-		</dependency>
+	</dependency>
 		 
-		<!-- Spring Social -->
-		<dependency>
-		    <groupId>org.springframework.social</groupId>
-		    <artifactId>spring-social-config</artifactId>
-            <version>${springsocial.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.springframework.social</groupId>
-		    <artifactId>spring-social-core</artifactId>
-            <version>${springsocial.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.springframework.social</groupId>
-		    <artifactId>spring-social-security</artifactId>
-            <version>${springsocial.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.springframework.social</groupId>
-		    <artifactId>spring-social-web</artifactId>
-            <version>${springsocial.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.springframework.social</groupId>
-		    <artifactId>spring-social-facebook</artifactId>
-            <version>${springsocial.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.springframework.social</groupId>
-		    <artifactId>spring-social-twitter</artifactId>
-            <version>${springsocial.version}</version>
-		</dependency>  
-		 
-		<!-- Use Apache HttpClient as HTTP Client -->
-		<dependency>
-		    <groupId>org.apache.httpcomponents</groupId>
-		    <artifactId>httpclient</artifactId>
-		    <version>4.3.2</version>
-		</dependency>
+	<!-- Use Apache HttpClient as HTTP Client -->
+	<dependency>
+	    <groupId>org.apache.httpcomponents</groupId>
+	    <artifactId>httpclient</artifactId>
+	    <version>4.3.2</version>
+	</dependency>
 		
-		<!-- MySQL Connector -->
-		<dependency>
-		    <groupId>mysql</groupId>
-		    <artifactId>mysql-connector-java</artifactId>
-		    <version>5.1.42</version>
-		</dependency>
+	<!-- MySQL Connector -->
+	<dependency>
+	    <groupId>mysql</groupId>
+	    <artifactId>mysql-connector-java</artifactId>
+	    <version>5.1.42</version>
+	</dependency>
 
-		<!-- GSON -->
-		<dependency>
-		    <groupId>com.google.code.gson</groupId>
-		    <artifactId>gson</artifactId>
-		    <version>1.7.1</version>
-		</dependency>
+	<!-- GSON -->
+	<dependency>
+	    <groupId>com.google.code.gson</groupId>
+	    <artifactId>gson</artifactId>
+	    <version>1.7.1</version>
+	</dependency>
 
-		<!-- Lombok -->		 
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.16.10</version>
-		</dependency>
+	<!-- Lombok -->		 
+	<dependency>
+		<groupId>org.projectlombok</groupId>
+		<artifactId>lombok</artifactId>
+		<version>1.16.10</version>
+	</dependency>
 		
-		<!-- OK HTTP -->
-		<dependency>
-		    <groupId>com.squareup.okhttp</groupId>
-		    <artifactId>okhttp</artifactId>
-		    <version>2.7.5</version>
-		</dependency>
+	<!-- OK HTTP -->
+	<dependency>
+	    <groupId>com.squareup.okhttp</groupId>
+	    <artifactId>okhttp</artifactId>
+	    <version>2.7.5</version>
+	</dependency>
 
-		<!-- Joda Time -->		 
-		<dependency>
-		    <groupId>joda-time</groupId>
-		    <artifactId>joda-time</artifactId>
-		    <version>2.9.9</version>
-		</dependency>
+	<!-- Joda Time -->		 
+	<dependency>
+	    <groupId>joda-time</groupId>
+	    <artifactId>joda-time</artifactId>
+	    <version>2.9.9</version>
+	</dependency>
+
+	<!-- JUnit -->
+	<dependency>
+	    <groupId>junit</groupId>
+	    <artifactId>junit</artifactId>
+	    <version>4.8.1</version>
+	    <scope>test</scope>
+	</dependency>
+
+	<!-- Mockito -->
+	<dependency>
+	    <groupId>org.mockito</groupId>
+	    <artifactId>mockito-all</artifactId>
+	    <version>1.10.19</version>
+	    <scope>test</scope>
+	</dependency>
     </dependencies>
 
     <build>

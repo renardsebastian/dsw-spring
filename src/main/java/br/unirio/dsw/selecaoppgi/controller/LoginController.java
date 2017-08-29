@@ -22,7 +22,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import br.unirio.dsw.selecaoppgi.configuration.ApplicationConfiguration;
-import br.unirio.dsw.selecaoppgi.model.usuario.User;
+import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
 import br.unirio.dsw.selecaoppgi.service.dao.UserDAO;
 import br.unirio.dsw.selecaoppgi.service.email.EmailService;
 import br.unirio.dsw.selecaoppgi.utils.CryptoUtils;
@@ -129,7 +129,7 @@ public class LoginController
             return "login/create";
  
         String encodedPassword = passwordEncoder.encode(form.getPassword());
-        User user = new User(form.getName(), form.getEmail(), encodedPassword, false);
+        Usuario user = new Usuario(form.getName(), form.getEmail(), encodedPassword, false);
         userDAO.createUser(user);
  
 //        SecurityUtils.logInUser(registered);
@@ -171,7 +171,7 @@ public class LoginController
         if (result.hasErrors())
             return "login/forgot";
 		
-		User user = userDAO.getUserEmail(form.getEmail());
+		Usuario user = userDAO.getUserEmail(form.getEmail());
 
 		if (user != null)
 		{
@@ -181,7 +181,7 @@ public class LoginController
 			String url = ApplicationConfiguration.getHostname() + "/login/reset.do?token=" + token + "&email=" + user.getUsername();		
 			String title = messageSource.getMessage("login.forgot.password.email.inicializacao.senha.titulo", null, locale);
 			String contents = messageSource.getMessage("login.forgot.password.email.inicializacao.senha.corpo", new String[] { url }, locale);
-			emailService.sendToUser(user.getName(), user.getUsername(), title, contents);
+			emailService.sendToUser(user.getNome(), user.getUsername(), title, contents);
 		}
 		
         return "redirect:/login?message=login.forgot.password.success.email.sent";
@@ -232,7 +232,7 @@ public class LoginController
 		if (form.getToken().length() == 0)
 			addFieldError("newPassword", form.getToken(), "login.reset.password.error.token.empty", result);
 		
-		User user = userDAO.getUserEmail(form.getEmail());
+		Usuario user = userDAO.getUserEmail(form.getEmail());
 
 		if (user == null)
 			addFieldError("newPassword", form.getEmail(), "login.reset.password.error.email.unrecognized", result);
