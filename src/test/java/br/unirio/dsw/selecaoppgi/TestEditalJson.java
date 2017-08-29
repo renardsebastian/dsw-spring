@@ -1,7 +1,10 @@
 package br.unirio.dsw.selecaoppgi;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.google.gson.JsonObject;
@@ -10,12 +13,32 @@ import br.unirio.dsw.selecaoppgi.model.edital.CriterioAlinhamento;
 import br.unirio.dsw.selecaoppgi.model.edital.Edital;
 import br.unirio.dsw.selecaoppgi.model.edital.ProjetoPesquisa;
 import br.unirio.dsw.selecaoppgi.model.edital.ProvaEscrita;
+import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
 import br.unirio.dsw.selecaoppgi.reader.edital.JsonEditalReader;
+import br.unirio.dsw.selecaoppgi.service.dao.UserDAO;
 import br.unirio.dsw.selecaoppgi.utils.JsonUtils;
 import br.unirio.dsw.selecaoppgi.writer.edital.JsonEditalWriter;
 
 public class TestEditalJson
 {
+	private UserDAO userDAO;
+	private Usuario fulano;
+	private Usuario cicrano;
+
+	@Before
+	public void setup()
+	{
+		fulano = new Usuario("Fulano", "fulano@somewhere.com", "fulano", false);
+		fulano.setId(1);
+		
+		cicrano = new Usuario("Cicrano", "cicrano@somewhere.com", "cicrano", false);
+		cicrano.setId(2);
+		
+		userDAO = mock(UserDAO.class);
+		when(userDAO.getUserId(fulano.getId())).thenReturn(fulano);
+		when(userDAO.getUserId(cicrano.getId())).thenReturn(cicrano);
+	}
+	
 	@Test
 	public void testBasico()
 	{
@@ -23,6 +46,33 @@ public class TestEditalJson
 		edital.setId(10);
 		edital.setNome("Primeiro edital");
 		edital.setNotaMinimaAlinhamento(70);
+		
+		comparaRepresentacaoJson(edital);
+	}
+
+	@Test
+	public void testComissaoSelecao()
+	{
+		Edital edital = new Edital();
+		edital.setId(10);
+		edital.setNome("Primeiro edital");
+		edital.setNotaMinimaAlinhamento(70);
+		
+		edital.adicionaComissaoSelecao(fulano);
+		edital.adicionaComissaoSelecao(cicrano);
+		
+		comparaRepresentacaoJson(edital);
+	}
+
+	@Test
+	public void testComissaoRecurso()
+	{
+		Edital edital = new Edital();
+		edital.setId(10);
+		edital.setNome("Primeiro edital");
+		edital.setNotaMinimaAlinhamento(70);
+		
+		edital.adicionaComissaoRecurso(fulano);
 		
 		comparaRepresentacaoJson(edital);
 	}
@@ -135,7 +185,7 @@ public class TestEditalJson
 		
 		Edital editalClone = new Edital();
 		JsonEditalReader reader = new JsonEditalReader();
-		reader.execute(jsonOriginal, editalClone, null);
+		reader.execute(jsonOriginal, editalClone, userDAO);
 		
 		JsonObject jsonClonado = writer.execute(editalClone);
 		assertTrue(JsonUtils.compare(jsonOriginal, jsonClonado));

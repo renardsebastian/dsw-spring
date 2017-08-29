@@ -16,7 +16,7 @@
 				        <!-- Form header -->
 				        <div class="mdl-card__title">
 				            <h2 class="mdl-card__title-text">
-				            		<spring:message code="login.login.form.title"/>
+			            		<spring:message code="login.login.form.title"/>
 				            </h2>
 				        </div>
 				
@@ -26,7 +26,7 @@
 				        <!-- Error message -->
 				        <c:if test="${not empty error}">
 					        <div class="alert alert-danger">
-						        	<spring:message code="${error}"/>
+					        	<spring:message code="${error}"/>
 					        </div>
 				        </c:if>
 				
@@ -65,30 +65,7 @@
 						    </div>
 				        </div>
 				    </div>
-				</form>
-				
-				<!-- Social Sign In Buttons -->
-				<h2 class="mdl-subtitle-text max-spacer-up">
-					<spring:message code="login.login.signin.title"/>
-				</h2>
-				
-				<div class="mdl-grid">
-				    <!-- Add Facebook sign in button -->
-					<div class="mdl-cell mdl-cell--6-col">
-				        <button ng-click="loginFacebook()" class="wide mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect btn-social btn-facebook">
-				            <span class="fa fa-facebook"></span>
-				            <spring:message code="login.login.signin.facebook"/>
-				        </button>
-					</div>
-				
-				    <!-- Add Twitter sign in Button -->
-					<div class="mdl-cell mdl-cell--6-col">
-				        <button ng-click="loginTwitter()" class="wide mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect btn-social btn-twitter">
-				            <span class="fa fa-twitter"></span>
-				            <spring:message code="login.login.signin.twitter"/>
-				        </button>
-					</div>
-				</div>
+				</form>				
             </sec:authorize>
 
 			<sec:authorize access="isAuthenticated()">
