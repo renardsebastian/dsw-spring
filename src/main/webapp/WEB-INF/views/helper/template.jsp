@@ -37,13 +37,32 @@ var contextPath = "${pageContext.request.contextPath}";
                     PPGI/UNIRIO: Sistema de seleção
                 </span>
 
-                <!-- Add spacer, to align navigation to the right -->
-                <div class="mdl-layout-spacer"></div>
+                <!-- Spacer -->
+                <div class="mdl-layout-spacer">
+                </div>
+
+                <!-- Selected item -->
+                <nav class="mdl-navigation">
+                	<select><option value="10" SELECTED>EDITAL</option></select>
+                </nav>
+
+                <!-- Spacer -->
+                <div class="mdl-layout-spacer">
+                </div>
 
                 <!-- Navigation -->
                 <nav class="mdl-navigation">
-                    <!-- a class="mdl-navigation__link" href="" style="color:gray">Home</a>
-                    <a class="mdl-navigation__link" href="" style="color:gray">About</a -->      
+					<sec:authorize access="isAuthenticated()">
+	                    <span>
+	                    	<spring:message code="template.label.ola"/>, <sec:authentication property="principal.nome"/>!
+	                    </span>
+	                    <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/logout">
+	                    	<spring:message code="template.comando.trocasenha"/>
+	                    </a>
+	                    <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/logout">
+	                    	<spring:message code="template.comando.logout"/>
+	                    </a>
+                    </sec:authorize>      
                 </nav>
             </div>
         </header>
@@ -84,7 +103,7 @@ var contextPath = "${pageContext.request.contextPath}";
     <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
     <script src="${pageContext.request.contextPath}/static/third-party/ngTranslate/angular-translate.min.js"></script>
-<x-script src="${pageContext.request.contextPath}/static/js/app.js"></x-script>
+	<script src="${pageContext.request.contextPath}/static/js/app.js"></script>
 
 	<script>
 	angular.element(document).ready(function () {
