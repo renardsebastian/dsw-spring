@@ -1,7 +1,0 @@
-* identidade
-
-* CPF
-
-* comprovante de residência
-
-* comprovante de renda (https://www.servidor.gov.br/)
