@@ -51,8 +51,7 @@ public class EditalDAO extends AbstractDAO
 	 */
 	private Edital carrega(ResultSet rs, UsuarioDAO userDAO) throws SQLException
 	{		
-		Edital edital = carregaResumo(rs);
-
+		Edital edital = new Edital();
 		String sJson = rs.getString("json");
 		
 		if (sJson.length() > 0)
@@ -61,6 +60,15 @@ public class EditalDAO extends AbstractDAO
 			JsonEditalReader reader = new JsonEditalReader();
 			reader.execute(json, edital, userDAO);
 		}
+		
+		int id = rs.getInt("id");
+		edital.setId(id);
+		
+		String nome = rs.getString("nome");
+		edital.setNome(nome);
+		
+		StatusEdital status = StatusEdital.get(rs.getInt("status"));
+		edital.setStatus(status);
 		
 		return edital;
 	}
@@ -89,6 +97,34 @@ public class EditalDAO extends AbstractDAO
 		} catch (SQLException e)
 		{
 			log("EditalDAO.getEditalId: " + e.getMessage());
+			return null;
+		}
+	}
+
+	/**
+	 * Carrega um edital, dado seu nome\
+	 */
+	public Edital carregaEditalNome(String nome, UsuarioDAO userDAO)
+	{
+		Connection c = getConnection();
+		
+		if (c == null)
+			return null;
+		
+		try
+		{
+			PreparedStatement ps = c.prepareStatement("SELECT * FROM Edital WHERE nome = ?");
+			ps.setString(1, nome);
+			
+			ResultSet rs = ps.executeQuery();
+			Edital item = rs.next() ? carrega(rs, userDAO) : null;
+			
+			c.close();
+			return item;
+
+		} catch (SQLException e)
+		{
+			log("EditalDAO.getEditalNome: " + e.getMessage());
 			return null;
 		}
 	}

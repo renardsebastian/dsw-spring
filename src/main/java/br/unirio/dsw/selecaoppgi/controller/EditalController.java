@@ -5,7 +5,6 @@ import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -122,27 +120,65 @@ public class EditalController
 	 * Ação AJAX que recupera um edital, dado seu ID
 	 */
 	@RequestMapping(value = "/edital/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Edital> getEdital(@PathVariable("id") int id)
+	public String getEdital(@PathVariable("id") int id, Locale locale)
 	{
 		Edital edital = editalDAO.carregaEditalId(id, userDAO);
 		
 		if (edital == null)
-			return new ResponseEntity<Edital>(HttpStatus.NOT_FOUND);
+			return ajaxError("edital.form.nao.encontrado", locale);
 		
-		return new ResponseEntity<Edital>(edital, HttpStatus.OK);
+		JsonObject jsonEdital = new JsonEditalWriter().execute(edital);
+		return ajaxSuccess(jsonEdital);
 	}
 
 	/**
 	 * Ação AJAX que atualiza um edital
 	 */
 	@RequestMapping(value = "/edital/", method = RequestMethod.POST)
-	public ResponseEntity<Void> atualiza(@RequestBody Edital edital, UriComponentsBuilder ucBuilder)
+	public String atualiza(@RequestBody Edital edital, Locale locale)
 	{
-		editalDAO.atualiza(edital);
+		if (edital.getNome().length() == 0)
+			return ajaxError("edital.form.nome.vazio", locale);
+		
+		if (edital.getNome().length() > 80)
+			return ajaxError("edital.form.nome.maior.80.caracteres", locale);
+		
+		Edital editalMesmoNome = editalDAO.carregaEditalNome(edital.getNome(), userDAO);
+		
+		if (editalMesmoNome != null && editalMesmoNome.getId() != edital.getId())
+			return ajaxError("edital.form.nome.duplicado", locale);
+		
+		if (edital.getNotaMinimaAlinhamento() <= 0)
+			return ajaxError("edital.form.nota.minima.menor.igual.zero", locale);
+		
+		if (edital.getNotaMinimaAlinhamento() >= 100)
+			return ajaxError("edital.form.nota.minima.maior.igual.cem", locale);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setLocation(ucBuilder.path("/edital/{id}").buildAndExpand(edital.getId()).toUri());
-		return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+		editalDAO.atualiza(edital);
+		return ajaxSuccess();
+	}
+	
+	private String ajaxError(String message, Locale locale)
+	{
+		JsonObject json = new JsonObject();
+		json.addProperty("result", "FAIL");
+		json.addProperty("message", messageSource.getMessage(message, null, locale));
+		return json.toString();
+	}
+	
+	private String ajaxSuccess()
+	{
+		JsonObject json = new JsonObject();
+		json.addProperty("result", "OK");
+		return json.toString();
+	}
+	
+	private String ajaxSuccess(JsonObject jsonDados)
+	{
+		JsonObject json = new JsonObject();
+		json.addProperty("result", "OK");
+		json.add("data", jsonDados);
+		return json.toString();
 	}
 
 	/**

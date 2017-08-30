@@ -22,3 +22,25 @@ function applyMaterialDesignLite() {
 	    componentHandler.upgradeAllRegistered();
 	}
 }
+
+function checkForErrors(data) {
+	if (data.result == "FAIL") {
+		showError(data.message);
+		return true;
+	}
+	
+	return false;
+}
+
+function showError(message) {
+    var snackbar = document.querySelector('#demo-snackbar-example');
+    
+    snackbar.MaterialSnackbar.showSnackbar({ 
+	    	message: message, 
+	    	timeout: 20000,
+        actionHandler: function() { snackbar.MaterialSnackbar.cleanup_() },
+        actionText: 'x' 
+    });
+    
+    return false;
+}

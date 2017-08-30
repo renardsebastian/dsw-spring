@@ -800,6 +800,12 @@ div.usuarioLogado > div.dataLogin {
 	font-size: 12px;
 	color: lightgray;
 }
+div.block {
+	display: block;
+}
+div.clear {
+	clear: both;
+}
 .wide {
 	width: 100%;
 }
@@ -862,4 +868,20 @@ div.usuarioLogado > div.dataLogin {
 	margin: 4px 0px; 
 	text-decoration: none;
 	color: gray;
+}
+
+.editor-peso-prova {
+	border: none;
+    border-bottom: 1px solid rgba(0,0,0,.12);
+    display: block;
+    font-size: 16px;
+    font-family: "Helvetica","Arial",sans-serif;
+    margin: 0;
+    padding: 4px 0;
+    width: 100%;
+    background: 0 0;
+    text-align: left;
+}
+.editor-peso-prova:focus {
+	outline: none;
 }

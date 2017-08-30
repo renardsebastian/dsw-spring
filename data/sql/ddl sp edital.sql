@@ -19,7 +19,7 @@ BEGIN
 		
 		SET oId = vId;
 	ELSE
-		INSERT INTO Usuario (dataRegistro, dataAtualizacao, nome, status, json)
+		INSERT INTO Edital (dataRegistro, dataAtualizacao, nome, status, json)
 		VALUES (NOW(), NOW(), vNome, vStatus, vJSON);
 		
 		SET oId = LAST_INSERT_ID();

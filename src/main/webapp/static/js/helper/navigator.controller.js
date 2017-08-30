@@ -6,11 +6,9 @@ App.controller("TopNavigatorController", function ($scope, topNavigatorDataServi
 	
 	$scope.abreJanelaSelecaoEdital = function() {
 		topNavigatorDataService.carrega().then(function(data) {
-			$log.info(data.data);
 			$scope.editais = data.data;
 		});
 
-		$log.info($scope.editalSelecionado);
 		dialog.showModal();
 	}
 	
@@ -25,10 +23,6 @@ App.controller("TopNavigatorController", function ($scope, topNavigatorDataServi
     var dialog = document.querySelector('dialog');
     
     if (dialog) {
-//        if (!dialog.showModal) {
-	    		//dialogPolyfill.registerDialog(dialog);
-//	    }
-	    
 	    dialog.querySelector('.close').addEventListener('click', function() {
 	        dialog.close();
 	    });	 
