@@ -19,12 +19,18 @@ public enum StatusEdital
 	private @Getter int codigo;
 	private @Getter String nome;
 	
+	/**
+	 * Inicializa o status de edital
+	 */
 	private StatusEdital(int codigo, String nome)
 	{
 		this.codigo = codigo;
 		this.nome = nome;
 	}
 	
+	/**
+	 * Retorna um status, dado seu código numérico
+	 */
 	public static StatusEdital get(int codigo)
 	{
 		for (StatusEdital status : values())

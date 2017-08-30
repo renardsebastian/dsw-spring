@@ -1,10 +1,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@include file="/WEB-INF/views/helper/template.jsp" %>
 
-<!-- nav id="sideMenu" class="mdl-navigation">
-    <a class="mdl-navigation__link" href="coding-piazza/index.html">Coding Piazza</a>
-</nav -->
-
 <div id="contents">
    <div class="mdl-grid">
         <div class="mdl-cell mdl-cell--3-col">

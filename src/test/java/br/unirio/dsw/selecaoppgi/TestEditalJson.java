@@ -13,6 +13,7 @@ import br.unirio.dsw.selecaoppgi.model.edital.CriterioAlinhamento;
 import br.unirio.dsw.selecaoppgi.model.edital.Edital;
 import br.unirio.dsw.selecaoppgi.model.edital.ProjetoPesquisa;
 import br.unirio.dsw.selecaoppgi.model.edital.ProvaEscrita;
+import br.unirio.dsw.selecaoppgi.model.usuario.PapelUsuario;
 import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
 import br.unirio.dsw.selecaoppgi.reader.edital.JsonEditalReader;
 import br.unirio.dsw.selecaoppgi.service.dao.UsuarioDAO;
@@ -28,15 +29,15 @@ public class TestEditalJson
 	@Before
 	public void setup()
 	{
-		fulano = new Usuario("Fulano", "fulano@somewhere.com", "fulano", false);
+		fulano = new Usuario("Fulano", "fulano@somewhere.com", "fulano", PapelUsuario.ROLE_BASIC, false);
 		fulano.setId(1);
 		
-		cicrano = new Usuario("Cicrano", "cicrano@somewhere.com", "cicrano", false);
+		cicrano = new Usuario("Cicrano", "cicrano@somewhere.com", "cicrano", PapelUsuario.ROLE_BASIC, false);
 		cicrano.setId(2);
 		
 		userDAO = mock(UsuarioDAO.class);
-		when(userDAO.getUserId(fulano.getId())).thenReturn(fulano);
-		when(userDAO.getUserId(cicrano.getId())).thenReturn(cicrano);
+		when(userDAO.carregaUsuarioId(fulano.getId())).thenReturn(fulano);
+		when(userDAO.carregaUsuarioId(cicrano.getId())).thenReturn(cicrano);
 	}
 	
 	@Test
@@ -188,6 +189,6 @@ public class TestEditalJson
 		reader.execute(jsonOriginal, editalClone, userDAO);
 		
 		JsonObject jsonClonado = writer.execute(editalClone);
-		assertTrue(JsonUtils.compare(jsonOriginal, jsonClonado));
+		assertTrue(JsonUtils.compara(jsonOriginal, jsonClonado));
 	}
 }

@@ -27,6 +27,10 @@ var contextPath = "${pageContext.request.contextPath}";
 </script>
 
 <body>
+	<sec:authorize access="isAuthenticated()">
+		<sec:authentication var="user" property="principal" />
+	</sec:authorize>
+
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
 
         <!-- Header -->
@@ -37,9 +41,11 @@ var contextPath = "${pageContext.request.contextPath}";
                     PPGI/UNIRIO: Sistema de seleção
                 </span>
 
+
                 <!-- Spacer -->
                 <div class="mdl-layout-spacer">
                 </div>
+
 
                 <!-- Selected item -->
                 <nav class="mdl-navigation">
@@ -49,20 +55,22 @@ var contextPath = "${pageContext.request.contextPath}";
 	                				<spring:message code="template.titulo.edital.selecionado"/>:
 	                			</div>
 	                			<div>
-			                		<c:if test="${empty session.edital}">
-					                	<spring:message code="template.titulo.edital.nenhum"/>
+			                		<c:if test="${empty sessionScope.edital}">
+					                	<span class="mdl-button mdl-js-button mdl-js-ripple-effect edital-button" data-ng-click="abreJanelaSelecaoEdital()"><spring:message code="template.titulo.edital.nenhum"/></span>
 					            </c:if>
-			                		<c:if test="${not empty session.edital}">
-					                	${session.edital.nome}
+			                		<c:if test="${not empty sessionScope.edital}">
+					                	<span class="mdl-button mdl-js-button mdl-js-ripple-effect edital-button" data-ng-click="abreJanelaSelecaoEdital()">${sessionScope.edital.nome}</span>
 					            </c:if>
 					        </div>
 	                		</div>
 	                	</sec:authorize>
                 </nav>
 
+
                 <!-- Spacer -->
                 <div class="mdl-layout-spacer">
                 </div>
+
 
                 <!-- Navigation -->
                 <nav class="mdl-navigation">
@@ -72,20 +80,46 @@ var contextPath = "${pageContext.request.contextPath}";
 		                    		<spring:message code="template.label.ola"/>, <sec:authentication property="principal.nome"/>!
 	                    		</div>
 	                    		<div class="dataLogin">
-		                    		<sec:authentication var="user" property="principal" />
 		                    		<c:if test="${not empty user.dataUltimoLogin}">
 		                    			Último login em ${user.dataUltimoLoginFormatada} 
 		                    		</c:if>
 	                    		</div>
 	                    </div>
-	                    <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/login/change">
+	                    <a class="mdl-button mdl-js-button mdl-js-ripple-effect header-button" href="${pageContext.request.contextPath}/login/change">
 	                    		<spring:message code="template.comando.trocasenha"/>
 	                    </a>
-	                    <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/logout">
+	                    <a class="mdl-button mdl-js-button mdl-js-ripple-effect header-button" href="${pageContext.request.contextPath}/logout">
 	                    		<spring:message code="template.comando.logout"/>
 	                    </a>
                     </sec:authorize>      
                 </nav>
+                
+
+				<!-- Janela de selecao de edital -->
+				<sec:authorize access="isAuthenticated()">
+					<dialog class="mdl-dialog" style="width: 400px;">
+					    <h4 class="mdl-dialog__title">
+					    		<spring:message code="template.dialogo.seleciona.edital.titulo"/>
+					    </h4>
+					    <div class="mdl-dialog__content">
+					      	<p>
+					        		<spring:message code="template.dialogo.seleciona.edital.subtitulo"/>
+					      	</p>
+					      	<p>
+					      		<select ng-model="editalSelecionado" class="wide" ng-options="edital.id as edital.nome for edital in editais" ng-init="editalSelecionado=${user.idEdital}">
+								</select>
+					      	</p>
+					    	</div>
+					    <div class="mdl-dialog__actions">
+					      	<button type="button" class="mdl-button close">
+					      		<spring:message code="template.dialogo.seleciona.edital.botao.cancela"/>
+					      	</button>
+					      	<button type="button" class="mdl-button" data-ng-click="selecionaEdital()">
+					      		<spring:message code="template.dialogo.seleciona.edital.botao.ok"/>
+							</button>
+					    </div>
+					</dialog>
+				</sec:authorize> 
             </div>
         </header>
 
@@ -93,8 +127,61 @@ var contextPath = "${pageContext.request.contextPath}";
         <!-- Side bar -->
         <div id="sideBar" class="mdl-layout__drawer">
             <span class="mdl-layout-title">
-                Opções
+                <spring:message code="template.titulo.opcoes"/>
             </span>
+			<sec:authorize access="hasRole('ROLE_ADMIN')">
+			    <a class="sidebar-command" href="${pageContext.request.contextPath}/edital/list">
+			    		<spring:message code="homepage.comandos.edital.registro"/>
+			    	</a>
+		   </sec:authorize>
+		   <c:if test="${sessionScope.edital.status.codigo == 0}">
+			    <a class="sidebar-command" href="${pageContext.request.contextPath}/edital/abertura">
+			    		<spring:message code="homepage.comandos.edital.abre"/>
+			    	</a>
+		   </c:if>
+		   <c:if test="${sessionScope.edital.status.codigo == 1}">
+			    <a class="sidebar-command" href="${pageContext.request.contextPath}/edital/inscricao/encerramento">
+			    		<spring:message code="homepage.comandos.edital.inscricoes.encerrar"/>
+			    	</a>
+		   </c:if>
+		   <c:if test="${sessionScope.edital.status.codigo == 2}">
+			    <a class="sidebar-command" href="${pageContext.request.contextPath}/edital/homologacao/inscricao">
+			    		<spring:message code="homepage.comandos.edital.inscricoes.homologar"/>
+			    	</a>
+			    <a class="sidebar-command" href="${pageContext.request.contextPath}/edital/homologacao/dispensa">
+			    		<spring:message code="homepage.comandos.edital.dispensas.homologar"/>
+			    	</a>
+			    <a class="sidebar-command" href="${pageContext.request.contextPath}/edital/homologacao/encerramento">
+			    		<spring:message code="homepage.comandos.edital.homologacao.encerrar"/>
+			    	</a>
+		   </c:if>
+		   <c:if test="${sessionScope.edital.status.codigo == 3}">
+			    <a class="sidebar-command" href="${pageContext.request.contextPath}/edital/escrita/presenca">
+			    		<spring:message code="homepage.comandos.edital.presenca.prova.escrita"/>
+			    	</a>
+			    <a class="sidebar-command" href="${pageContext.request.contextPath}/edital/escrita/notas">
+			    		<spring:message code="homepage.comandos.edital.notas.prova.escrita"/>
+			    	</a>
+			    <a class="sidebar-command" href="${pageContext.request.contextPath}/edital/escrita/encerramento">
+			    		<spring:message code="homepage.comandos.edital.encerrar.prova.escrita"/>
+			    	</a>
+		   </c:if>
+		   <c:if test="${sessionScope.edital.status.codigo == 4}">
+			    <a class="sidebar-command" href="${pageContext.request.contextPath}/edital/alinhamento/presenca">
+			    		<spring:message code="homepage.comandos.edital.presenca.prova.oral"/>
+			    	</a>
+			    <a class="sidebar-command" href="${pageContext.request.contextPath}/edital/alinhamento/notas">
+			    		<spring:message code="homepage.comandos.edital.notas.prova.alinhamento"/>
+			    	</a>
+			    <a class="sidebar-command" href="${pageContext.request.contextPath}/edital/alinhamento/encerramento">
+			    		<spring:message code="homepage.comandos.edital.encerrar.prova.alinhamento"/>
+			    	</a>
+		   </c:if>
+		   <c:if test="${sessionScope.edital.status.codigo == 5}">
+		    		<span class="sidebar-no-command">
+		    			<spring:message code="homepage.comandos.edital.nenhum.comando"/>
+		    		</span>
+		   </c:if>
         </div>
 
 
@@ -120,37 +207,17 @@ var contextPath = "${pageContext.request.contextPath}";
 	  <button class="mdl-snackbar__action" type="button"></button>
 	</div>
 
-	
-	<!-- Janela de selecao de edital -->
-	<dialog class="mdl-dialog">
-	    <h4 class="mdl-dialog__title">
-	    		<spring:message code="template.dialogo.seleciona.edital.titulo"/>
-	    </h4>
-	    <div class="mdl-dialog__content">
-	      	<p>
-	        		<spring:message code="template.dialogo.seleciona.edital.subtitulo"/>
-	      	</p>
-	      	<p>
-	      		<select ng-model="editalSelecionado">
-	      			<option ng-repeat="edital in editais" value="{{edital.id}}">{{edital.nome}}</option>
-				</select>
-	      	</p>
-	    	</div>
-	    <div class="mdl-dialog__actions">
-	      	<button type="button" class="mdl-button">
-	      		<spring:message code="template.dialogo.seleciona.edital.botao.ok"/>
-			</button>
-	      	<button type="button" class="mdl-button close">
-	      		<spring:message code="template.dialogo.seleciona.edital.botao.cancela"/>
-	      	</button>
-	    </div>
-	</dialog>
-
 
     <!-- Material design -->
     <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+
+	<!-- Components -->
     <script src="${pageContext.request.contextPath}/static/third-party/ngTranslate/angular-translate.min.js"></script>
+	<script src="${pageContext.request.contextPath}/static/components/unirio/unirio.confirm.js"></script>
+	<script src="${pageContext.request.contextPath}/static/third-party/ngTable/ng-table.min.js"></script>
+	
+	<!-- Navigator controller -->
 	<script src="${pageContext.request.contextPath}/static/js/app.js"></script>
 	<script src="${pageContext.request.contextPath}/static/js/helper/navigator.dataService.js"></script>
 	<script src="${pageContext.request.contextPath}/static/js/helper/navigator.controller.js"></script>
@@ -161,15 +228,6 @@ var contextPath = "${pageContext.request.contextPath}";
 	    var centralStageElement = document.getElementById('centralStage');
 	    var contentsElement = document.getElementById('contents');
 	    centralStageElement.appendChild(contentsElement);
-
-		/* Monta o menu lateral */
-	    var sideBarElement = document.getElementById('sideBar');
-	    var sideMenuElement = document.getElementById('sideMenu');
-	    
-	    if (sideMenuElement)
-		    sideBarElement.appendChild(sideMenuElement);
-		else
-		   sideBarElement.remove();
 	});
 	</script>
 

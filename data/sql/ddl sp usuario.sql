@@ -94,3 +94,21 @@ BEGIN
 	WHERE id = vId;
 END //
 DELIMITER ;
+
+
+--
+-- MUDA O EDITAL SELECIONADO POR UM USUARIO
+--
+
+DROP PROCEDURE IF EXISTS UsuarioMudaEditalSelecionado;
+DELIMITER //
+CREATE PROCEDURE UsuarioMudaEditalSelecionado(vIdUsuario INT, vIdEdital INT)
+BEGIN
+	UPDATE Usuario
+	SET dataAtualizacao = NOW(),
+	idEditalSelecionado = vIdEdital
+	WHERE id = vIdUsuario;
+END //
+DELIMITER ;
+
+

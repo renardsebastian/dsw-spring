@@ -33,22 +33,30 @@ public class Usuario extends org.springframework.security.core.userdetails.User
 	/**
 	 * Inicializa um usuário
 	 */
-	public Usuario(String name, String email, String password, boolean locked)
+	public Usuario(String name, String email, String password, PapelUsuario papel, boolean locked)
 	{
-        super(email, password, true, true, true, !locked, createAuthoritiesFromBasicRole());
+        super(email, password, true, true, true, !locked, createAuthoritiesFromBasicRole(papel));
 		this.id = -1;
 		this.nome = name;
-		this.papel = PapelUsuario.ROLE_BASIC;
+		this.papel = papel;
+		this.dataUltimoLogin = null;
+		this.contadorLoginFalhas = 0;
+		this.tokenLogin = "";
+		this.dataTokenLogin = null;
+		this.idEdital = -1;
 	}
 
 	/**
 	 * Cria os direitos de acesso relacionado ao papel básico do usuário
 	 */
-	private static Set<GrantedAuthority> createAuthoritiesFromBasicRole()
+	private static Set<GrantedAuthority> createAuthoritiesFromBasicRole(PapelUsuario papel)
 	{
 		Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
-		SimpleGrantedAuthority authority = new SimpleGrantedAuthority(PapelUsuario.ROLE_BASIC.toString());
-        authorities.add(authority);
+		
+		if (papel != null && papel != PapelUsuario.ROLE_BASIC)
+	        authorities.add(new SimpleGrantedAuthority(papel.toString()));
+		
+        authorities.add(new SimpleGrantedAuthority(PapelUsuario.ROLE_BASIC.toString()));
 		return authorities;
 	}
 	

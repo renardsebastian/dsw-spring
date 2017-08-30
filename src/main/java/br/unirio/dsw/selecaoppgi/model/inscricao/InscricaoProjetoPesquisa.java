@@ -28,13 +28,13 @@ public class InscricaoProjetoPesquisa
 		this.projetoPesquisa = projeto;
 		this.intencoes = "";
 		this.criteriosAlinhamento = new ArrayList<AvaliacaoCriterioAlinhamento>();
-		criaAvaliacoesCriteriosAlinhamento(edital);
+		preparaAvaliacoesCriteriosAlinhamento(edital);
 	}
 
 	/**
 	 * Cria as avaliações referentes aos critérios de alinhamento do projeto
 	 */
-	private void criaAvaliacoesCriteriosAlinhamento(Edital edital)
+	private void preparaAvaliacoesCriteriosAlinhamento(Edital edital)
 	{
 		for (CriterioAlinhamento criterio : edital.getCriteriosAlinhamento())
 		{

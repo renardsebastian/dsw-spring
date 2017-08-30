@@ -74,7 +74,7 @@ public class JsonEditalReader
 		{
 			JsonObject jsonProfessor = jsonProfessores.get(i).getAsJsonObject();
 			int id = jsonProfessor.get("id").getAsInt();
-			Usuario professor = userDAO.getUserId(id);
+			Usuario professor = userDAO.carregaUsuarioId(id);
 			
 			if (professor != null)
 				edital.adicionaComissaoSelecao(professor);
@@ -95,7 +95,7 @@ public class JsonEditalReader
 		{
 			JsonObject jsonProfessor = jsonProfessores.get(i).getAsJsonObject();
 			int id = jsonProfessor.get("id").getAsInt();
-			Usuario professor = userDAO.getUserId(id);
+			Usuario professor = userDAO.carregaUsuarioId(id);
 			
 			if (professor != null)
 				edital.adicionaComissaoRecurso(professor);
@@ -188,7 +188,7 @@ public class JsonEditalReader
 		{
 			JsonObject jsonProfessor = jsonProfessores.get(i).getAsJsonObject();
 			int id = jsonProfessor.get("id").getAsInt();
-			Usuario professor = userDAO.getUserId(id);
+			Usuario professor = userDAO.carregaUsuarioId(id);
 			
 			if (professor != null)
 				projeto.adicionaProfessor(professor);

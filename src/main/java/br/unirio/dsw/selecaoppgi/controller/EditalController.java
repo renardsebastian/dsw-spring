@@ -1,12 +1,15 @@
 package br.unirio.dsw.selecaoppgi.controller;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +23,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import br.unirio.dsw.selecaoppgi.model.edital.Edital;
+import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
 import br.unirio.dsw.selecaoppgi.service.dao.EditalDAO;
 import br.unirio.dsw.selecaoppgi.service.dao.UsuarioDAO;
 import br.unirio.dsw.selecaoppgi.writer.edital.JsonEditalWriter;
@@ -32,6 +36,9 @@ import br.unirio.dsw.selecaoppgi.writer.edital.JsonEditalWriter;
 @RestController
 public class EditalController
 {
+    @Autowired
+    private MessageSource messageSource;
+    
 	@Autowired
 	private UsuarioDAO userDAO; 
 
@@ -42,7 +49,7 @@ public class EditalController
 	 * Ação que redireciona o usuário para a lista de editais
 	 */
 	@RequestMapping(value = "/edital/list", method = RequestMethod.GET)
-	public ModelAndView getPaginaLista()
+	public ModelAndView mostraPaginaLista()
 	{
 		return new ModelAndView("edital/list");
 	}
@@ -51,7 +58,7 @@ public class EditalController
 	 * Ação que redireciona o usuário para o formulário de edição de edital
 	 */
 	@RequestMapping(value = "/edital/edit/{id}", method = RequestMethod.GET)
-	public ModelAndView getPaginaEdicao(@PathVariable("id") int id)
+	public ModelAndView mostraPaginaEdicao(@PathVariable("id") int id)
 	{
 		ModelAndView model = new ModelAndView("edital/form");
 		model.getModel().put("id", id);
@@ -62,7 +69,7 @@ public class EditalController
 	 * Ação que redireciona o usuário para o formulário de criação de edital
 	 */
 	@RequestMapping(value = "/edital/create", method = RequestMethod.GET)
-	public ModelAndView getPaginaCriacao()
+	public ModelAndView mostraPaginaCriacao()
 	{
 		ModelAndView model = new ModelAndView("edital/form");
 		model.getModel().put("id", -1);
@@ -73,7 +80,7 @@ public class EditalController
 	 * Ação AJAX que lista todos os editais
 	 */
 	@RequestMapping(value = "/edital", method = RequestMethod.GET, produces = "application/json")
-	public String list(@ModelAttribute("page") int pagina, @ModelAttribute("size") int tamanho, @ModelAttribute("nome") String filtroNome)
+	public String lista(@ModelAttribute("page") int pagina, @ModelAttribute("size") int tamanho, @ModelAttribute("nome") String filtroNome)
 	{
 		List<Edital> editais = editalDAO.lista(pagina, tamanho, filtroNome);
 		int total = editalDAO.conta(filtroNome);
@@ -95,7 +102,7 @@ public class EditalController
 	 * Ação AJAX que lista todos os editais
 	 */
 	@RequestMapping(value = "/edital/summary", method = RequestMethod.GET, produces = "application/json")
-	public String summary()
+	public String geraResumos()
 	{
 		List<Edital> editais = editalDAO.lista(0, 100000, "");
 		JsonArray jsonEditais = new JsonArray();
@@ -117,7 +124,7 @@ public class EditalController
 	@RequestMapping(value = "/edital/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Edital> getEdital(@PathVariable("id") int id)
 	{
-		Edital edital = editalDAO.getEditalId(id, userDAO);
+		Edital edital = editalDAO.carregaEditalId(id, userDAO);
 		
 		if (edital == null)
 			return new ResponseEntity<Edital>(HttpStatus.NOT_FOUND);
@@ -126,15 +133,11 @@ public class EditalController
 	}
 
 	/**
-	 * Ação que atualiza um edital
+	 * Ação AJAX que atualiza um edital
 	 */
 	@RequestMapping(value = "/edital/", method = RequestMethod.POST)
-	public ResponseEntity<Void> create(@RequestBody Edital edital, UriComponentsBuilder ucBuilder)
+	public ResponseEntity<Void> atualiza(@RequestBody Edital edital, UriComponentsBuilder ucBuilder)
 	{
-		// TODO Regras de negocio
-//		if (userDAO.getUserEmail(editalDAO.getUsername()) != null)
-//			return new ResponseEntity<Void>(HttpStatus.CONFLICT);
-
 		editalDAO.atualiza(edital);
 
 		HttpHeaders headers = new HttpHeaders();
@@ -143,12 +146,12 @@ public class EditalController
 	}
 
 	/**
-	 * Ação que remove um edital
+	 * Ação AJAX que remove um edital
 	 */
 	@RequestMapping(value = "/edital/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<Edital> delete(@PathVariable("id") int id)
+	public ResponseEntity<Edital> remove(@PathVariable("id") int id)
 	{
-		Edital edital = editalDAO.getEditalId(id, userDAO);
+		Edital edital = editalDAO.carregaEditalId(id, userDAO);
 		
 		if (edital == null)
 			return new ResponseEntity<Edital>(HttpStatus.NOT_FOUND);
@@ -156,4 +159,31 @@ public class EditalController
 		editalDAO.remove(id);
 		return new ResponseEntity<Edital>(HttpStatus.NO_CONTENT);
 	}
+	
+	/**
+	 * Ação AJAX que troca a senha do usuário logado
+	 */
+	@RequestMapping(value = "/edital/muda/{id}", method = RequestMethod.POST)
+	public String mudaEditalSelecionado(@PathVariable("id") int id, Locale locale)
+	{
+		Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+		if (usuario == null)
+		{
+			JsonObject root = new JsonObject();
+			root.addProperty("Result", "error");
+			root.addProperty("Result", messageSource.getMessage("edital.muda.edital.selecionado.erro.usuario.nao.encontrado", null, locale));
+			return root.toString();			
+		}
+
+		usuario.setIdEdital(id);
+        userDAO.mudaEditalSelecionado(usuario.getId(), id);
+        
+		JsonObject root = new JsonObject();
+		root.addProperty("Result", "OK");
+		return root.toString();
+	}
+
+//	/edital/abertura
+//	/edital/inscricao/encerramento
 }

@@ -1,6 +1,6 @@
 'use strict';
  
-var App = angular.module('ppgiSelecaoApp', ['pascalprecht.translate']);
+var App = angular.module('ppgiSelecaoApp', ['pascalprecht.translate', 'unirio.dsw', 'ngTable']);
 
 var getUrlParameter = function getUrlParameter(sParam) {
     var sPageURL = decodeURIComponent(window.location.search.substring(1)),

@@ -97,7 +97,6 @@ public class InscricaoEdital
 		return inscricaoProjeto;
 	}
 	
-
 	/**
 	 * Remove a inscrição em um projeto de pesquisa
 	 */

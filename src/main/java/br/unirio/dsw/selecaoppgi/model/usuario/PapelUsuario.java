@@ -12,27 +12,35 @@ public enum PapelUsuario
     ROLE_BASIC(0),
     ROLE_OFFICE(1),
     ROLE_PROFESSOR(2),
-    ROLE_ROOT(3);
+    ROLE_ADMIN(3);
     
     private @Getter int codigo;
     
+    /**
+     * Inicializa um papel de usuário
+     */
     private PapelUsuario(int codigo)
     {
-    	this.codigo = codigo;
+    		this.codigo = codigo;
     }
     
+    /**
+     * Retorna um papel de usuário, dado seu código
+     */
     public static PapelUsuario get(int codigo)
     {
-    	for (PapelUsuario role : values())
-    		if (role.getCodigo() == codigo)
-    			return role;
-    	
-    	return null;
+		for (PapelUsuario role : values())
+			if (role.getCodigo() == codigo)
+				return role;
+
+		return null;
     }
     
-    @Override
+    /**
+     * Retorna o nome do papel
+     */
     public String toString()
     {
-    	return name();
+    		return name();
     }
 }

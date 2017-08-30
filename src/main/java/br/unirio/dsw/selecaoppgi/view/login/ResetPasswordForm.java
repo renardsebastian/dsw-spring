@@ -3,7 +3,7 @@ package br.unirio.dsw.selecaoppgi.view.login;
 import lombok.Data;
 
 /**
- * Classe do formulário de reset de senha
+ * Classe do formulário de reinicialização de senha
  * 
  * @author marciobarros
  */

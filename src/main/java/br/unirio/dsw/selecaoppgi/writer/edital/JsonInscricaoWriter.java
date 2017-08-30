@@ -69,6 +69,24 @@ public class JsonInscricaoWriter
 		
 		return jsonProjetos;
 	}
+
+	/**
+	 * Gera a representação JSON dos resumos de inscrições em projetos de pesquisa
+	 */
+	public JsonArray geraRepresentacaoResumidaInscricoesProjetoPesquisa(InscricaoEdital inscricao)
+	{
+		JsonArray jsonProjetos = new JsonArray();
+		
+		for (InscricaoProjetoPesquisa inscricaoProjeto : inscricao.getInscricoesProjetoPesquisa())
+		{
+			JsonObject jsonProjeto = new JsonObject();
+			jsonProjeto.addProperty("codigo", inscricaoProjeto.getProjetoPesquisa().getCodigo());
+			jsonProjeto.addProperty("intencoes", inscricaoProjeto.getIntencoes());
+			jsonProjetos.add(jsonProjeto);
+		}
+		
+		return jsonProjetos;
+	}
 	
 	/**
 	 * Gera a representação JSON de uma inscrição em projeto de pesquisa
@@ -115,7 +133,7 @@ public class JsonInscricaoWriter
 	/**
 	 * Gera a representação JSON de uma lista de avaliações de subcritérios de alinhamento
 	 */
-	private JsonArray geraRepresentacaoAvaliacoesSubcriteriosAlinhamento(AvaliacaoCriterioAlinhamento avaliacao)
+	public JsonArray geraRepresentacaoAvaliacoesSubcriteriosAlinhamento(AvaliacaoCriterioAlinhamento avaliacao)
 	{
 		JsonArray jsonAvaliacoes = new JsonArray();
 		
@@ -160,7 +178,7 @@ public class JsonInscricaoWriter
 	/**
 	 * Gera a representação JSON de uma avaliação de prova escrita
 	 */
-	private JsonObject geraRepresentacaoAvaliacaoProvaEscrita(AvaliacaoProvaEscrita avaliacao)
+	public JsonObject geraRepresentacaoAvaliacaoProvaEscrita(AvaliacaoProvaEscrita avaliacao)
 	{
 		JsonObject json = new JsonObject();
 		json.addProperty("codigo", avaliacao.getProvaEscrita().getCodigo());

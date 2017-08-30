@@ -15,13 +15,13 @@ import org.springframework.context.support.ResourceBundleMessageSource;
  * @author marciobarros
  */
 @Configuration
-@ComponentScan(basePackages = {"br.unirio.dsw.selecaoppgi.service", "br.unirio.dsw.selecaoppgi.dao"})
+@ComponentScan(basePackages = {"br.unirio.dsw.selecaoppgi.service"})
 @Import({SpringConfiguration.class, SecurityContext.class})
 @PropertySource("classpath:configuration.properties")
 public class ApplicationContext 
 {
 	/**
-	 * Retorna o resource bundle responsável pela tradução de textos
+	 * Retorna o objeto responsável pela tradução de mensagens
 	 */
 	@Bean
     public MessageSource messageSource() 

@@ -68,10 +68,15 @@ public class EmailService
 		"</table>";
 	
 	/**
-	 * Chave de autenticação aos serviços do Send Grid
+	 * Chave de autenticação aos serviços do SENDGRID
 	 */
-	private static final String SENDGRID_KEY = "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";
+	private static final String SENDGRID_KEY = "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";
 	
+	/**
+	 * Conta dos desenvolvedores
+	 */
+	private static final String DEVELOPERS_ACCOUNT = "marcio.barros@gmail.com";
+
 	/**
 	 * Prefixo para envio de e-mails, vindo do arquivo de configuração da aplicação
 	 */
@@ -107,7 +112,7 @@ public class EmailService
 	 */
 	public boolean sendToDevelopers(String title, String contents)
 	{
-		return send("marcio.barros@gmail.com", title, contents);
+		return send(DEVELOPERS_ACCOUNT, title, contents);
 	}
 
 	/**
@@ -126,7 +131,7 @@ public class EmailService
 		
 		// Poca-yoke para evitar o envio de e-mails de desenvolvimento para usuários finais
 		if (ApplicationConfiguration.isStaggingEnvironment())
-			email = "marcio.barros@gmail.com";
+			email = DEVELOPERS_ACCOUNT;
 		
 		// Registra assunto do email
 		JsonObject personalizacao = new JsonObject();

@@ -5,8 +5,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * Classe que permite acesso aos dados de configuracao do sistema, que estao
- * armazenados em um arquivo .properties na raiz
+ * Classe que permite acesso aos dados de configuracao do sistema (.properties)
  * 
  * @author marcio.barros
  */

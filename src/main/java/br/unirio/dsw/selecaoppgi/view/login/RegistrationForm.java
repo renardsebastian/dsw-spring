@@ -3,7 +3,7 @@ package br.unirio.dsw.selecaoppgi.view.login;
 import lombok.Data;
 
 /**
- * Classe do formulário de registro de um novo usuário
+ * Classe do formulário de registro de um usuário
  * 
  * @author marciobarros
  */

@@ -48,7 +48,5 @@
     </div>
 </div>
 
-<script type="text/javascript" src="${pageContext.request.contextPath}/static/components/unirio/unirio.confirm.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/static/third-party/ngTable/ng-table.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/static/js/edital/list.controller.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/static/js/edital/list.dataService.js"></script>

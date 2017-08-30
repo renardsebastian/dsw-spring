@@ -28,14 +28,15 @@ public class UsuarioDAO extends AbstractDAO
 	/**
 	 * Carrega os dados de um usuário a partir do resultado de uma consulta
 	 */
-	private Usuario load(ResultSet rs) throws SQLException
+	private Usuario carrega(ResultSet rs) throws SQLException
 	{
 		String name = rs.getString("nome");
 		String email = rs.getString("email");
 		String password = rs.getString("senha");
+		PapelUsuario papel = PapelUsuario.get(rs.getInt("papel"));
 		boolean locked = rs.getInt("forcaResetSenha") != 0;
 
-		Usuario user = new Usuario(name, email, password, locked);
+		Usuario user = new Usuario(name, email, password, papel, locked);
 		user.setId(rs.getInt("id"));
 		user.setPapel(PapelUsuario.get(rs.getInt("papel")));
 		user.setDataUltimoLogin(DateUtils.toDateTime(rs.getTimestamp("dataUltimoLogin")));
@@ -49,7 +50,7 @@ public class UsuarioDAO extends AbstractDAO
 	/**
 	 * Carrega um usuário, dado seu identificador
 	 */
-	public Usuario getUserId(int id)
+	public Usuario carregaUsuarioId(int id)
 	{
 		Connection c = getConnection();
 		
@@ -61,13 +62,13 @@ public class UsuarioDAO extends AbstractDAO
 			PreparedStatement ps = c.prepareStatement("SELECT * FROM Usuario WHERE id = ?");
 			ps.setLong(1, id);
 			ResultSet rs = ps.executeQuery();
-			Usuario item = rs.next() ? load(rs) : null;
+			Usuario item = rs.next() ? carrega(rs) : null;
 			c.close();
 			return item;
 
 		} catch (SQLException e)
 		{
-			log("UserDAO.getUserId: " + e.getMessage());
+			log("UserDAO.carregaUsuarioId: " + e.getMessage());
 			return null;
 		}
 	}
@@ -75,7 +76,7 @@ public class UsuarioDAO extends AbstractDAO
 	/**
 	 * Carrega um usuário, dado seu e-mail
 	 */
-	public Usuario getUserEmail(String email)
+	public Usuario carregaUsuarioEmail(String email)
 	{
 		Connection c = getConnection();
 		
@@ -88,14 +89,14 @@ public class UsuarioDAO extends AbstractDAO
 			ps.setString(1, email);
 
 			ResultSet rs = ps.executeQuery();
-			Usuario item = rs.next() ? load(rs) : null;
+			Usuario item = rs.next() ? carrega(rs) : null;
 			
 			c.close();
 			return item;
 
 		} catch (SQLException e)
 		{
-			log("UserDAO.getUserEmail: " + e.getMessage());
+			log("UserDAO.carregaUsuarioEmail: " + e.getMessage());
 			return null;
 		}
 	}
@@ -103,7 +104,7 @@ public class UsuarioDAO extends AbstractDAO
 	/**
 	 * Conta o numero de usuários que atendem a um filtro
 	 */
-	public int count(String nameFilter, String emailFilter)
+	public int conta(String filtroNome, String filtroEmail)
 	{
 		String SQL = "SELECT COUNT(*) " + 
 					 "FROM Usuario " + 
@@ -118,8 +119,8 @@ public class UsuarioDAO extends AbstractDAO
 		try
 		{
 			PreparedStatement ps = c.prepareStatement(SQL);
-			ps.setString(1, "%" + nameFilter + "%");
-			ps.setString(2, "%" + emailFilter + "%");
+			ps.setString(1, "%" + filtroNome + "%");
+			ps.setString(2, "%" + filtroEmail + "%");
 
 			ResultSet rs = ps.executeQuery();
 			int count = rs.next() ? rs.getInt(1) : 0;
@@ -137,7 +138,7 @@ public class UsuarioDAO extends AbstractDAO
 	/**
 	 * Retorna a lista de usuários registrados no sistema que atendem a um filtro
 	 */
-	public List<Usuario> list(int pageNumber, int pageSize, UserOrderingField orderingField, UserOrderingCriteria orderingCriteria, String nameFilter, String emailFilter)
+	public List<Usuario> lista(int pagina, int tamanhoPagina, CampoOrdenacaoUsuario campoOrdenacao, CriterioOrdenacaoUsuario criterioOrdenacao, String nomeFiltro, String filtroEmail)
 	{
 		String SQL = "SELECT * " + 
 					 "FROM User " + 
@@ -155,16 +156,16 @@ public class UsuarioDAO extends AbstractDAO
 		
 		try
 		{
-			PreparedStatement ps = c.prepareStatement(SQL + orderingField.getClause(orderingCriteria) + SQL_PAGE);
-			ps.setString(1, "%" + nameFilter + "%");
-			ps.setString(2, "%" + emailFilter + "%");
-			ps.setInt(3, pageSize);
-			ps.setInt(4, pageNumber * pageSize);
+			PreparedStatement ps = c.prepareStatement(SQL + campoOrdenacao.getClause(criterioOrdenacao) + SQL_PAGE);
+			ps.setString(1, "%" + nomeFiltro + "%");
+			ps.setString(2, "%" + filtroEmail + "%");
+			ps.setInt(3, tamanhoPagina);
+			ps.setInt(4, pagina * tamanhoPagina);
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next())
 			{
-				Usuario item = load(rs);
+				Usuario item = carrega(rs);
 				lista.add(item);
 			}
 
@@ -181,7 +182,7 @@ public class UsuarioDAO extends AbstractDAO
 	/**
 	 * Adiciona um usuário no sistema
 	 */
-	public boolean createUser(Usuario user)
+	public boolean criaNovoUsuario(Usuario usuario)
 	{
 		Connection c = getConnection();
 		
@@ -191,19 +192,19 @@ public class UsuarioDAO extends AbstractDAO
 		try
 		{
 			CallableStatement cs = c.prepareCall("{call UsuarioInsere(?, ?, ?, ?, ?)}");
-			cs.setString(1, user.getNome());
-			cs.setString(2, user.getUsername());
-			cs.setString(3, user.getPassword());
-			cs.setInt(4, user.getPapel().getCodigo());
+			cs.setString(1, usuario.getNome());
+			cs.setString(2, usuario.getUsername());
+			cs.setString(3, usuario.getPassword());
+			cs.setInt(4, usuario.getPapel().getCodigo());
 			cs.registerOutParameter(5, Types.INTEGER);
 			cs.execute();
-			user.setId(cs.getInt(5));
+			usuario.setId(cs.getInt(5));
 			c.close();
 			return true;
 
 		} catch (SQLException e)
 		{
-			log("UserDAO.create: " + e.getMessage());
+			log("UserDAO.criaNovo: " + e.getMessage());
 			return false;
 		}
 	}
@@ -211,7 +212,7 @@ public class UsuarioDAO extends AbstractDAO
 	/**
 	 * Atualiza a senha de um usuário
 	 */
-	public boolean updatePassword(int id, String password)
+	public boolean atualizaSenha(int id, String senha)
 	{
 		Connection c = getConnection();
 		
@@ -222,14 +223,14 @@ public class UsuarioDAO extends AbstractDAO
 		{
 			CallableStatement cs = c.prepareCall("{call UsuarioTrocaSenha(?, ?)}");
 			cs.setInt(1, id);
-			cs.setString(2, password);
+			cs.setString(2, senha);
 			cs.execute();
 			c.close();
 			return true;
 
 		} catch (SQLException e)
 		{
-			log("UserDAO.updatePassword: " + e.getMessage());
+			log("UserDAO.atualizaSenha: " + e.getMessage());
 			return false;
 		}
 	}
@@ -237,7 +238,7 @@ public class UsuarioDAO extends AbstractDAO
 	/**
 	 * Registra o login de um usuário com sucesso
 	 */
-	public boolean registerSuccessfulLogin(String email)
+	public boolean registraLoginSucesso(String email)
 	{
 		Connection c = getConnection();
 		
@@ -254,7 +255,7 @@ public class UsuarioDAO extends AbstractDAO
 
 		} catch (SQLException e)
 		{
-			log("UserDAO.registerSuccessfulLogin: " + e.getMessage());
+			log("UserDAO.registraLoginSucesso: " + e.getMessage());
 			return false;
 		}
 	}
@@ -262,7 +263,7 @@ public class UsuarioDAO extends AbstractDAO
 	/**
 	 * Registra o login de um usuário com falha
 	 */
-	public boolean registerFailedLogin(String email)
+	public boolean registraLoginFalha(String email)
 	{
 		Connection c = getConnection();
 		
@@ -279,7 +280,7 @@ public class UsuarioDAO extends AbstractDAO
 
 		} catch (SQLException e)
 		{
-			log("UserDAO.registerFailedLogin: " + e.getMessage());
+			log("UserDAO.registraLoginFalha: " + e.getMessage());
 			return false;
 		}
 	}
@@ -287,7 +288,7 @@ public class UsuarioDAO extends AbstractDAO
 	/**
 	 * Armazena um token de troca de senha para um usuário
 	 */
-	public boolean saveLoginToken(int id, String token)
+	public boolean salvaTokenLogin(int id, String token)
 	{
 		Connection c = getConnection();
 		
@@ -305,7 +306,7 @@ public class UsuarioDAO extends AbstractDAO
 
 		} catch (SQLException e)
 		{
-			log("UserDAO.saveLoginToken: " + e.getMessage());
+			log("UserDAO.salvaTokenLogin: " + e.getMessage());
 			return false;
 		}
 	}
@@ -313,7 +314,7 @@ public class UsuarioDAO extends AbstractDAO
 	/**
 	 * Verifica se o token de login de um usuário é válido
 	 */
-	public boolean isValidLoginToken(String email, String token, int maxHours) 
+	public boolean verificaValidadeTokenLogin(String email, String token, int maximoHoras) 
 	{
 		String SQL = "SELECT dataTokenLogin, NOW() " +
 					 "FROM Usuario " + 
@@ -342,11 +343,37 @@ public class UsuarioDAO extends AbstractDAO
 			}
 
 			c.close();
-			return (hours < maxHours);
+			return (hours < maximoHoras);
 
 		} catch (SQLException e)
 		{
-			log("UserDAO.checkValidLoginToken: " + e.getMessage());
+			log("UserDAO.verificaValidadeTokenLogin: " + e.getMessage());
+			return false;
+		}
+	}
+
+	/**
+	 * Altera o edital selecionado por um usuário
+	 */
+	public boolean mudaEditalSelecionado(int idUsuario, int idEdital) 
+	{
+		Connection c = getConnection();
+		
+		if (c == null)
+			return false;
+		
+		try
+		{
+			CallableStatement cs = c.prepareCall("{call UsuarioMudaEditalSelecionado(?, ?)}");
+			cs.setInt(1, idUsuario);
+			cs.setInt(2, idEdital);
+			cs.executeUpdate();
+			c.close();
+			return true;
+
+		} catch (SQLException e)
+		{
+			log("UserDAO.mudaEditalSelecionado: " + e.getMessage());
 			return false;
 		}
 	}
@@ -356,7 +383,7 @@ public class UsuarioDAO extends AbstractDAO
 	 * 
 	 * @author Marcio Barros
 	 */
-	public enum UserOrderingField
+	public enum CampoOrdenacaoUsuario
 	{
 		None(""),
 		ID("id"),
@@ -365,12 +392,12 @@ public class UsuarioDAO extends AbstractDAO
 		
 		private String field;
 		
-		private UserOrderingField(String field)
+		private CampoOrdenacaoUsuario(String field)
 		{
 			this.field = field;
 		}
 		
-		public String getClause(UserOrderingCriteria type)
+		public String getClause(CriterioOrdenacaoUsuario type)
 		{
 			if (field.length() == 0)
 				return "";
@@ -384,14 +411,14 @@ public class UsuarioDAO extends AbstractDAO
 	 * 
 	 * @author Marcio Barros
 	 */
-	public enum UserOrderingCriteria
+	public enum CriterioOrdenacaoUsuario
 	{
 		ASC("ASC"),
 		DESC("DESC");
 		
 		private @Getter String clause;
 		
-		private UserOrderingCriteria(String campo)
+		private CriterioOrdenacaoUsuario(String campo)
 		{
 			this.clause = campo;
 		}

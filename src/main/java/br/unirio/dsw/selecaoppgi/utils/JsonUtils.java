@@ -17,7 +17,7 @@ public class JsonUtils
 	/**
 	 * Compara dois elementos JSON
 	 */
-	public static boolean compare(JsonElement json1, JsonElement json2)
+	public static boolean compara(JsonElement json1, JsonElement json2)
 	{
 		boolean isEqual = true;
 
@@ -36,7 +36,7 @@ public class JsonUtils
 					// Iterate JSON Elements with Key values
 					for (Entry<String, JsonElement> en : ens1)
 					{
-						isEqual = isEqual && compare(en.getValue(), json2obj.get(en.getKey()));
+						isEqual = isEqual && compara(en.getValue(), json2obj.get(en.getKey()));
 					}
 				} 
 				else
@@ -62,7 +62,7 @@ public class JsonUtils
 					// Iterate JSON Array to JSON Elements
 					for (JsonElement je : jarr1)
 					{
-						isEqual = isEqual && compare(je, jarr2.get(i));
+						isEqual = isEqual && compara(je, jarr2.get(i));
 						i++;
 					}
 				}

@@ -1,5 +1,3 @@
-var App = angular.module('ppgiSelecaoApp', ['pascalprecht.translate', 'unirio.dsw', 'ngTable']);
-
 App.controller("listaController", function ($scope, dataService, NgTableParams) {
 
 	/**

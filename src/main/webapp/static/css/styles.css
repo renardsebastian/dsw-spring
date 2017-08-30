@@ -791,12 +791,75 @@ div.editalSelecionado {
 }
 div.editalSelecionado > div.titulo {
 	font-size: 12px;
-	color: yellow;
+	color: lightgray;
 }
 div.usuarioLogado {
 	margin-right: 16px;
 }
 div.usuarioLogado > div.dataLogin {
 	font-size: 12px;
-	color: yellow;
+	color: lightgray;
+}
+.wide {
+	width: 100%;
+}
+.edital-button {
+	height: 24px;
+	line-height: 24px;
+	color: white;
+}
+.header-button {
+	color: white;
+}
+
+
+/*
+ * SIDEBAR MENU
+ */
+.mdl-layout__drawer {
+	width: 280px;
+	-webkit-transform: translateX(-280px);
+	transform: translateX(-280px);
+}
+.mdl-layout__drawer > .mdl-layout-title {
+	padding-left: 16px;
+}
+.mdl-layout__drawer > .sidebar-command {
+	margin: 4px 16px;
+	text-decoration: none;
+	color: gray;
+}
+.mdl-layout__drawer > .sidebar-command:hover {
+	text-decoration: underline;
+   	color: #36c;
+}
+.sidebar-no-command {
+	margin: 4px 16px;
+}
+
+
+/*
+ * LINKS NA HOMEPAGE
+ */
+.homepage-title {
+	font-size: 18px;
+	font-weight: 700px;
+	margin: 32px 0px 16px 0px;
+    color: #36c;
+}
+.homepage-link {
+	display: block;
+	margin: 4px 0px; 
+	text-decoration: none;
+	color: gray;
+}
+.homepage-link:hover {
+	text-decoration: underline;
+   	color: #36c;
+}
+.homepage-no-link {
+	display: block;
+	margin: 4px 0px; 
+	text-decoration: none;
+	color: gray;
 }

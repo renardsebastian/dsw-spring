@@ -123,7 +123,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter
 	    @Override
 	    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException 
 	    {
-	        return userDAO.getUserEmail(username);
+	        return userDAO.carregaUsuarioEmail(username);
 	    }
 	}
 	
@@ -143,12 +143,12 @@ public class SecurityContext extends WebSecurityConfigurerAdapter
 			try
 			{
 				Authentication auth = super.authenticate(authentication);
-				userDAO.registerSuccessfulLogin(authentication.getName());
+				userDAO.registraLoginSucesso(authentication.getName());
 				return auth;
 			} 
 			catch (BadCredentialsException e)
 			{
-				userDAO.registerFailedLogin(authentication.getName());
+				userDAO.registraLoginFalha(authentication.getName());
 				throw e;
 			} 
 			catch (LockedException e)

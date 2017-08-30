@@ -30,7 +30,7 @@ public class EditalDAO extends AbstractDAO
 	/**
 	 * Carrega um resumo com os dados de um edital
 	 */
-	private Edital loadSummary(ResultSet rs) throws SQLException
+	private Edital carregaResumo(ResultSet rs) throws SQLException
 	{		
 		Edital edital = new Edital();
 
@@ -49,9 +49,9 @@ public class EditalDAO extends AbstractDAO
 	/**
 	 * Carrega os dados completos de um edital
 	 */
-	private Edital load(ResultSet rs, UsuarioDAO userDAO) throws SQLException
+	private Edital carrega(ResultSet rs, UsuarioDAO userDAO) throws SQLException
 	{		
-		Edital edital = loadSummary(rs);
+		Edital edital = carregaResumo(rs);
 
 		String sJson = rs.getString("json");
 		
@@ -68,7 +68,7 @@ public class EditalDAO extends AbstractDAO
 	/**
 	 * Carrega um edital, dado seu identificador
 	 */
-	public Edital getEditalId(int id, UsuarioDAO userDAO)
+	public Edital carregaEditalId(int id, UsuarioDAO userDAO)
 	{
 		Connection c = getConnection();
 		
@@ -81,7 +81,7 @@ public class EditalDAO extends AbstractDAO
 			ps.setLong(1, id);
 			
 			ResultSet rs = ps.executeQuery();
-			Edital item = rs.next() ? load(rs, userDAO) : null;
+			Edital item = rs.next() ? carrega(rs, userDAO) : null;
 			
 			c.close();
 			return item;
@@ -128,7 +128,7 @@ public class EditalDAO extends AbstractDAO
 	/**
 	 * Retorna a lista de editais registrados no sistema que atendem a um filtro
 	 */
-	public List<Edital> lista(int numeroPagina, int tamanhoPagina, String filtroNome)
+	public List<Edital> lista(int pagina, int tamanhoPagina, String filtroNome)
 	{
 		String SQL = "SELECT id, nome, status " + 
 					 "FROM Edital " + 
@@ -148,12 +148,12 @@ public class EditalDAO extends AbstractDAO
 			PreparedStatement ps = c.prepareStatement(SQL);
 			ps.setString(1, "%" + filtroNome + "%");
 			ps.setInt(2, tamanhoPagina);
-			ps.setInt(3, numeroPagina * tamanhoPagina);
+			ps.setInt(3, pagina * tamanhoPagina);
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next())
 			{
-				Edital item = loadSummary(rs);
+				Edital item = carregaResumo(rs);
 				lista.add(item);
 			}
 
