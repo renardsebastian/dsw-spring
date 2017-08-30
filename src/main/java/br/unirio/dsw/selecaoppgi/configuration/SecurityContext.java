@@ -19,7 +19,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import br.unirio.dsw.selecaoppgi.service.dao.UserDAO;
+import br.unirio.dsw.selecaoppgi.service.dao.UsuarioDAO;
 
 /**
  * Classe responsável pela configuração de segurança do Spring MVC
@@ -50,7 +50,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter
 		UserDetailsService userDetailService = userDetailsService();
 		auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder());
 		
-		AuthenticationService authenticationService = new AuthenticationService();
+		AuthenticationService authenticationService = authenticationService();
 		authenticationService.setPasswordEncoder(encoder);
 		auth.authenticationProvider(authenticationService);
 	}
@@ -100,30 +100,15 @@ public class SecurityContext extends WebSecurityConfigurerAdapter
 	}
 
 	/**
-	 * Retorna o objeto que permite acesso aos dados dos usuários nas redes sociais
+	 * Retorna o objeto que realiza a autenticação
 	 */
-//	@Bean
-//	public SocialUserDetailsService socialUserDetailsService()
-//	{
-//		return new SocialNetworkUserDetailsService();
-//	}
-
-	/**
-	 * Classe de acesso aos dados dos usuários em redes sociais para o Spring Security
-	 * 
-	 * @author marciobarros
-	 */
-//	private class SocialNetworkUserDetailsService implements SocialUserDetailsService 
-//	{
-//		@Autowired
-//		private UserDAO userDAO;
-//		
-//	    @Override
-//	    public SocialUserDetails loadUserByUserId(String username) throws UsernameNotFoundException, DataAccessException 
-//	    {
-//	        return (SocialUserDetails) userDAO.getUserEmail(username);
-//	    }
-//	}
+	@Bean
+	public AuthenticationService authenticationService()
+	{
+		AuthenticationService auth = new AuthenticationService();
+		auth.setUserDetailsService(userDetailsService());
+		return auth;
+	}
 	
 	/**
 	 * Classe de acesso aos dados dos usuários na base local para o Spring Security
@@ -133,7 +118,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter
 	private class LocalAccountUserDetailsService implements UserDetailsService 
 	{
 		@Autowired
-		private UserDAO userDAO;
+		private UsuarioDAO userDAO;
 		
 	    @Override
 	    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException 
@@ -150,7 +135,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter
 	private class AuthenticationService extends DaoAuthenticationProvider
 	{
 		@Autowired
-		private UserDAO userDAO;
+		private UsuarioDAO userDAO;
 	
 		@Override
 		public Authentication authenticate(Authentication authentication) throws AuthenticationException

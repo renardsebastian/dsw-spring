@@ -49,7 +49,7 @@ public class EditalDAO extends AbstractDAO
 	/**
 	 * Carrega os dados completos de um edital
 	 */
-	private Edital load(ResultSet rs, UserDAO userDAO) throws SQLException
+	private Edital load(ResultSet rs, UsuarioDAO userDAO) throws SQLException
 	{		
 		Edital edital = loadSummary(rs);
 
@@ -68,7 +68,7 @@ public class EditalDAO extends AbstractDAO
 	/**
 	 * Carrega um edital, dado seu identificador
 	 */
-	public Edital getEditalId(int id, UserDAO userDAO)
+	public Edital getEditalId(int id, UsuarioDAO userDAO)
 	{
 		Connection c = getConnection();
 		

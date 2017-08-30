@@ -15,13 +15,13 @@ import br.unirio.dsw.selecaoppgi.model.edital.ProjetoPesquisa;
 import br.unirio.dsw.selecaoppgi.model.edital.ProvaEscrita;
 import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
 import br.unirio.dsw.selecaoppgi.reader.edital.JsonEditalReader;
-import br.unirio.dsw.selecaoppgi.service.dao.UserDAO;
+import br.unirio.dsw.selecaoppgi.service.dao.UsuarioDAO;
 import br.unirio.dsw.selecaoppgi.utils.JsonUtils;
 import br.unirio.dsw.selecaoppgi.writer.edital.JsonEditalWriter;
 
 public class TestEditalJson
 {
-	private UserDAO userDAO;
+	private UsuarioDAO userDAO;
 	private Usuario fulano;
 	private Usuario cicrano;
 
@@ -34,7 +34,7 @@ public class TestEditalJson
 		cicrano = new Usuario("Cicrano", "cicrano@somewhere.com", "cicrano", false);
 		cicrano.setId(2);
 		
-		userDAO = mock(UserDAO.class);
+		userDAO = mock(UsuarioDAO.class);
 		when(userDAO.getUserId(fulano.getId())).thenReturn(fulano);
 		when(userDAO.getUserId(cicrano.getId())).thenReturn(cicrano);
 	}

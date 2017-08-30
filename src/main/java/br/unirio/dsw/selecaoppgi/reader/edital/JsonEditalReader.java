@@ -13,7 +13,7 @@ import br.unirio.dsw.selecaoppgi.model.edital.ProvaEscrita;
 import br.unirio.dsw.selecaoppgi.model.edital.StatusEdital;
 import br.unirio.dsw.selecaoppgi.model.edital.SubcriterioAlinhamento;
 import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
-import br.unirio.dsw.selecaoppgi.service.dao.UserDAO;
+import br.unirio.dsw.selecaoppgi.service.dao.UsuarioDAO;
 
 /**
  * Classe responsável por carregar um edital a partir da sua representação JSON
@@ -25,7 +25,7 @@ public class JsonEditalReader
 	/**
 	 * Carrega um edital a partir da representação JSON
 	 */
-	public void execute(JsonObject json, Edital edital, UserDAO userDAO)
+	public void execute(JsonObject json, Edital edital, UsuarioDAO userDAO)
 	{
 		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
 
@@ -63,7 +63,7 @@ public class JsonEditalReader
 	/**
 	 * Carrega a comissão de seleção a partir da representação JSON
 	 */
-	private void carregaRepresentacaoComissaoSelecao(JsonObject json, Edital edital, UserDAO userDAO)
+	private void carregaRepresentacaoComissaoSelecao(JsonObject json, Edital edital, UsuarioDAO userDAO)
 	{
 		JsonArray jsonProfessores = json.getAsJsonArray("selecao");
 		
@@ -84,7 +84,7 @@ public class JsonEditalReader
 	/**
 	 * Carrega a comissão de recursos a partir da representação JSON
 	 */
-	private void carregaRepresentacaoComissaoRecursos(JsonObject json, Edital edital, UserDAO userDAO)
+	private void carregaRepresentacaoComissaoRecursos(JsonObject json, Edital edital, UsuarioDAO userDAO)
 	{
 		JsonArray jsonProfessores = json.getAsJsonArray("recursos");
 		
@@ -145,7 +145,7 @@ public class JsonEditalReader
 	/**
 	 * Carrega a lista de projetos de pesquisa a partir da representação JSON
 	 */
-	private void carregaRepresentacaoProjetosPesquisa(JsonObject json, Edital edital, UserDAO userDAO)
+	private void carregaRepresentacaoProjetosPesquisa(JsonObject json, Edital edital, UsuarioDAO userDAO)
 	{
 		JsonArray jsonProjetos = json.getAsJsonArray("projetos");
 		
@@ -163,7 +163,7 @@ public class JsonEditalReader
 	/**
 	 * Carrega um projeto de pesquisa a partir da representação JSON
 	 */
-	private ProjetoPesquisa carregaRepresentacaoProjetoPesquisa(JsonObject json, Edital edital, UserDAO userDAO)
+	private ProjetoPesquisa carregaRepresentacaoProjetoPesquisa(JsonObject json, Edital edital, UsuarioDAO userDAO)
 	{
 		ProjetoPesquisa projeto = new ProjetoPesquisa();
 		projeto.setCodigo(json.get("codigo").getAsString());
@@ -177,7 +177,7 @@ public class JsonEditalReader
 	/**
 	 * Carrega a lista de professores de um projeto de pesquisa a partir da representação JSON
 	 */
-	private void carregaRepresentacaoProfessoresProjetoPesquisa(JsonObject json, ProjetoPesquisa projeto, UserDAO userDAO)
+	private void carregaRepresentacaoProfessoresProjetoPesquisa(JsonObject json, ProjetoPesquisa projeto, UsuarioDAO userDAO)
 	{
 		JsonArray jsonProfessores = json.getAsJsonArray("professores");
 		

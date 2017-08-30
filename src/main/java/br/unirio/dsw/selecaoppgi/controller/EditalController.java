@@ -21,7 +21,7 @@ import com.google.gson.JsonObject;
 
 import br.unirio.dsw.selecaoppgi.model.edital.Edital;
 import br.unirio.dsw.selecaoppgi.service.dao.EditalDAO;
-import br.unirio.dsw.selecaoppgi.service.dao.UserDAO;
+import br.unirio.dsw.selecaoppgi.service.dao.UsuarioDAO;
 import br.unirio.dsw.selecaoppgi.writer.edital.JsonEditalWriter;
 
 /**
@@ -33,7 +33,7 @@ import br.unirio.dsw.selecaoppgi.writer.edital.JsonEditalWriter;
 public class EditalController
 {
 	@Autowired
-	private UserDAO userDAO; 
+	private UsuarioDAO userDAO; 
 
 	@Autowired
 	private EditalDAO editalDAO; 
@@ -89,6 +89,26 @@ public class EditalController
 		root.addProperty("TotalRecordCount", total);
 		root.add("Records", jsonEditais);
 		return root.toString();
+	}
+
+	/**
+	 * Ação AJAX que lista todos os editais
+	 */
+	@RequestMapping(value = "/edital/summary", method = RequestMethod.GET, produces = "application/json")
+	public String summary()
+	{
+		List<Edital> editais = editalDAO.lista(0, 100000, "");
+		JsonArray jsonEditais = new JsonArray();
+		
+		for (Edital edital : editais)
+		{
+			JsonObject jsonEdital = new JsonObject();
+			jsonEdital.addProperty("id", edital.getId());
+			jsonEdital.addProperty("nome", edital.getNome());
+			jsonEditais.add(jsonEdital);
+		}
+		
+		return jsonEditais.toString();
 	}
 
 	/**

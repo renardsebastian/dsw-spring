@@ -23,7 +23,7 @@ import lombok.Getter;
  * @author Marcio Barros
  */
 @Service("userDAO")
-public class UserDAO extends AbstractDAO
+public class UsuarioDAO extends AbstractDAO
 {
 	/**
 	 * Carrega os dados de um usuário a partir do resultado de uma consulta
@@ -42,6 +42,7 @@ public class UserDAO extends AbstractDAO
 		user.setContadorLoginFalhas(rs.getInt("contadorLoginFalha"));
 		user.setTokenLogin(rs.getString("tokenLogin"));
 		user.setDataTokenLogin(DateUtils.toDateTime(rs.getTimestamp("dataTokenLogin")));
+		user.setIdEdital(rs.getInt("idEditalSelecionado"));
 		return user;
 	}
 

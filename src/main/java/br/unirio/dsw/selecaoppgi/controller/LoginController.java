@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,11 +23,14 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import br.unirio.dsw.selecaoppgi.configuration.ApplicationConfiguration;
+import br.unirio.dsw.selecaoppgi.model.edital.Edital;
 import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
-import br.unirio.dsw.selecaoppgi.service.dao.UserDAO;
+import br.unirio.dsw.selecaoppgi.service.dao.EditalDAO;
+import br.unirio.dsw.selecaoppgi.service.dao.UsuarioDAO;
 import br.unirio.dsw.selecaoppgi.service.email.EmailService;
 import br.unirio.dsw.selecaoppgi.utils.CryptoUtils;
 import br.unirio.dsw.selecaoppgi.utils.ValidationUtils;
+import br.unirio.dsw.selecaoppgi.view.login.ChangePasswordForm;
 import br.unirio.dsw.selecaoppgi.view.login.ForgotPasswordForm;
 import br.unirio.dsw.selecaoppgi.view.login.RegistrationForm;
 import br.unirio.dsw.selecaoppgi.view.login.ResetPasswordForm;
@@ -46,7 +50,10 @@ public class LoginController
 	private PasswordEncoder passwordEncoder;
     
     @Autowired
-	private UserDAO userDAO;
+	private UsuarioDAO userDAO;
+    
+    @Autowired
+	private EditalDAO editalDAO;
     
     @Autowired
 	private EmailService emailService;
@@ -55,8 +62,17 @@ public class LoginController
 	 * Ação que redireciona o usuário para a página inicial da aplicação
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String getIndexPage()
+	public String getIndexPage(HttpServletRequest request)
 	{
+		Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Edital edital = (Edital) request.getSession().getAttribute("edital");
+		
+		if ((edital == null || edital.getId() != usuario.getIdEdital()) && usuario.getIdEdital() > 0)
+		{
+			edital = editalDAO.getEditalId(usuario.getIdEdital(), userDAO);
+			request.getSession().setAttribute("edital", edital);
+		}
+		  
 		return "homepage/Index";
 	}
 
@@ -252,5 +268,46 @@ public class LoginController
         String encodedPassword = passwordEncoder.encode(form.getNewPassword());
         userDAO.updatePassword(user.getId(), encodedPassword);
         return "redirect:/login?message=login.reset.password.success.created";
+	}
+	
+	/**
+	 * Ação que prepara o formulário de troca de senha
+	 */
+	@RequestMapping(value = "/login/change", method = RequestMethod.GET)
+	public String showChangePasswordPage(Model model)
+	{
+		ChangePasswordForm form = new ChangePasswordForm();
+        model.addAttribute("form", form);
+		return "login/change";
+	}
+	
+	/**
+	 * Ação que troca a senha do usuário logado
+	 */
+	@RequestMapping(value = "/login/change", method = RequestMethod.POST)
+	public String resetPassword(@ModelAttribute("form") ChangePasswordForm form, BindingResult result, WebRequest request, Locale locale)
+	{
+		Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+		if (usuario == null)
+			addFieldError("currentPassword", "", "login.change.password.error.user.not.logged", result);
+
+        Usuario user = userDAO.getUserId(usuario.getId());
+
+        if (!passwordEncoder.matches(form.getCurrentPassword(), user.getPassword()))
+			addFieldError("currentPassword", "", "login.change.password.invalid.current.password", result);
+		
+		if (!ValidationUtils.validPassword(form.getNewPassword()))
+			addFieldError("newPassword", form.getNewPassword(), "login.change.password.error.password.invalid", result);
+		
+		if (!form.getNewPassword().equals(form.getRepeatNewPassword()))
+			addFieldError("repeatNewPassword", form.getNewPassword(), "login.change.password.error.password.different", result);
+		
+        if (result.hasErrors())
+            return "login/change";
+ 
+        String encodedPassword = passwordEncoder.encode(form.getNewPassword());
+        userDAO.updatePassword(usuario.getId(), encodedPassword);
+        return "redirect:/?message=login.change.password.success.created";
 	}
 }

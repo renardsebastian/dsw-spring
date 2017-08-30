@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -26,6 +28,7 @@ public class Usuario extends org.springframework.security.core.userdetails.User
 	private @Setter @Getter int contadorLoginFalhas;
 	private @Setter @Getter String tokenLogin;
 	private @Setter @Getter DateTime dataTokenLogin;
+	private @Setter @Getter int idEdital;
 
 	/**
 	 * Inicializa um usuário
@@ -47,5 +50,14 @@ public class Usuario extends org.springframework.security.core.userdetails.User
 		SimpleGrantedAuthority authority = new SimpleGrantedAuthority(PapelUsuario.ROLE_BASIC.toString());
         authorities.add(authority);
 		return authorities;
+	}
+	
+	/**
+	 * Retorna a data do último login formatada
+	 */
+	public String getDataUltimoLoginFormatada()
+	{
+		DateTimeFormatter dtf = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss");
+		return dtf.print(dataUltimoLogin);
 	}
 }

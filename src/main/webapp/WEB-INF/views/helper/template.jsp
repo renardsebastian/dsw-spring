@@ -30,7 +30,7 @@ var contextPath = "${pageContext.request.contextPath}";
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
 
         <!-- Header -->
-        <header class="mdl-layout__header">
+        <header class="mdl-layout__header" data-ng-controller="TopNavigatorController">
             <div class="mdl-layout__header-row">
                 <!-- Title -->
                 <span class="mdl-layout-title">
@@ -43,7 +43,21 @@ var contextPath = "${pageContext.request.contextPath}";
 
                 <!-- Selected item -->
                 <nav class="mdl-navigation">
-                	<select><option value="10" SELECTED>EDITAL</option></select>
+					<sec:authorize access="isAuthenticated()">
+	                		<div class="editalSelecionado">
+	                			<div class="titulo">
+	                				<spring:message code="template.titulo.edital.selecionado"/>:
+	                			</div>
+	                			<div>
+			                		<c:if test="${empty session.edital}">
+					                	<spring:message code="template.titulo.edital.nenhum"/>
+					            </c:if>
+			                		<c:if test="${not empty session.edital}">
+					                	${session.edital.nome}
+					            </c:if>
+					        </div>
+	                		</div>
+	                	</sec:authorize>
                 </nav>
 
                 <!-- Spacer -->
@@ -53,14 +67,22 @@ var contextPath = "${pageContext.request.contextPath}";
                 <!-- Navigation -->
                 <nav class="mdl-navigation">
 					<sec:authorize access="isAuthenticated()">
-	                    <span>
-	                    	<spring:message code="template.label.ola"/>, <sec:authentication property="principal.nome"/>!
-	                    </span>
-	                    <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/logout">
-	                    	<spring:message code="template.comando.trocasenha"/>
+	                    <div class="usuarioLogado">
+	                    		<div class="cumprimento">
+		                    		<spring:message code="template.label.ola"/>, <sec:authentication property="principal.nome"/>!
+	                    		</div>
+	                    		<div class="dataLogin">
+		                    		<sec:authentication var="user" property="principal" />
+		                    		<c:if test="${not empty user.dataUltimoLogin}">
+		                    			Último login em ${user.dataUltimoLoginFormatada} 
+		                    		</c:if>
+	                    		</div>
+	                    </div>
+	                    <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/login/change">
+	                    		<spring:message code="template.comando.trocasenha"/>
 	                    </a>
 	                    <a class="mdl-navigation__link" href="${pageContext.request.contextPath}/logout">
-	                    	<spring:message code="template.comando.logout"/>
+	                    		<spring:message code="template.comando.logout"/>
 	                    </a>
                     </sec:authorize>      
                 </nav>
@@ -99,11 +121,39 @@ var contextPath = "${pageContext.request.contextPath}";
 	</div>
 
 	
+	<!-- Janela de selecao de edital -->
+	<dialog class="mdl-dialog">
+	    <h4 class="mdl-dialog__title">
+	    		<spring:message code="template.dialogo.seleciona.edital.titulo"/>
+	    </h4>
+	    <div class="mdl-dialog__content">
+	      	<p>
+	        		<spring:message code="template.dialogo.seleciona.edital.subtitulo"/>
+	      	</p>
+	      	<p>
+	      		<select ng-model="editalSelecionado">
+	      			<option ng-repeat="edital in editais" value="{{edital.id}}">{{edital.nome}}</option>
+				</select>
+	      	</p>
+	    	</div>
+	    <div class="mdl-dialog__actions">
+	      	<button type="button" class="mdl-button">
+	      		<spring:message code="template.dialogo.seleciona.edital.botao.ok"/>
+			</button>
+	      	<button type="button" class="mdl-button close">
+	      		<spring:message code="template.dialogo.seleciona.edital.botao.cancela"/>
+	      	</button>
+	    </div>
+	</dialog>
+
+
     <!-- Material design -->
     <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
     <script src="${pageContext.request.contextPath}/static/third-party/ngTranslate/angular-translate.min.js"></script>
 	<script src="${pageContext.request.contextPath}/static/js/app.js"></script>
+	<script src="${pageContext.request.contextPath}/static/js/helper/navigator.dataService.js"></script>
+	<script src="${pageContext.request.contextPath}/static/js/helper/navigator.controller.js"></script>
 
 	<script>
 	angular.element(document).ready(function () {
