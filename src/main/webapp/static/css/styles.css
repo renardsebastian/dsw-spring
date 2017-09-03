@@ -885,3 +885,6 @@ div.clear {
 .editor-peso-prova:focus {
 	outline: none;
 }
+main {
+	background: #eee;
+}

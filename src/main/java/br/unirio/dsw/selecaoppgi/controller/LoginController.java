@@ -11,17 +11,15 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
-import br.unirio.dsw.selecaoppgi.configuration.ApplicationConfiguration;
+import br.unirio.dsw.selecaoppgi.configuration.Configuration;
 import br.unirio.dsw.selecaoppgi.model.edital.Edital;
 import br.unirio.dsw.selecaoppgi.model.usuario.PapelUsuario;
 import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
@@ -83,7 +81,7 @@ public class LoginController
     public ModelAndView mostraPaginaLogin(@RequestParam(value = "error", required = false) String error, HttpServletRequest request) 
     {
 		ModelAndView model = new ModelAndView();
-	
+
 		if (error != null)
 			model.addObject("error", pegaMenssagemErro(request, "SPRING_SECURITY_LAST_EXCEPTION"));
 
@@ -111,35 +109,37 @@ public class LoginController
      * Ação que redireciona o usuário para a tela de criação de conta
      */
 	@RequestMapping(value = "/login/create", method = RequestMethod.GET)
-	public String mostraPaginaRegistro(WebRequest request, Model model)
+	public ModelAndView mostraPaginaRegistro()
 	{
-        model.addAttribute("user", new RegistrationForm());
-		return "login/create";
+		ModelAndView model = new ModelAndView();
+        model.addObject("user", new RegistrationForm());
+        model.setViewName("login/create");
+		return model;
 	}
 	
 	/**
 	 * Ação que cria a conta de um novo usuário
 	 */
 	@RequestMapping(value = "/login/create", method = RequestMethod.POST)
-    public String criaNovoUsuario(@ModelAttribute("user") RegistrationForm form, BindingResult result, WebRequest request) 
+    public String salvaNovoUsuario(@ModelAttribute("user") RegistrationForm form, BindingResult result, Locale locale) 
 	{
 		if (form.getName().length() == 0)
-			adicionaErroCampo("name", form.getName(), "login.new.account.error.name.empty", result);
+	    	result.addError(new FieldError("user", "name", messageSource.getMessage("login.new.account.error.name.empty", null, locale)));
 		
 		if (form.getEmail().length() == 0)
-			adicionaErroCampo("email", form.getEmail(), "login.new.account.error.email.empty", result);
+	    	result.addError(new FieldError("user", "email", messageSource.getMessage("login.new.account.error.email.empty", null, locale)));
 		
 		if (!ValidationUtils.validEmail(form.getEmail()))
-			adicionaErroCampo("email", form.getEmail(), "login.new.account.error.email.invalid", result);
+	    	result.addError(new FieldError("user", "email", messageSource.getMessage("login.new.account.error.email.invalid", null, locale)));
 		
 		if (userDAO.carregaUsuarioEmail(form.getEmail()) != null)
-			adicionaErroCampo("email", form.getEmail(), "login.new.account.error.email.taken", result);
+	    	result.addError(new FieldError("user", "email", messageSource.getMessage("login.new.account.error.email.taken", null, locale)));
 		
 		if (!ValidationUtils.validPassword(form.getPassword()))
-			adicionaErroCampo("password", form.getPassword(), "login.new.account.error.password.invalid", result);
+	    	result.addError(new FieldError("user", "password", messageSource.getMessage("login.new.account.error.password.invalid", null, locale)));
 		
 		if (!form.getPassword().equals(form.getRepeatPassword()))
-			adicionaErroCampo("password", form.getPassword(), "login.new.account.error.password.different", result);
+	    	result.addError(new FieldError("user", "password", messageSource.getMessage("login.new.account.error.password.different", null, locale)));
 		
         if (result.hasErrors())
             return "login/create";
@@ -153,36 +153,29 @@ public class LoginController
         return "redirect:/login?message=login.new.account.success.created";
     }
     
-	/**
-	 * Registra um erro associado a um campo de um formulário
-	 */
-    private void adicionaErroCampo(String fieldName, String fieldValue, String errorCode, BindingResult result) 
-    {
-        FieldError error = new FieldError("user", fieldName, fieldValue, false, new String[]{errorCode}, new Object[]{}, errorCode);
-        result.addError(error);
-    }
-
     /**
      * Ação que redireciona o usuário para a tela de esquecimento de senha
      */
 	@RequestMapping(value = "/login/forgot", method = RequestMethod.GET)
-	public String mostraPaginaRecuperacaoSenha(WebRequest request, Model model)
+	public ModelAndView mostraPaginaRecuperacaoSenha()
 	{
-        model.addAttribute("form", new ForgotPasswordForm());
-		return "login/forgot";
+		ModelAndView model = new ModelAndView();
+        model.addObject("form", new ForgotPasswordForm());
+        model.setViewName("login/forgot");
+		return model;
 	}
 
 	/**
 	 * Ação que envia um token para troca de senha
 	 */
 	@RequestMapping(value = "/login/forgot", method = RequestMethod.POST)
-	private String enviaTokenRecuperacaoSenha(@ModelAttribute("form") RegistrationForm form, BindingResult result, WebRequest request, Locale locale)
+	public String enviaTokenRecuperacaoSenha(@ModelAttribute("form") RegistrationForm form, BindingResult result, Locale locale)
 	{
 		if (form.getEmail().length() == 0)
-			adicionaErroCampo("email", form.getEmail(), "login.forgot.password.error.email.empty", result);
+	    	result.addError(new FieldError("form", "email", messageSource.getMessage("login.forgot.password.error.email.empty", null, locale)));
 		
 		if (!ValidationUtils.validEmail(form.getEmail()))
-			adicionaErroCampo("email", form.getEmail(), "login.forgot.password.error.email.invalid", result);
+	    	result.addError(new FieldError("form", "email", messageSource.getMessage("login.forgot.password.error.email.invalid", null, locale)));
 
         if (result.hasErrors())
             return "login/forgot";
@@ -194,7 +187,7 @@ public class LoginController
 			String token = CryptoUtils.createToken();
 			userDAO.salvaTokenLogin(user.getId(), token);
 			
-			String url = ApplicationConfiguration.getHostname() + "/login/reset.do?token=" + token + "&email=" + user.getUsername();		
+			String url = Configuration.getHostname() + "/login/reset.do?token=" + token + "&email=" + user.getUsername();		
 			String title = messageSource.getMessage("login.forgot.password.email.inicializacao.senha.titulo", null, locale);
 			String contents = messageSource.getMessage("login.forgot.password.email.inicializacao.senha.corpo", new String[] { url }, locale);
 			emailService.sendToUser(user.getNome(), user.getUsername(), title, contents);
@@ -207,43 +200,46 @@ public class LoginController
 	 * Ação que prepara o formulário de reset de senha
 	 */
 	@RequestMapping(value = "/login/reset", method = RequestMethod.GET)
-	public String mostraPaginaReinicializacaoSenha(@ModelAttribute("email") String email, @ModelAttribute("token") String token, WebRequest request, Model model)
+	public ModelAndView mostraPaginaReinicializacaoSenha(@ModelAttribute("email") String email, @ModelAttribute("token") String token)
 	{
 		ResetPasswordForm form = new ResetPasswordForm();
 		form.setEmail(email);
 		form.setToken(token);
-        model.addAttribute("form", form);
-		return "login/reset";
+		
+		ModelAndView model = new ModelAndView();
+        model.addObject("form", form);
+        model.setViewName("login/reset");
+		return model;
 	}
 	
 	/**
 	 * Ação que troca a senha baseada em reinicialização
 	 */
 	@RequestMapping(value = "/login/reset", method = RequestMethod.POST)
-	public String reinicializaSenha(@ModelAttribute("form") ResetPasswordForm form, BindingResult result, WebRequest request, Locale locale)
+	public String reinicializaSenha(@ModelAttribute("form") ResetPasswordForm form, BindingResult result, Locale locale)
 	{
 		if (form.getEmail().length() == 0)
-			adicionaErroCampo("newPassword", form.getEmail(), "login.reset.password.error.email.empty", result);
+	    	result.addError(new FieldError("form", "newPassword", messageSource.getMessage("login.reset.password.error.email.empty", null, locale)));
 		
 		if (!ValidationUtils.validEmail(form.getEmail()))
-			adicionaErroCampo("newPassword", form.getEmail(), "login.reset.password.error.email.invalid", result);
+	    	result.addError(new FieldError("form", "newPassword", messageSource.getMessage("login.reset.password.error.email.invalid", null, locale)));
 		
 		if (form.getToken().length() == 0)
-			adicionaErroCampo("newPassword", form.getToken(), "login.reset.password.error.token.empty", result);
+	    	result.addError(new FieldError("form", "newPassword", messageSource.getMessage("login.reset.password.error.token.empty", null, locale)));
 		
 		Usuario user = userDAO.carregaUsuarioEmail(form.getEmail());
 
 		if (user == null)
-			adicionaErroCampo("newPassword", form.getEmail(), "login.reset.password.error.email.unrecognized", result);
+	    	result.addError(new FieldError("form", "newPassword", messageSource.getMessage("login.reset.password.error.email.unrecognized", null, locale)));
 		
 		if (!userDAO.verificaValidadeTokenLogin(form.getEmail(), form.getToken(), 72))
-			adicionaErroCampo("newPassword", form.getToken(), "login.reset.password.error.token.invalid", result);
+	    	result.addError(new FieldError("form", "newPassword", messageSource.getMessage("login.reset.password.error.token.invalid", null, locale)));
 		
 		if (!ValidationUtils.validPassword(form.getNewPassword()))
-			adicionaErroCampo("newPassword", form.getNewPassword(), "login.reset.password.error.password.invalid", result);
+	    	result.addError(new FieldError("form", "newPassword", messageSource.getMessage("login.reset.password.error.password.invalid", null, locale)));
 		
 		if (!form.getNewPassword().equals(form.getRepeatNewPassword()))
-			adicionaErroCampo("repeatNewPassword", form.getNewPassword(), "login.reset.password.error.password.different", result);
+	    	result.addError(new FieldError("form", "repeatNewPassword", messageSource.getMessage("login.reset.password.error.password.different", null, locale)));
 		
         if (result.hasErrors())
             return "login/reset";
@@ -257,34 +253,37 @@ public class LoginController
 	 * Ação que prepara o formulário de troca de senha
 	 */
 	@RequestMapping(value = "/login/change", method = RequestMethod.GET)
-	public String mostraPaginaTrocaSenha(Model model)
+	public ModelAndView mostraPaginaTrocaSenha()
 	{
 		ChangePasswordForm form = new ChangePasswordForm();
-        model.addAttribute("form", form);
-		return "login/change";
+		
+		ModelAndView model = new ModelAndView();
+        model.addObject("form", form);
+        model.setViewName("login/change");
+		return model;
 	}
 	
 	/**
 	 * Ação que troca a senha do usuário logado
 	 */
 	@RequestMapping(value = "/login/change", method = RequestMethod.POST)
-	public String trocaSenha(@ModelAttribute("form") ChangePasswordForm form, BindingResult result, WebRequest request, Locale locale)
+	public String trocaSenha(@ModelAttribute("form") ChangePasswordForm form, BindingResult result, Locale locale)
 	{
 		Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 		if (usuario == null)
-			adicionaErroCampo("currentPassword", "", "login.change.password.error.user.not.logged", result);
+	    	result.addError(new FieldError("form", "currentPassword", messageSource.getMessage("login.change.password.error.user.not.logged", null, locale)));
 
         Usuario user = userDAO.carregaUsuarioId(usuario.getId());
 
         if (!passwordEncoder.matches(form.getCurrentPassword(), user.getPassword()))
-			adicionaErroCampo("currentPassword", "", "login.change.password.invalid.current.password", result);
+	    	result.addError(new FieldError("form", "currentPassword", messageSource.getMessage("login.change.password.invalid.current.password", null, locale)));
 		
 		if (!ValidationUtils.validPassword(form.getNewPassword()))
-			adicionaErroCampo("newPassword", form.getNewPassword(), "login.change.password.error.password.invalid", result);
+	    	result.addError(new FieldError("form", "newPassword", messageSource.getMessage("login.change.password.error.password.invalid", null, locale)));
 		
 		if (!form.getNewPassword().equals(form.getRepeatNewPassword()))
-			adicionaErroCampo("repeatNewPassword", form.getNewPassword(), "login.change.password.error.password.different", result);
+	    	result.addError(new FieldError("form", "repeatNewPassword", messageSource.getMessage("login.change.password.error.password.different", null, locale)));
 		
         if (result.hasErrors())
             return "login/change";

@@ -8,6 +8,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,6 +47,7 @@ public class EditalController
 	/**
 	 * Ação que redireciona o usuário para a lista de editais
 	 */
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(value = "/edital/list", method = RequestMethod.GET)
 	public ModelAndView mostraPaginaLista()
 	{
@@ -55,6 +57,7 @@ public class EditalController
 	/**
 	 * Ação que redireciona o usuário para o formulário de edição de edital
 	 */
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(value = "/edital/edit/{id}", method = RequestMethod.GET)
 	public ModelAndView mostraPaginaEdicao(@PathVariable("id") int id)
 	{

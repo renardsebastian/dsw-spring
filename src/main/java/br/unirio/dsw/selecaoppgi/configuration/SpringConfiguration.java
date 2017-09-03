@@ -2,9 +2,14 @@ package br.unirio.dsw.selecaoppgi.configuration;
 
 import java.util.Properties;
 
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -22,6 +27,8 @@ import org.springframework.web.servlet.view.JstlView;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "br.unirio.dsw.selecaoppgi")
+@PropertySource("classpath:configuration.properties")
+@Import({SecurityContext.class})
 public class SpringConfiguration extends WebMvcConfigurerAdapter
 {
 	/**
@@ -74,5 +81,26 @@ public class SpringConfiguration extends WebMvcConfigurerAdapter
         exceptionResolver.setStatusCodes(statusCodes);
  
         return exceptionResolver;
+    }
+    
+	/**
+	 * Retorna o objeto responsável pela tradução de mensagens
+	 */
+	@Bean
+    public MessageSource messageSource() 
+    {
+        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+        messageSource.setBasename("i18n/messages");
+        messageSource.setUseCodeAsDefaultMessage(true);
+        return messageSource;
+    }
+ 
+	/**
+	 * Prepara a leitura do arquivo de propriedades
+	 */
+    @Bean
+    public PropertySourcesPlaceholderConfigurer propertyPlaceHolderConfigurer() 
+    {
+        return new PropertySourcesPlaceholderConfigurer();
     }
 }

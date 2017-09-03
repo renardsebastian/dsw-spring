@@ -71,22 +71,26 @@ public class SpringInitializer extends AbstractAnnotationConfigDispatcherServlet
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException 
     {
+    	// Indica o contexto da aplicação
         AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
-        rootContext.register(ApplicationContext.class);
- 
+        rootContext.register(SpringConfiguration.class);
+
+        // Liga o servlet da camada de controle do framework
         ServletRegistration.Dynamic dispatcher = servletContext.addServlet("dispatcher", new DispatcherServlet(rootContext));
         dispatcher.setLoadOnStartup(1);
         dispatcher.addMapping("/");
  
         EnumSet<DispatcherType> dispatcherTypes = EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD);
- 
+
+        // Indica o encoding das requisições
         CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
         characterEncodingFilter.setEncoding("UTF-8");
         characterEncodingFilter.setForceEncoding(true);
  
         FilterRegistration.Dynamic characterEncoding = servletContext.addFilter("characterEncoding", characterEncodingFilter);
         characterEncoding.addMappingForUrlPatterns(dispatcherTypes, true, "/*");
- 
+
+        // Associa os mecanismos de segurança a todas as requisições
         FilterRegistration.Dynamic security = servletContext.addFilter("springSecurityFilterChain", new DelegatingFilterProxy());
         security.addMappingForUrlPatterns(dispatcherTypes, true, "/*");
  
@@ -95,7 +99,9 @@ public class SpringInitializer extends AbstractAnnotationConfigDispatcherServlet
 }
 
 /**
- * Filtro de servlet que permite acesso de diferentes origens 
+ * Filtro de servlet que permite acesso a recursos de diferentes origens (Cross-origin requests)
+ * 
+ * Veja também: https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS
  * 
  * @author marciobarros
  */

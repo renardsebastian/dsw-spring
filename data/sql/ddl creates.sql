@@ -25,8 +25,7 @@ CREATE TABLE IF NOT EXISTS Usuario
 	-- edital selecionado
 	idEditalSelecionado INT,
 
-	PRIMARY KEY(id),
-    FOREIGN KEY(idEditalSelecionado) REFERENCES Edital(id)  
+	PRIMARY KEY(id)
 );
 
 
@@ -46,16 +45,13 @@ CREATE TABLE IF NOT EXISTS Edital
 	PRIMARY KEY(id)
 );
 
--- DROP TABLE EditalComissaoSelecao;
--- DROP TABLE EditalComissaoRecursos;
--- DROP TABLE EditalSubcriterioAlinhamento;
--- DROP TABLE EditalCriterioAlinhamento;
--- DROP TABLE EditalProvaEscritaQuestao;
--- DROP TABLE EditalProvaEscrita;
--- DROP TABLE EditalProjetoPesquisaProfessor;
--- DROP TABLE EditalProjetoPesquisaProvaEscrita;
--- DROP TABLE EditalProjetoPesquisa;
--- DROP TABLE Edital;
+
+--
+-- RELACAO ENTRE USUARIO E EDITAL SELECIONADO
+--
+
+ALTER TABLE Usuario
+ADD CONSTRAINT FOREIGN KEY(idEditalSelecionado) REFERENCES Edital(id);  
 
 
 --

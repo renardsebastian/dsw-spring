@@ -14,7 +14,7 @@ import com.squareup.okhttp.Request.Builder;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
-import br.unirio.dsw.selecaoppgi.configuration.ApplicationConfiguration;
+import br.unirio.dsw.selecaoppgi.configuration.Configuration;
 
 /**
  * Classe responsável pelo envio de e-mails
@@ -130,7 +130,7 @@ public class EmailService
 		jsonContents.add(jsonBody);
 		
 		// Poca-yoke para evitar o envio de e-mails de desenvolvimento para usuários finais
-		if (ApplicationConfiguration.isStaggingEnvironment())
+		if (Configuration.isStaggingEnvironment())
 			email = DEVELOPERS_ACCOUNT;
 		
 		// Registra assunto do email

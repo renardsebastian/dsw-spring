@@ -9,7 +9,7 @@ import java.util.Properties;
  * 
  * @author marcio.barros
  */
-public class ApplicationConfiguration 
+public class Configuration 
 {
 	private static Properties configuracao = null;
 
