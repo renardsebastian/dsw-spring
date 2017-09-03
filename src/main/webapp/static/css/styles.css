@@ -646,8 +646,8 @@ div.left {
 div.right {
 	float: right;
 }
-.mdl-card__title {
-	/* background: #BCC6CC; */
+div.text-right {
+	text-align: right;
 }
 div.page-header > h3 {
 	margin: 0px;
@@ -887,4 +887,8 @@ div.clear {
 }
 main {
 	background: #eee;
+}
+h4.list-title {
+	margin-top: 0px;
+	margin-bottom: 8px;
 }

@@ -20,9 +20,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import br.unirio.dsw.selecaoppgi.model.edital.Edital;
 import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
+import br.unirio.dsw.selecaoppgi.reader.edital.JsonEditalReader;
 import br.unirio.dsw.selecaoppgi.service.dao.EditalDAO;
 import br.unirio.dsw.selecaoppgi.service.dao.UsuarioDAO;
 import br.unirio.dsw.selecaoppgi.writer.edital.JsonEditalWriter;
@@ -69,6 +71,7 @@ public class EditalController
 	/**
 	 * Ação que redireciona o usuário para o formulário de criação de edital
 	 */
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(value = "/edital/create", method = RequestMethod.GET)
 	public ModelAndView mostraPaginaCriacao()
 	{
@@ -80,6 +83,7 @@ public class EditalController
 	/**
 	 * Ação AJAX que lista todos os editais
 	 */
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(value = "/edital", method = RequestMethod.GET, produces = "application/json")
 	public String lista(@ModelAttribute("page") int pagina, @ModelAttribute("size") int tamanho, @ModelAttribute("nome") String filtroNome)
 	{
@@ -137,9 +141,13 @@ public class EditalController
 	/**
 	 * Ação AJAX que atualiza um edital
 	 */
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(value = "/edital/", method = RequestMethod.POST)
-	public String atualiza(@RequestBody Edital edital, Locale locale)
+	public String atualiza(@RequestBody String sEdital, Locale locale)
 	{
+		JsonObject jsonEdital = (JsonObject) new JsonParser().parse(sEdital);
+		Edital edital = new JsonEditalReader().execute(jsonEdital, userDAO);
+		
 		if (edital.getNome().length() == 0)
 			return ajaxError("edital.form.nome.vazio", locale);
 		

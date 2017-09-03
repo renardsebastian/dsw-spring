@@ -30,10 +30,8 @@ public class EditalDAO extends AbstractDAO
 	/**
 	 * Carrega um resumo com os dados de um edital
 	 */
-	private Edital carregaResumo(ResultSet rs) throws SQLException
+	private Edital carregaResumo(ResultSet rs, Edital edital) throws SQLException
 	{		
-		Edital edital = new Edital();
-
 		int id = rs.getInt("id");
 		edital.setId(id);
 		
@@ -51,26 +49,18 @@ public class EditalDAO extends AbstractDAO
 	 */
 	private Edital carrega(ResultSet rs, UsuarioDAO userDAO) throws SQLException
 	{		
-		Edital edital = new Edital();
 		String sJson = rs.getString("json");
 		
 		if (sJson.length() > 0)
 		{
 			JsonObject json = (JsonObject) new JsonParser().parse(sJson);
 			JsonEditalReader reader = new JsonEditalReader();
-			reader.execute(json, edital, userDAO);
+			Edital edital = reader.execute(json, userDAO);
+			return carregaResumo(rs, edital);
 		}
-		
-		int id = rs.getInt("id");
-		edital.setId(id);
-		
-		String nome = rs.getString("nome");
-		edital.setNome(nome);
-		
-		StatusEdital status = StatusEdital.get(rs.getInt("status"));
-		edital.setStatus(status);
-		
-		return edital;
+
+		Edital edital = new Edital();
+		return carregaResumo(rs, edital);
 	}
 
 	/**
@@ -189,7 +179,7 @@ public class EditalDAO extends AbstractDAO
 
 			while (rs.next())
 			{
-				Edital item = carregaResumo(rs);
+				Edital item = carregaResumo(rs, new Edital());
 				lista.add(item);
 			}
 

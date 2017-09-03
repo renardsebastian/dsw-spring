@@ -25,8 +25,9 @@ public class JsonEditalReader
 	/**
 	 * Carrega um edital a partir da representação JSON
 	 */
-	public void execute(JsonObject json, Edital edital, UsuarioDAO userDAO)
+	public Edital execute(JsonObject json, UsuarioDAO userDAO)
 	{
+		Edital edital = new Edital();
 		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
 
 		int id = json.get("id").getAsInt();
@@ -58,6 +59,7 @@ public class JsonEditalReader
 		carregaRepresentacaoProvasEscritas(json, edital);
 		carregaRepresentacaoProjetosPesquisa(json, edital, userDAO);
 		carregaRepresentacaoCriteriosAlinhamento(json, edital);
+		return edital;
 	}
 
 	/**
@@ -128,7 +130,10 @@ public class JsonEditalReader
 		ProvaEscrita prova = new ProvaEscrita();
 		prova.setCodigo(json.get("codigo").getAsString());
 		prova.setNome(json.get("nome").getAsString());
-		prova.setDispensavel(json.get("dispensavel").getAsBoolean());
+		
+		if (json.has("dispensavel"))
+			prova.setDispensavel(json.get("dispensavel").getAsBoolean());
+		
 		prova.setNotaMinimaAprovacao(json.get("notaMinima").getAsInt());
 		
 		JsonArray jsonQuestoes = json.getAsJsonArray("questoes");

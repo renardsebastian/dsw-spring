@@ -35,12 +35,18 @@ function checkForErrors(data) {
 function showError(message) {
     var snackbar = document.querySelector('#demo-snackbar-example');
     
-    snackbar.MaterialSnackbar.showSnackbar({ 
-	    	message: message, 
-	    	timeout: 20000,
-        actionHandler: function() { snackbar.MaterialSnackbar.cleanup_() },
-        actionText: 'x' 
-    });
+    if (snackbar.classList.contains("mdl-snackbar--active")) {
+    	snackbar.querySelector(".mdl-snackbar__text").innerHTML = message;
+    }
+    else {
+        snackbar.MaterialSnackbar.showSnackbar({ 
+    	    message: message,
+    	    autoHide: false,
+    	    timeout: 20000,
+            actionHandler: function() { snackbar.MaterialSnackbar.cleanup_() },
+            actionText: 'x' 
+        });
+    }
     
     return false;
 }

@@ -1,0 +1,143 @@
+<!--
+  -- Lista de provas escritas 
+  -->
+
+<div>
+	<div>
+		<div class="left">
+			<h4 class="list-title">Provas Escritas</h4>
+		</div>
+		<div class="right">
+			<button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" ng-click="$ctrl.novaProva()">
+				Nova prova
+			</button>
+		</div>
+		<div class="clear">
+		</div>
+	</div>
+	
+	<table class="wide mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+	<thead>
+	<tr>
+		<th class="mdl-data-table__cell--non-numeric">Código</th>
+		<th class="mdl-data-table__cell--non-numeric">Nome</th>
+		<th class="mdl-data-table__cell--non-numeric">Disp</th>
+		<th>Min</th>
+		<th class="mdl-data-table__cell--non-numeric">Pesos</th>
+		<th></th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr ng-repeat="prova in $ctrl.edital.provas track by $index">
+		<td class="mdl-data-table__cell--non-numeric">{{prova.codigo}}</td>
+		<td class="mdl-data-table__cell--non-numeric">{{prova.nome}}</td>
+		<td class="mdl-data-table__cell--non-numeric">{{prova.dispensavel ? "S" : "N"}}</td>
+		<td>{{prova.notaMinima}}</td>
+		<td class="mdl-data-table__cell--non-numeric">{{$ctrl.formataPesos(prova)}}</td>
+		<td>
+			<button class="mdl-button mdl-js-button mdl-button--icon" ng-click="$ctrl.editaProva($index)">
+				<i class="material-icons">edit</i>
+			</button>
+			<button class="mdl-button mdl-js-button mdl-button--icon" confirmed-click="$ctrl.removeProva($index)" ng-confirm-click="<spring:message code='edital.form.message.confirma.remocao.prova'/>">
+				<i class="material-icons">delete</i>
+			</button>
+		</td>
+	</tr>
+	</tbody>
+	</table>
+</div>
+	
+			
+<!-- 
+  -- Janela de edicao de nova prova 
+  -->
+  
+<dialog class="mdl-dialog" id="dlgNovaProvaEscrita" style="width: 600px;">
+    <h4 class="mdl-dialog__title">
+    		Nova Prova Escrita<spring:message code="edital.form.dialog.nova.prova.titulo"/>
+    </h4>
+    <div class="mdl-dialog__content">
+	    	<div>
+	    		<div class="left" style="width:25%; padding-right: 16px;">
+				<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label block" mdlTextfieldInput>
+				    <input ng-model="$ctrl.prova.codigo" class="mdl-textfield__input" type="text" name="codigo-prova" id="codigo-prova">
+				    <label class="mdl-textfield__label" for="codigo-prova">
+				    		Código<spring:message code="edital.form.dialog.nova.prova.label.codigo"/>:
+				    </label>
+				</div>
+	    		</div>
+	    		<div class="right" style="width:70%">
+				<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label block" mdlTextfieldInput>
+				    <input ng-model="$ctrl.prova.nome" class="mdl-textfield__input" type="text" name="nome-prova" id="nome-prova">
+				    <label class="mdl-textfield__label" for="nome-prova">
+				    		Nome<spring:message code="edital.form.dialog.nova.prova.label.nome"/>:
+				    </label>
+				</div>
+	    		</div>
+	    		<div class="clear">
+	    		</div>
+	    	</div>
+	    	
+	    	<div>
+	    		<div class="left" style="width:25%; padding-right: 16px;">
+				<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label block" mdlTextfieldInput>
+				    <input ng-model="$ctrl.prova.notaMinima" class="mdl-textfield__input" type="text" pattern="[0-9]+" name="notaMinima" id="nota-minima-prova">
+				    <label class="mdl-textfield__label" for="nota-minima-prova">
+				    		Nota Mínima de Alinhamento<spring:message code="edital.form.dialog.label.nota.minima.prova"/>:
+				    </label>
+				</div>
+	    		</div>
+	    		<div class="right" style="width:70%; padding-top: 16px;">
+				<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-1">
+					<input type="checkbox" id="checkbox-1" class="mdl-checkbox__input" ng-model="$ctrl.prova.dispensavel">
+					<span class="mdl-checkbox__label">Dispensável<spring:message code="edital.form.dialog.label.dispensavel"/></span>
+				</label>
+	    		</div>
+	    		<div class="clear">
+	    		</div>
+	    	</div>
+		
+		<div>
+			<div style="margin-top: 16px; margin-bottom: 4px;">
+				<div class="left">
+					<h4 style="margin: 0px"><spring:message code="edital.form.dialog.label.questoes"/></h4>
+				</div>
+				<div class="right">
+					<button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" ng-click="$ctrl.novaQuestaoProvaEscrita()">
+						Nova Questão<spring:message code="edital.form.dialog.botao.nova.questao"/>
+					</button>
+				</div>
+				<div class="clear">
+				</div>
+			</div>
+			<table class="wide mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+			<thead>
+			<tr>
+				<th class="mdl-data-table__cell--non-numeric">Peso<spring:message code="edital.form.dialog.label.peso"/></th>
+				<th></th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="peso in $ctrl.prova.questoes track by $index">
+				<td class="mdl-data-table__cell--non-numeric">
+				    <input ng-model="$ctrl.prova.questoes[$index]" class="editor-peso-prova" type="text" pattern="[0-9]+">
+				</td>
+				<td>
+					<button class="mdl-button mdl-js-button mdl-button--icon" ng-hide="$index == 0" ng-click="$ctrl.removeQuestao($index)">
+						<i class="material-icons">delete</i>
+					</button>
+				</td>
+			</tr>
+			</tbody>
+			</table>
+		</div>
+   	</div>
+    <div class="mdl-dialog__actions">
+      	<button type="button" class="mdl-button close">
+      		Cancela<spring:message code="template.dialogo.seleciona.edital.botao.cancela"/>
+      	</button>
+      	<button type="button" class="mdl-button" data-ng-click="$ctrl.salvaProva()">
+      		OK<spring:message code="template.dialogo.seleciona.edital.botao.ok"/>
+		</button>
+    </div>
+</dialog>

@@ -184,9 +184,8 @@ public class TestEditalJson
 		JsonEditalWriter writer = new JsonEditalWriter();
 		JsonObject jsonOriginal = writer.execute(edital);
 		
-		Edital editalClone = new Edital();
 		JsonEditalReader reader = new JsonEditalReader();
-		reader.execute(jsonOriginal, editalClone, userDAO);
+		Edital editalClone = reader.execute(jsonOriginal, userDAO);
 		
 		JsonObject jsonClonado = writer.execute(editalClone);
 		assertTrue(JsonUtils.compara(jsonOriginal, jsonClonado));
