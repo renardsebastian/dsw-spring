@@ -8,7 +8,7 @@ import org.joda.time.DateTime;
 import com.google.gson.annotations.JsonAdapter;
 
 import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
-import br.unirio.dsw.selecaoppgi.writer.edital.EditalComissaoTypeAdapterFactory;
+import br.unirio.dsw.selecaoppgi.service.json.EditalComissaoTypeAdapterFactory;
 import lombok.Getter;
 import lombok.Setter;
 

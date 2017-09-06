@@ -5,9 +5,7 @@ import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,16 +16,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import br.unirio.dsw.selecaoppgi.model.edital.Edital;
 import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
-import br.unirio.dsw.selecaoppgi.reader.edital.JsonEditalReader;
 import br.unirio.dsw.selecaoppgi.service.dao.EditalDAO;
 import br.unirio.dsw.selecaoppgi.service.dao.UsuarioDAO;
-import br.unirio.dsw.selecaoppgi.writer.edital.JsonEditalWriter;
+import br.unirio.dsw.selecaoppgi.utils.JsonUtils;
 
 /**
  * Controller responsável pelo gerenciamento de editais
@@ -90,11 +88,11 @@ public class EditalController
 		List<Edital> editais = editalDAO.lista(pagina, tamanho, filtroNome);
 		int total = editalDAO.conta(filtroNome);
 		
+		Gson gson = new Gson();
 		JsonArray jsonEditais = new JsonArray();
-		JsonEditalWriter writer = new JsonEditalWriter();
 		
 		for (Edital edital : editais)
-			jsonEditais.add(writer.execute(edital));
+			jsonEditais.add(gson.toJson(edital));
 		
 		JsonObject root = new JsonObject();
 		root.addProperty("Result", "OK");
@@ -104,7 +102,7 @@ public class EditalController
 	}
 
 	/**
-	 * Ação AJAX que lista todos os editais
+	 * Ação AJAX que retorna o resumo dos editais
 	 */
 	@RequestMapping(value = "/edital/summary", method = RequestMethod.GET, produces = "application/json")
 	public String geraResumos()
@@ -120,7 +118,7 @@ public class EditalController
 			jsonEditais.add(jsonEdital);
 		}
 		
-		return jsonEditais.toString();
+		return JsonUtils.ajaxSuccess(jsonEditais);
 	}
 
 	/**
@@ -132,10 +130,10 @@ public class EditalController
 		Edital edital = editalDAO.carregaEditalId(id, userDAO);
 		
 		if (edital == null)
-			return ajaxError("edital.form.nao.encontrado", locale);
+			return JsonUtils.ajaxError(messageSource.getMessage("edital.form.nao.encontrado", null, locale));
 		
-		JsonObject jsonEdital = new JsonEditalWriter().execute(edital);
-		return ajaxSuccess(jsonEdital);
+		String json = new Gson().toJson(edital);
+		return JsonUtils.ajaxSuccess(json);
 	}
 
 	/**
@@ -146,65 +144,42 @@ public class EditalController
 	public String atualiza(@RequestBody String sEdital, Locale locale)
 	{
 		JsonObject jsonEdital = (JsonObject) new JsonParser().parse(sEdital);
-		Edital edital = new JsonEditalReader().execute(jsonEdital, userDAO);
+		Edital edital = new Gson().fromJson(jsonEdital, Edital.class);
 		
 		if (edital.getNome().length() == 0)
-			return ajaxError("edital.form.nome.vazio", locale);
+			return JsonUtils.ajaxError(messageSource.getMessage("edital.form.nome.vazio", null, locale));
 		
 		if (edital.getNome().length() > 80)
-			return ajaxError("edital.form.nome.maior.80.caracteres", locale);
+			return JsonUtils.ajaxError(messageSource.getMessage("edital.form.nome.maior.80.caracteres", null, locale));
 		
 		Edital editalMesmoNome = editalDAO.carregaEditalNome(edital.getNome(), userDAO);
 		
 		if (editalMesmoNome != null && editalMesmoNome.getId() != edital.getId())
-			return ajaxError("edital.form.nome.duplicado", locale);
+			return JsonUtils.ajaxError(messageSource.getMessage("edital.form.nome.duplicado", null, locale));
 		
 		if (edital.getNotaMinimaAlinhamento() <= 0)
-			return ajaxError("edital.form.nota.minima.menor.igual.zero", locale);
+			return JsonUtils.ajaxError(messageSource.getMessage("edital.form.nota.minima.menor.igual.zero", null, locale));
 		
 		if (edital.getNotaMinimaAlinhamento() >= 100)
-			return ajaxError("edital.form.nota.minima.maior.igual.cem", locale);
+			return JsonUtils.ajaxError(messageSource.getMessage("edital.form.nota.minima.maior.igual.cem", null, locale));
 
 		editalDAO.atualiza(edital);
-		return ajaxSuccess();
-	}
-	
-	private String ajaxError(String message, Locale locale)
-	{
-		JsonObject json = new JsonObject();
-		json.addProperty("result", "FAIL");
-		json.addProperty("message", messageSource.getMessage(message, null, locale));
-		return json.toString();
-	}
-	
-	private String ajaxSuccess()
-	{
-		JsonObject json = new JsonObject();
-		json.addProperty("result", "OK");
-		return json.toString();
-	}
-	
-	private String ajaxSuccess(JsonObject jsonDados)
-	{
-		JsonObject json = new JsonObject();
-		json.addProperty("result", "OK");
-		json.add("data", jsonDados);
-		return json.toString();
+		return JsonUtils.ajaxSuccess();
 	}
 
 	/**
 	 * Ação AJAX que remove um edital
 	 */
 	@RequestMapping(value = "/edital/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<Edital> remove(@PathVariable("id") int id)
+	public String remove(@PathVariable("id") int id, Locale locale)
 	{
 		Edital edital = editalDAO.carregaEditalId(id, userDAO);
 		
 		if (edital == null)
-			return new ResponseEntity<Edital>(HttpStatus.NOT_FOUND);
+			return JsonUtils.ajaxError(messageSource.getMessage("edital.lista.remocao.nao.encontrado", null, locale));
 
 		editalDAO.remove(id);
-		return new ResponseEntity<Edital>(HttpStatus.NO_CONTENT);
+		return JsonUtils.ajaxSuccess();
 	}
 	
 	/**
@@ -216,19 +191,11 @@ public class EditalController
 		Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 		if (usuario == null)
-		{
-			JsonObject root = new JsonObject();
-			root.addProperty("Result", "error");
-			root.addProperty("Result", messageSource.getMessage("edital.muda.edital.selecionado.erro.usuario.nao.encontrado", null, locale));
-			return root.toString();			
-		}
+			return JsonUtils.ajaxError(messageSource.getMessage("edital.muda.edital.selecionado.erro.usuario.nao.encontrado", null, locale));
 
 		usuario.setIdEdital(id);
         userDAO.mudaEditalSelecionado(usuario.getId(), id);
-        
-		JsonObject root = new JsonObject();
-		root.addProperty("Result", "OK");
-		return root.toString();
+		return JsonUtils.ajaxSuccess();
 	}
 
 //	/edital/abertura

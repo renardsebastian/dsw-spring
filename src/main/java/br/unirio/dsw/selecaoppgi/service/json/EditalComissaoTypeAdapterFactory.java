@@ -1,4 +1,4 @@
-package br.unirio.dsw.selecaoppgi.writer.edital;
+package br.unirio.dsw.selecaoppgi.service.json;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;

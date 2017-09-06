@@ -83,7 +83,7 @@ public class LoginController
 		ModelAndView model = new ModelAndView();
 
 		if (error != null)
-			model.addObject("error", pegaMenssagemErro(request, "SPRING_SECURITY_LAST_EXCEPTION"));
+			model.addObject("error", pegaMensagemErro(request, "SPRING_SECURITY_LAST_EXCEPTION"));
 
 		model.setViewName("login/login");
 		return model;
@@ -92,7 +92,7 @@ public class LoginController
     /**
      * Retorna a última mensagem de erro do processo de login
      */
-	private String pegaMenssagemErro(HttpServletRequest request, String key){
+	private String pegaMensagemErro(HttpServletRequest request, String key){
 
 		Exception exception = (Exception) request.getSession().getAttribute(key);
 
