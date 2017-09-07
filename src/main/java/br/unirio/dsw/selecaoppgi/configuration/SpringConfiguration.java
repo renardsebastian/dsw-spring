@@ -2,14 +2,12 @@ package br.unirio.dsw.selecaoppgi.configuration;
 
 import java.util.Properties;
 
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -18,6 +16,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
+
+import br.unirio.dsw.selecaoppgi.service.message.ExposedResourceMessageBundleSource;
 
 /**
  * Classe que configura o framework Spring
@@ -87,10 +87,10 @@ public class SpringConfiguration extends WebMvcConfigurerAdapter
 	 * Retorna o objeto responsável pela tradução de mensagens
 	 */
 	@Bean
-    public MessageSource messageSource() 
+    public ExposedResourceMessageBundleSource messageSource() 
     {
-        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasename("i18n/messages");
+		ExposedResourceMessageBundleSource messageSource = new ExposedResourceMessageBundleSource();
+        messageSource.setBasename("classpath:i18n/messages");
         messageSource.setUseCodeAsDefaultMessage(true);
         return messageSource;
     }

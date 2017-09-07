@@ -12,6 +12,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
     <title>PPGI/UNIRIO</title>
 
+	<!-- Fav Icon -->
+	<link rel="shortcut icon" href="${pageContext.request.contextPath}/static/img/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="${pageContext.request.contextPath}/static/img/favicon.ico" type="image/x-icon">
+
     <!-- Page styles -->
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -34,7 +38,7 @@ var contextPath = "${pageContext.request.contextPath}";
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
 
         <!-- Header -->
-        <header class="mdl-layout__header" data-ng-controller="TopNavigatorController">
+        <header class="mdl-layout__header" data-ng-controller="TopNavigatorController as navCtrl">
             <div class="mdl-layout__header-row">
                 <!-- Title -->
                 <span class="mdl-layout-title">
@@ -56,10 +60,10 @@ var contextPath = "${pageContext.request.contextPath}";
 	                			</div>
 	                			<div>
 			                		<c:if test="${empty sessionScope.edital}">
-					                	<span class="mdl-button mdl-js-button mdl-js-ripple-effect edital-button" data-ng-click="abreJanelaSelecaoEdital()"><spring:message code="template.titulo.edital.nenhum"/></span>
+					                	<span class="mdl-button mdl-js-button mdl-js-ripple-effect edital-button" data-ng-click="navCtrl.abreJanelaSelecaoEdital()"><spring:message code="template.titulo.edital.nenhum"/></span>
 					            </c:if>
 			                		<c:if test="${not empty sessionScope.edital}">
-					                	<span class="mdl-button mdl-js-button mdl-js-ripple-effect edital-button" data-ng-click="abreJanelaSelecaoEdital()">${sessionScope.edital.nome}</span>
+					                	<span class="mdl-button mdl-js-button mdl-js-ripple-effect edital-button" data-ng-click="navCtrl.abreJanelaSelecaoEdital()">${sessionScope.edital.nome}</span>
 					            </c:if>
 					        </div>
 	                		</div>
@@ -106,7 +110,7 @@ var contextPath = "${pageContext.request.contextPath}";
 					        		<spring:message code="template.dialogo.seleciona.edital.subtitulo"/>
 					      	</p>
 					      	<p>
-					      		<select ng-model="editalSelecionado" class="wide" ng-options="edital.id as edital.nome for edital in editais" ng-init="editalSelecionado=${user.idEdital}">
+					      		<select ng-model="navCtrl.editalSelecionado" class="wide" ng-options="edital.id as edital.nome for edital in navCtrl.editais" ng-init="navCtrl.editalSelecionado=${user.idEdital}">
 								</select>
 					      	</p>
 					    	</div>
@@ -114,7 +118,7 @@ var contextPath = "${pageContext.request.contextPath}";
 					      	<button type="button" class="mdl-button close">
 					      		<spring:message code="template.dialogo.seleciona.edital.botao.cancela"/>
 					      	</button>
-					      	<button type="button" class="mdl-button" data-ng-click="selecionaEdital()">
+					      	<button type="button" class="mdl-button" data-ng-click="navCtrl.selecionaEdital()">
 					      		<spring:message code="template.dialogo.seleciona.edital.botao.ok"/>
 							</button>
 					    </div>
@@ -211,14 +215,15 @@ var contextPath = "${pageContext.request.contextPath}";
     <!-- Material design -->
     <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.6.6/angular-sanitize.js"></script>
 
 	<!-- Components -->
-    <script src="${pageContext.request.contextPath}/static/third-party/ngTranslate/angular-translate.min.js"></script>
 	<script src="${pageContext.request.contextPath}/static/components/unirio/unirio.confirm.js"></script>
 	<script src="${pageContext.request.contextPath}/static/third-party/ngTable/ng-table.min.js"></script>
 	
 	<!-- Navigator controller -->
 	<script src="${pageContext.request.contextPath}/static/js/app.js"></script>
+	<script src="${pageContext.request.contextPath}/static/components/translate/translate.js"></script>
 	<script src="${pageContext.request.contextPath}/static/js/helper/navigator.dataService.js"></script>
 	<script src="${pageContext.request.contextPath}/static/js/helper/navigator.controller.js"></script>
 

@@ -127,6 +127,17 @@ public class JsonUtils
 	/**
 	 * Gera um retorno de sucesso em ação AJAX com dados associados
 	 */
+	public static String ajaxSuccess(JsonElement jsonDados)
+	{
+		JsonObject json = new JsonObject();
+		json.addProperty("result", "OK");
+		json.add("data", jsonDados);
+		return json.toString();
+	}
+	
+	/**
+	 * Gera um retorno de sucesso em ação AJAX com dados associados
+	 */
 	public static String ajaxSuccess(JsonObject jsonDados)
 	{
 		JsonObject json = new JsonObject();

@@ -1,20 +1,30 @@
 App.controller("TopNavigatorController", function ($scope, topNavigatorDataService, $log, $window) {
 
-	$scope.editalSelecionado = -1;
-	$scope.editais = [];
-	$scope.csrf = csrf;
+	var self = this;
+	self.editalSelecionado = -1;
+	self.editais = [];
+	self.csrf = csrf;
 	
-	$scope.abreJanelaSelecaoEdital = function() {
+	/**
+	 * Abre a janela para selecionar o edital
+	 */
+	self.abreJanelaSelecaoEdital = function() {
 		topNavigatorDataService.carrega().then(function(data) {
-			$scope.editais = data.data;
+			if (!checkForErrors(data.data)) {
+				self.editais = data.data.data;
+			}
 		});
 
 		dialog.showModal();
 	}
 	
-	$scope.selecionaEdital = function() {
-		topNavigatorDataService.mudaEditalSelecionado($scope.editalSelecionado, csrf);
-		$window.location.href = contextPath + "/?message=edital.muda.selecionado.sucesso";
+	/**
+	 * Seleciona um edital para trabalhar
+	 */
+	self.selecionaEdital = function() {
+		topNavigatorDataService.mudaEditalSelecionado(self.editalSelecionado, csrf).then(function(data) {
+			$window.location.href = contextPath + "/?message=edital.muda.selecionado.sucesso";
+		});
 	}
 
 	/**

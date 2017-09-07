@@ -1,6 +1,9 @@
 App.controller("formController", function ($scope, formEditalDataService, $log, $window) {
 	var self = this;
 
+	/**
+	 * Envia o edital e volta para a página de lista
+	 */
 	this.submeteEdital = function() {
 		formEditalDataService.atualiza(self.edital).then(function(data) {
 			if (!checkForErrors(data.data)) {
@@ -9,6 +12,9 @@ App.controller("formController", function ($scope, formEditalDataService, $log, 
 		});
 	}
 
+	/**
+	 * Volta para a pagina de lista
+	 */
 	this.retornaLista = function() {
 		window.location = contextPath + "/edital/list";
 	}

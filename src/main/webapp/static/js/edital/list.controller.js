@@ -1,5 +1,6 @@
 App.controller("listaController", function ($scope, dataService, NgTableParams) {
-
+	var self = this;
+	
 	/**
 	 * Filtros
 	 */
@@ -10,7 +11,7 @@ App.controller("listaController", function ($scope, dataService, NgTableParams) 
 	/*
 	 * Altera os filtros de consulta
 	 */
-	$scope.atualizaFiltro = function () {
+	self.atualizaFiltro = function () {
 		atualizaLista();
 	}
 	
@@ -24,21 +25,21 @@ App.controller("listaController", function ($scope, dataService, NgTableParams) 
 	/*
 	 * Navega para a pagina de visualizacao de edital
 	 */
-	$scope.edita = function(id) {
+	self.edita = function(id) {
 		window.location = contextPath + "/edital/edit/" + id;
 	}
 	
 	/*
 	 * Cria um novo edital
 	 */
-	$scope.novo = function() {
+	self.novo = function() {
 		window.location = contextPath + "/edital/create";
 	}
 	
 	/*
 	 * Remove o edital selecionado
 	 */
-	$scope.remove = function(id) {
+	self.remove = function(id) {
 		dataService.remove(id).then(atualizaLista);
 	}
 	
@@ -53,15 +54,14 @@ App.controller("listaController", function ($scope, dataService, NgTableParams) 
 				nome: $scope.filtros.nome
 			}).then(function (data) {
 				if(data.data.TotalRecordCount == 0) {
-					$scope.noSite = true;
+					self.noSite = true;
 				}
 				else {
 					params.total(data.data.TotalRecordCount);
-					$scope.noSite = false;
+					self.noSite = false;
 					return data = data.data.Records;
 				}
 			});
 		}
 	});
-	
 });

@@ -658,7 +658,7 @@ span.error-block {
 }
 div.page-filter {
 	border: 1px solid #ccc;
-	background: #eee;
+	background: white;
 	padding: 8px;
 }
 div.page-filter input {

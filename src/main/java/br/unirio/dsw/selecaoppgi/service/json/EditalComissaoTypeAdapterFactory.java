@@ -5,6 +5,8 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
@@ -48,6 +50,9 @@ public class EditalComissaoTypeAdapterFactory implements TypeAdapterFactory
 	 */
 	private static class ComissaoEditalAdapter extends TypeAdapter<List<Usuario>>
 	{
+		@Autowired
+		private UsuarioDAO userDAO;
+		
 		@Override
 		public void write(JsonWriter out, List<Usuario> value) throws IOException
 		{
@@ -70,7 +75,7 @@ public class EditalComissaoTypeAdapterFactory implements TypeAdapterFactory
 			while (in.hasNext())
 			{
 				int id = in.nextInt();
-				Usuario usuario = new UsuarioDAO().carregaUsuarioId(id);
+				Usuario usuario = userDAO.carregaUsuarioId(id);
 				usuarios.add(usuario);
 			}
 			

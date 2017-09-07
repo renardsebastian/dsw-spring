@@ -1,6 +1,6 @@
 <%@include file="/WEB-INF/views/helper/template.jsp" %>
 
-<div id="contents" data-ng-controller="LoginController">    
+<div id="contents">    
     <div class="mdl-grid">
         <div class="mdl-cell mdl-cell--3-col">
         </div>
@@ -56,12 +56,16 @@
 				                </button>
 				            </div>
 				            <div class="right">
-							    <button type="button" ng-click="create()" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-							    		<spring:message code="login.login.button.create.account"/>
-							    </button>
-							    <button type="button" ng-click="forgot()" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-							    		<spring:message code="login.login.button.forgot.password"/>
-							    </button>
+				            		<a href="${pageContext.request.contextPath}/login/create">
+								    <button type="button" ng-click="create()" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+								    		<spring:message code="login.login.button.create.account"/>
+								    </button>
+							    </a>
+							    <a href="${pageContext.request.contextPath}/login/forgot">
+								    <button type="button" ng-click="forgot()" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+								    		<spring:message code="login.login.button.forgot.password"/>
+								    </button>
+								</a>
 						    </div>
 				        </div>
 				    </div>
@@ -78,5 +82,3 @@
         </div>
     </div>
 </div>
-
-<script src="${pageContext.request.contextPath}/static/js/login/login.js"></script>

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -25,6 +25,7 @@ import br.unirio.dsw.selecaoppgi.model.edital.Edital;
 import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
 import br.unirio.dsw.selecaoppgi.service.dao.EditalDAO;
 import br.unirio.dsw.selecaoppgi.service.dao.UsuarioDAO;
+import br.unirio.dsw.selecaoppgi.service.message.ExposedResourceMessageBundleSource;
 import br.unirio.dsw.selecaoppgi.utils.JsonUtils;
 
 /**
@@ -36,7 +37,7 @@ import br.unirio.dsw.selecaoppgi.utils.JsonUtils;
 public class EditalController
 {
     @Autowired
-    private MessageSource messageSource;
+    private ExposedResourceMessageBundleSource messageSource;
     
 	@Autowired
 	private UsuarioDAO userDAO; 
@@ -92,7 +93,7 @@ public class EditalController
 		JsonArray jsonEditais = new JsonArray();
 		
 		for (Edital edital : editais)
-			jsonEditais.add(gson.toJson(edital));
+			jsonEditais.add(gson.toJsonTree(edital));
 		
 		JsonObject root = new JsonObject();
 		root.addProperty("Result", "OK");
@@ -132,7 +133,7 @@ public class EditalController
 		if (edital == null)
 			return JsonUtils.ajaxError(messageSource.getMessage("edital.form.nao.encontrado", null, locale));
 		
-		String json = new Gson().toJson(edital);
+		JsonElement json = new Gson().toJsonTree(edital);
 		return JsonUtils.ajaxSuccess(json);
 	}
 

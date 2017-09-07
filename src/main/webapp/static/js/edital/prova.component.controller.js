@@ -1,4 +1,4 @@
-﻿var provasEscritasController = function($scope, $log) {
+﻿var provasEscritasController = function($scope, $rootScope, $log, $http) {
 	
 	/**
 	 * Recebe os dados do edital que está sendo editado
@@ -7,20 +7,21 @@
 	self.prova = {};
 	self.indiceProvaSelecionada = -1;
 	applyMaterialDesignLite();
-	
+	loadTranslations("edital.form", $rootScope, $http);
+
 	/**
 	 * Apresenta os pesos de uma prova como uma string
 	 */
-	this.formataPesos = function(prova) {
-		var len = prova.questoes.length;
+	self.formataPesos = function(prova) {
+		var len = prova.pesosQuestoes.length;
 		
 		if (len == 0)
 			return ""; 
 		
-		var result = prova.questoes[0];
+		var result = prova.pesosQuestoes[0];
 		
 		for (i = 1; i < len; i++)
-			result += ", " + prova.questoes[i];
+			result += ", " + prova.pesosQuestoes[i];
 		
 		return result;
 	}
@@ -28,8 +29,8 @@
 	/**
 	 * Cria uma nova prova
 	 */
-	this.novaProva = function() {
-		self.prova = { dispensavel: false, questoes: [100] };
+	self.novaProva = function() {
+		self.prova = { dispensavel: false, pesosQuestoes: [100] };
 		self.indiceProvaSelecionada = -1;
 		abreJanelaEdicao();
 	}
@@ -37,8 +38,8 @@
 	/**
 	 * Edita uma prova
 	 */
-	this.editaProva = function(index) {
-		self.prova = angular.copy(self.edital.provas[index]);
+	self.editaProva = function(index) {
+		self.prova = angular.copy(self.edital.provasEscritas[index]);
 		self.indiceProvaSelecionada = index;
 		abreJanelaEdicao();
 	}
@@ -61,54 +62,67 @@
 	/**
 	 * Remove uma prova
 	 */
-	this.removeProva = function(index) {
-		this.edital.provas.splice(index, 1);
+	self.removeProva = function(index) {
+		self.edital.provasEscritas.splice(index, 1);
 		$scope.$apply();
 	}
 	
 	/**
 	 * Registra uma nova questao na prova sendo editada
 	 */
-	this.novaQuestao = function() {
-		var prova = this.prova || {};
-		var questoes = prova.questoes || [];
-		questoes.push(0);
-	//	this.prova = prova;
+	self.novaQuestao = function() {
+		var prova = self.prova || {};
+		var pesosQuestoes = prova.pesosQuestoes || [];
+		pesosQuestoes.push(0);
 	}
 	
 	/**
 	 * Remove uma questao da prova sendo editada
 	 */
-	this.removeQuestao = function(index) {
+	self.removeQuestao = function(index) {
 		if (index > 0)
-			this.prova.questoes.splice(index, 1);
+			self.prova.pesosQuestoes.splice(index, 1);
 	}
 
 	/**
 	 * Salva a prova
 	 */
-	this.salvaProva = function() {
-		$log.info(self.prova);
-		
+	self.salvaProva = function() {	
+
 		if (!self.prova.codigo || self.prova.codigo.length != 4)
-			return showError("O código deve ter 4 dígitos.");
+			return showError(translate($rootScope, "edital.form.prova.form.erro.codigo.invalido"));
 		
 		if (!self.prova.nome || self.prova.nome.length == 0)
-			return showError("O nome da prova não pode ficar vazio.");
+			return showError(translate($rootScope, "edital.form.prova.form.erro.nome.branco"));
 		
-		if (!self.prova.notaMinima || self.prova.notaMinima <= 0)
-			return showError("A nota mínima para aprovação na prova deve ser maior do que zero.");
+		if (!self.prova.notaMinimaAprovacao || self.prova.notaMinimaAprovacao <= 0)
+			return showError(translate($rootScope, "edital.form.prova.form.erro.nota.minima.menor.zero"));
 		
-		if (self.prova.notaMinima >= 100)
-			return showError("A nota mínima para aprovação na prova deve ser menor do que 100.");
+		if (self.prova.notaMinimaAprovacao >= 100)
+			return showError(translate($rootScope, "edital.form.prova.form.erro.nota.minima.maior.cem"));
+		
+		var soma = 0;
+		
+		for (var i = 0; i < self.prova.pesosQuestoes.length; i++) {
+			if (self.prova.pesosQuestoes[i] < 0)
+				return showError(translate($rootScope, "edital.form.prova.form.erro.peso.negativo.zero"));
+
+			if (self.prova.pesosQuestoes[i] > 100)
+				return showError(translate($rootScope, "edital.form.prova.form.erro.peso.maior.cem"));
+
+			soma += self.prova.pesosQuestoes[i];
+		}
+
+		if (soma != 100)
+			return showError(translate($rootScope, "edital.form.prova.form.erro.peso.soma.diferente.cem"));
 		
 		if (!self.edital.provas)
 			self.edital.provas = [];
 
 		if (self.indiceProvaSelecionada == -1)
-			self.edital.provas.push(self.prova);
+			self.edital.provasEscritas.push(self.prova);
 		else
-			self.edital.provas[self.indiceProvaSelecionada] = self.prova;
+			self.edital.provasEscritas[self.indiceProvaSelecionada] = self.prova;
 		
 	    document.querySelector('dialog#dlgNovaProvaEscrita').close();
 	}
