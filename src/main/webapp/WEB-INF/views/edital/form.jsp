@@ -1,3 +1,5 @@
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+
 <%@include file="/WEB-INF/views/helper/template.jsp" %>
 
 <script>
@@ -7,47 +9,59 @@ var id = "${id}";
 <div id="contents" data-ng-controller="formController as ctrl">
    <div class="mdl-grid">
         <div class="mdl-cell mdl-cell--12-col page-header">
-			<h3><spring:message code="edital.form.title"/></h3>
+        	<c:if test="${not empty edital}">
+				<h3><spring:message code="edital.form.titulo.edicao"/></h3>
+			</c:if>
+        	<c:if test="${empty edital}">
+				<h3><spring:message code="edital.form.titulo.criacao"/></h3>
+			</c:if>
 		</div>
 	</div>
 	
-   	<div class="mdl-grid">
+	<form:form action="${pageContext.request.contextPath}/edital/save" commandName="form" method="POST" enctype="utf8" role="form">
+		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+		<form:hidden path="id"/>
+	   	
        	<!-- Campos básicos -->
-        <div class="mdl-cell mdl-cell--6-col" style="padding-right: 80px;">
-			<div class="wide mdl-textfield mdl-js-textfield mdl-textfield--floating-label block" mdlTextfieldInput>
-			    <input ng-model="ctrl.edital.nome" class="mdl-textfield__input" type="text" name="nome" id="nome">
-			    <label class="mdl-textfield__label" for="nome">
-			    		<spring:message code="edital.form.label.nome"/>:
-			    </label>
-			</div>
-
-			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label block" mdlTextfieldInput>
-			    <input ng-model="ctrl.edital.notaMinimaAlinhamento" class="mdl-textfield__input" type="text" pattern="[0-9]+" name="notaMinima" id="nota-minima-alinhamento">
-			    <label class="mdl-textfield__label" for="nota-minima-alinhamento">
-			    		<spring:message code="edital.form.label.nota.minima.alinhamento"/>:
-			    </label>
+	   	<div class="mdl-grid">
+	        <div class="mdl-cell mdl-cell--12-col">
+				<div class="wide mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+				    <form:input path="nome" id="edital-nome" class="mdl-textfield__input" />
+	                   <form:errors id="error-nome" path="nome" cssClass="error-block"/>				            
+				    <label class="mdl-textfield__label" for="edital-nome"><spring:message code="edital.form.label.nome"/>:</label>
+				</div>
 			</div>
 		</div>
-			
-		<!-- Janela de edicao de nova prova -->
-        <div class="mdl-cell mdl-cell--6-col">
-			<provas-escritas edital="ctrl.edital"></provas-escritas>
-		</div>
-	</div>
 	
+	   	<div class="mdl-grid">
+	        <div class="mdl-cell mdl-cell--12-col">
+				<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+				    <form:input path="notaMinimaAlinhamento" id="edital-notaMinima" class="mdl-textfield__input" type="number" pattern="[0-9]+" />
+                    <form:errors id="error-notaMinima" path="notaMinimaAlinhamento" cssClass="error-block"/>
+				    <label class="mdl-textfield__label" for="edital-notaMinima"><spring:message code="edital.form.label.nota.minima.alinhamento"/>:</label>
+				</div>
+			</div>
+		</div>
+				
+		<!-- Janela de edicao de nova prova -->
+       	<c:if test="${not empty edital}">
+	        <div class="mdl-cell mdl-cell--12-col">
+				<provas-escritas edital="ctrl.edital"></provas-escritas>
+			</div>
+		</c:if>
 
-	<!-- Botoes de comando -->
-   	<div class="mdl-grid">
-        <div class="mdl-cell mdl-cell--12-col text-right">
-			<button type="submit" class="mdl-button mdl-js-button mdl-button--colored mdl-button--raised mdl-js-ripple-effect" ng-click="ctrl.submeteEdital()">
-				<spring:message code="edital.form.botao.ok"/>
-			</button>
-			<button type="submit" class="mdl-button mdl-js-button mdl-button--colored mdl-button--raised mdl-js-ripple-effect" ng-click="ctrl.retornaLista()">
-				<spring:message code="edital.form.botao.cancela"/>
-			</button>
-	    </div>
-	</div>
-
+		<!-- Botoes de comando -->
+	   	<div class="mdl-grid">
+	        <div class="mdl-cell mdl-cell--12-col text-right">
+				<button type="submit" class="mdl-button mdl-js-button mdl-button--colored mdl-button--raised mdl-js-ripple-effect" ng-click="ctrl.submeteEdital()">
+					<spring:message code="edital.form.botao.ok"/>
+				</button>
+				<button type="submit" class="mdl-button mdl-js-button mdl-button--colored mdl-button--raised mdl-js-ripple-effect" ng-click="ctrl.retornaLista()">
+					<spring:message code="edital.form.botao.cancela"/>
+				</button>
+		    </div>
+		</div>
+	</form:form>
 </div>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/static/third-party/ngMaterialLight/ngMaterialLight.js"></script>

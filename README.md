@@ -2,7 +2,19 @@
 # dsw-spring
 # =============================
 
-* regras de salvamento de edital no back-end
+* design do formulário para novo edital
+
+* design do formulário para edição de edital
+
+* apresentação das provas escritas na edição de um edital
+
+* criação de prova escrita
+
+* edição de prova escrita
+
+* regras de salvamento de prova escrita no back-end
+
+* criação do edital do 2017
 
 * implementar a ação que retorna a lista de professores
 
