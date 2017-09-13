@@ -124,6 +124,17 @@ public class Edital
 	}
 
 	/**
+	 * Remove uma prova escrita, dado seu código
+	 */
+	public void removeProvaEscrita(String codigo)
+	{
+		ProvaEscrita prova = pegaProvaEscritaCodigo(codigo);
+		
+		if (prova != null)
+			this.provasEscritas.remove(prova);
+	}
+
+	/**
 	 * Retorna a lista de projetos de pesquisa
 	 */
 	public Iterable<ProjetoPesquisa> getProjetosPesquisa()

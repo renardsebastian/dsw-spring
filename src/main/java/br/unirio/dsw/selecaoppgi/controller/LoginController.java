@@ -124,22 +124,22 @@ public class LoginController
     public String salvaNovoUsuario(@ModelAttribute("user") RegistrationForm form, BindingResult result, Locale locale) 
 	{
 		if (form.getName().length() == 0)
-	    	result.addError(new FieldError("user", "name", messageSource.getMessage("login.new.account.error.name.empty", null, locale)));
+			result.addError(new FieldError("user", "name", messageSource.getMessage("login.new.account.error.name.empty", null, locale)));
 		
 		if (form.getEmail().length() == 0)
-	    	result.addError(new FieldError("user", "email", messageSource.getMessage("login.new.account.error.email.empty", null, locale)));
+			result.addError(new FieldError("user", "email", messageSource.getMessage("login.new.account.error.email.empty", null, locale)));
 		
 		if (!ValidationUtils.validEmail(form.getEmail()))
-	    	result.addError(new FieldError("user", "email", messageSource.getMessage("login.new.account.error.email.invalid", null, locale)));
+			result.addError(new FieldError("user", "email", messageSource.getMessage("login.new.account.error.email.invalid", null, locale)));
 		
 		if (userDAO.carregaUsuarioEmail(form.getEmail()) != null)
-	    	result.addError(new FieldError("user", "email", messageSource.getMessage("login.new.account.error.email.taken", null, locale)));
+			result.addError(new FieldError("user", "email", messageSource.getMessage("login.new.account.error.email.taken", null, locale)));
 		
 		if (!ValidationUtils.validPassword(form.getPassword()))
-	    	result.addError(new FieldError("user", "password", messageSource.getMessage("login.new.account.error.password.invalid", null, locale)));
+			result.addError(new FieldError("user", "password", messageSource.getMessage("login.new.account.error.password.invalid", null, locale)));
 		
 		if (!form.getPassword().equals(form.getRepeatPassword()))
-	    	result.addError(new FieldError("user", "password", messageSource.getMessage("login.new.account.error.password.different", null, locale)));
+			result.addError(new FieldError("user", "password", messageSource.getMessage("login.new.account.error.password.different", null, locale)));
 		
         if (result.hasErrors())
             return "login/create";

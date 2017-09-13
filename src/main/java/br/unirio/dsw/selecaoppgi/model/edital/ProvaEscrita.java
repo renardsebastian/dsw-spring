@@ -70,4 +70,30 @@ public class ProvaEscrita
 	{
 		pesosQuestoes.remove(indice);
 	}
+
+	/**
+	 * Remove todas as questões
+	 */
+	public void limpaQuestoes()
+	{
+		pesosQuestoes.clear();
+	}
+
+	/**
+	 * Retorna os pesos de uma prova formatados
+	 */
+	public String getPesosQuestoesFormatados() 
+	{
+		int len = pesosQuestoes.size();
+		
+		if (len == 0)
+			return ""; 
+		
+		String result = ""+ pesosQuestoes.get(0);
+		
+		for (int i = 1; i < len; i++)
+			result += ", " + pesosQuestoes.get(i);
+		
+		return result;
+	}
 }

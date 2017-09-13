@@ -20,17 +20,26 @@ public @Data class ProvaEscritaForm
 	private boolean dispensavel = false;
 	private List<Integer> pesosQuestoes;
 	
+	/**
+	 * Inicializa o formulário de provas escritas
+	 */
 	public ProvaEscritaForm()
 	{
 		this.pesosQuestoes = new ArrayList<Integer>();
 	}
 
+	/**
+	 * Adiciona um conjunto de pesos de questões
+	 */
 	public void adicionaPesosQuestoes(Iterable<Integer> pesosQuestoes) 
 	{
 		for (Integer peso : pesosQuestoes)
 			this.pesosQuestoes.add(peso);
 	}
 
+	/**
+	 * Adiciona um peso de questão
+	 */
 	public void adicionaPesoQuestao(int peso) 
 	{
 		this.pesosQuestoes.add(peso);

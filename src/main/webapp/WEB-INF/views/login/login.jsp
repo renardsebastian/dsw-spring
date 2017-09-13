@@ -23,28 +23,28 @@
 				        <!-- Form body -->
 				        <div class="mdl-card__supporting-text">
 				
-				        <!-- Error message -->
-				        <c:if test="${not empty error}">
-					        <div class="alert alert-danger">
-					        	<spring:message code="${error}"/>
+					        <!-- Error message -->
+					        <c:if test="${not empty error}">
+						        <div class="alert alert-danger">
+						        	<spring:message code="${error}"/>
+						        </div>
+					        </c:if>
+					
+					        <!-- E-mail field -->
+					        <div class="wide mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+					            <input class="mdl-textfield__input" type="text" name="username" id="user-email">
+					            <label class="mdl-textfield__label" for="user-email">
+					            		<spring:message code="login.login.label.email"/>:
+					            </label>
 					        </div>
-				        </c:if>
-				
-				        <!-- E-mail field -->
-				        <div class="wide mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-				            <input class="mdl-textfield__input" type="text" name="username" id="user-email">
-				            <label class="mdl-textfield__label" for="user-email">
-				            		<spring:message code="login.login.label.email"/>:
-				            </label>
-				        </div>
-				
-				        <!-- Password field -->
-				        <div class="wide mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-				            <input class="mdl-textfield__input" type="password" name="password" id="user-password">
-				            <label class="mdl-textfield__label" for="user-password">
-				                <spring:message code="login.login.label.password"/>:
-				            </label>
-				        </div>
+					
+					        <!-- Password field -->
+					        <div class="wide mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+					            <input class="mdl-textfield__input" type="password" name="password" id="user-password">
+					            <label class="mdl-textfield__label" for="user-password">
+					                <spring:message code="login.login.label.password"/>:
+					            </label>
+					        </div>
 				
 				        </div>
 				

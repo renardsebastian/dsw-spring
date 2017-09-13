@@ -26,7 +26,7 @@
 					        <!-- Name field -->
 					        <div class="wide mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 					           	<form:input id="user-name" path="name" cssClass="mdl-textfield__input"/>
-                            	<form:errors id="error-name" path="name" cssClass="error-block"/>				            
+                            		<form:errors id="error-name" path="name" cssClass="error-block"/>				            
 					            <label class="mdl-textfield__label" for="user-name"><spring:message code="login.new.account.label.name"/>:</label>
 					        </div>
 					        
@@ -34,7 +34,7 @@
 					        <!-- E-mail field -->
 					        <div class="wide mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 					           	<form:input id="user-email" path="email" cssClass="mdl-textfield__input"/>
-                            	<form:errors id="error-email" path="email" cssClass="error-block"/>				            
+                            		<form:errors id="error-email" path="email" cssClass="error-block"/>				            
 					            <label class="mdl-textfield__label" for="user-email"><spring:message code="login.new.account.label.email"/>:</label>
 					        </div>
 					        
@@ -42,7 +42,7 @@
 					        <!-- Password field -->
 					        <div class="wide mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 					           	<form:password id="user-password" path="password" cssClass="mdl-textfield__input"/>
-                            	<form:errors id="error-password" path="password" cssClass="error-block"/>				            
+                           	 	<form:errors id="error-password" path="password" cssClass="error-block"/>				            
 					            <label class="mdl-textfield__label" for="user-password"><spring:message code="login.new.account.label.password"/>:</label>
 					        </div>
 					        
@@ -50,7 +50,7 @@
 					        <!-- Repeat password field -->
 					        <div class="wide mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 					           	<form:password id="user-repeatPassword" path="repeatPassword" cssClass="mdl-textfield__input"/>
-                            	<form:errors id="error-repeatPassword" path="repeatPassword" cssClass="error-block"/>				            
+                         	   	<form:errors id="error-repeatPassword" path="repeatPassword" cssClass="error-block"/>				            
 					            <label class="mdl-textfield__label" for="user-passwordVerification"><spring:message code="login.new.account.label.passwordVerification"/>:</label>
 					        </div>
 				        </div>

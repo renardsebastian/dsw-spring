@@ -101,29 +101,13 @@ public class EditalController
 		
 		return JsonUtils.ajaxSuccess(jsonEditais);
 	}
-
-	/**
-	 * Ação AJAX que remove um edital
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/edital/{id}", method = RequestMethod.DELETE)
-	public String remove(@PathVariable("id") int id, Locale locale)
-	{
-		Edital edital = editalDAO.carregaEditalId(id, userDAO);
-		
-		if (edital == null)
-			return JsonUtils.ajaxError(messageSource.getMessage("edital.lista.remocao.nao.encontrado", null, locale));
-
-		editalDAO.remove(id);
-		return JsonUtils.ajaxSuccess();
-	}
 	
 	/**
 	 * Ação AJAX que troca a senha do usuário logado
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/edital/muda/{id}", method = RequestMethod.POST)
-	public String mudaEditalSelecionado(@PathVariable("id") int id, Locale locale)
+	public String mudaSelecionado(@PathVariable("id") int id, Locale locale)
 	{
 		Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -140,11 +124,45 @@ public class EditalController
 	 */
 	@Secured("ROLE_ADMIN")
 	@RequestMapping(value = "/edital/create", method = RequestMethod.GET)
-	public ModelAndView novoEdital()
+	public ModelAndView mostraPaginaCriacao()
 	{
-		ModelAndView model = new ModelAndView("edital/form");
+		ModelAndView model = new ModelAndView("edital/formCriacao");
 		model.getModel().put("form", new EditalForm());
 		return model;
+	}
+
+	/**
+	 * Ação que salva os dados de um novo um edital
+	 */
+	@Secured("ROLE_ADMIN")
+	@RequestMapping(value = "/edital/create", method = RequestMethod.POST)
+	public String salvaNovo(@ModelAttribute("form") EditalForm form, BindingResult result, Locale locale)
+	{
+		if (form.getNome().length() == 0)
+	    		result.addError(new FieldError("form", "nome", messageSource.getMessage("edital.form.nome.vazio", null, locale)));
+		
+		if (form.getNome().length() > 80)
+			result.addError(new FieldError("form", "nome", messageSource.getMessage("edital.form.nome.maior.80.caracteres", null, locale)));
+		
+		Edital editalMesmoNome = editalDAO.carregaEditalNome(form.getNome(), userDAO);
+		
+		if (editalMesmoNome != null)
+			result.addError(new FieldError("form", "nome", messageSource.getMessage("edital.form.nome.duplicado", null, locale)));
+		
+		if (form.getNotaMinimaAlinhamento() <= 0)
+	    		result.addError(new FieldError("form", "notaMinima", messageSource.getMessage("edital.form.nota.minima.menor.igual.zero", null, locale)));
+		
+		if (form.getNotaMinimaAlinhamento() >= 100)
+			result.addError(new FieldError("form", "notaMinima", messageSource.getMessage("edital.form.nota.minima.maior.igual.cem", null, locale)));
+		
+        if (result.hasErrors())
+            return "edital/formCriacao";
+        
+		Edital edital = new Edital();
+        edital.setNome(form.getNome());
+        edital.setNotaMinimaAlinhamento(form.getNotaMinimaAlinhamento());
+		editalDAO.atualiza(edital);
+		return "redirect:/edital/list?message=edital.form.criado";
 	}
 
 	/**
@@ -152,9 +170,9 @@ public class EditalController
 	 */
 	@Secured("ROLE_ADMIN")
 	@RequestMapping(value = "/edital/edit/{id}", method = RequestMethod.GET)
-	public ModelAndView editaEdital(@PathVariable("id") int id, Locale locale)
+	public ModelAndView mostraPaginaEdicao(@PathVariable("id") int id, Locale locale)
 	{
-		ModelAndView model = new ModelAndView("edital/form");
+		ModelAndView model = new ModelAndView("edital/formEdicao");
 		Edital edital = editalDAO.carregaEditalId(id, userDAO);
 		
 		if (edital == null)
@@ -174,37 +192,37 @@ public class EditalController
 	}
 
 	/**
-	 * Ação AJAX que atualiza um edital
+	 * Ação que atualiza um edital sendo editado
 	 */
 	@Secured("ROLE_ADMIN")
-	@RequestMapping(value = "/edital/save", method = RequestMethod.POST)
-	public String atualiza(@ModelAttribute EditalForm form, BindingResult result, Locale locale)
+	@RequestMapping(value = "/edital/edit", method = RequestMethod.POST)
+	public String salvaEdicao(@ModelAttribute EditalForm form, BindingResult result, Locale locale)
 	{
 		if (form.getNome().length() == 0)
-	    	result.addError(new FieldError("form", "nome", messageSource.getMessage("edital.form.nome.vazio", null, locale)));
+	    		result.addError(new FieldError("form", "nome", messageSource.getMessage("edital.form.nome.vazio", null, locale)));
 		
 		if (form.getNome().length() > 80)
-	    	result.addError(new FieldError("form", "nome", messageSource.getMessage("edital.form.nome.maior.80.caracteres", null, locale)));
+			result.addError(new FieldError("form", "nome", messageSource.getMessage("edital.form.nome.maior.80.caracteres", null, locale)));
 		
-		Edital edital = (form.getId() != -1) ? editalDAO.carregaEditalId(form.getId(), userDAO) : new Edital();
+		Edital edital = editalDAO.carregaEditalId(form.getId(), userDAO);
 		
 		if (edital == null)
-	    	result.addError(new FieldError("form", "nome", messageSource.getMessage("edital.form.edital.nao.encontrado", null, locale)));
+			result.addError(new FieldError("form", "nome", messageSource.getMessage("edital.form.edital.nao.encontrado", null, locale)));
 		
 		Edital editalMesmoNome = editalDAO.carregaEditalNome(form.getNome(), userDAO);
 		
 		if (editalMesmoNome != null && editalMesmoNome.getId() != edital.getId())
-	    	result.addError(new FieldError("form", "nome", messageSource.getMessage("edital.form.nome.duplicado", null, locale)));
+			result.addError(new FieldError("form", "nome", messageSource.getMessage("edital.form.nome.duplicado", null, locale)));
 		
 		if (form.getNotaMinimaAlinhamento() <= 0)
-	    	result.addError(new FieldError("form", "notaMinima", messageSource.getMessage("edital.form.nota.minima.menor.igual.zero", null, locale)));
+	    		result.addError(new FieldError("form", "notaMinima", messageSource.getMessage("edital.form.nota.minima.menor.igual.zero", null, locale)));
 		
 		if (form.getNotaMinimaAlinhamento() >= 100)
-	    	result.addError(new FieldError("form", "notaMinima", messageSource.getMessage("edital.form.nota.minima.maior.igual.cem", null, locale)));
+			result.addError(new FieldError("form", "notaMinima", messageSource.getMessage("edital.form.nota.minima.maior.igual.cem", null, locale)));
 		
         if (result.hasErrors())
-            return "edital/form";
-
+            return "edital/formEdicao";
+        
         edital.setNome(form.getNome());
         edital.setNotaMinimaAlinhamento(form.getNotaMinimaAlinhamento());
 		editalDAO.atualiza(edital);
@@ -212,18 +230,33 @@ public class EditalController
 	}
 
 	/**
+	 * Ação AJAX que remove um edital
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/edital/{id}", method = RequestMethod.DELETE)
+	public String remove(@PathVariable("id") int id, Locale locale)
+	{
+		Edital edital = editalDAO.carregaEditalId(id, userDAO);
+		
+		if (edital == null)
+			return JsonUtils.ajaxError(messageSource.getMessage("edital.lista.remocao.nao.encontrado", null, locale));
+
+		editalDAO.remove(id);
+		return JsonUtils.ajaxSuccess();
+	}
+
+	/**
 	 * Ação que apresenta o formulário de criação de uma nova prova escrita
 	 */
 	@Secured("ROLE_ADMIN")
-	@RequestMapping(value = "/edital/edit/{id}/prova/create", method = RequestMethod.GET)
+	@RequestMapping(value = "/edital/{id}/prova/create", method = RequestMethod.GET)
 	public ModelAndView novaProvaEscrita(@PathVariable int id, Locale locale)
-	{
+	{		
+		ModelAndView model = new ModelAndView("edital/formProva");
 		ProvaEscritaForm form = new ProvaEscritaForm();
 		form.setIdEdital(id);
 		form.adicionaPesoQuestao(100);
-		
-		ModelAndView model = new ModelAndView("edital/formProva");
-		model.getModel().put("form", new ProvaEscritaForm());
+		model.getModel().put("form", form);
 		return model;
 	}
 
@@ -231,7 +264,7 @@ public class EditalController
 	 * Ação que apresenta o formulário de edição de uma prova escrita
 	 */
 	@Secured("ROLE_ADMIN")
-	@RequestMapping(value = "/edital/edit/{id}/prova/edit/{codigo}", method = RequestMethod.GET)
+	@RequestMapping(value = "/edital/{id}/prova/edit/{codigo}", method = RequestMethod.GET)
 	public ModelAndView editaProvaEscrita(@PathVariable int id, @PathVariable String codigo, Locale locale)
 	{
 		ModelAndView model = new ModelAndView("edital/formProva");
@@ -259,21 +292,115 @@ public class EditalController
 		form.setDispensavel(prova.isDispensavel());
 		form.setNotaMinimaAprovacao(prova.getNotaMinimaAprovacao());
 		form.adicionaPesosQuestoes(prova.getPesosQuestoes());
-		
 		model.getModel().put("form", form);
 		return model;
 	}
 
 	/**
-	 * Ação AJAX que atualiza um edital
+	 * Ação AJAX que atualiza uma prova escrita em um edital
 	 */
 	@Secured("ROLE_ADMIN")
-	@RequestMapping(value = "/edital/edit/{id}/prova/save/{codigo}", method = RequestMethod.POST)
-	public ModelAndView atualizaProva(@ModelAttribute ProvaEscritaForm form, BindingResult result, Locale locale)
+	@RequestMapping(value = "/edital/prova/save", method = RequestMethod.POST)
+	public String atualizaProva(@ModelAttribute("form") ProvaEscritaForm form, BindingResult result, Locale locale)
 	{
-		ModelAndView model = new ModelAndView("edital/formProva");
-		model.getModel().put("form", new ProvaEscritaForm());
-		return model;
+		Edital edital = editalDAO.carregaEditalId(form.getIdEdital(), userDAO);
+		
+		if (edital == null)
+			result.addError(new FieldError("form", "codigo", messageSource.getMessage("edital.form.edital.nao.encontrado", null, locale)));
+		
+		if (form.getCodigo().length() != 4)
+	    		result.addError(new FieldError("form", "codigo", messageSource.getMessage("edital.form.prova.form.erro.codigo.invalido", null, locale)));
+		
+		if (form.getCodigo().compareToIgnoreCase(form.getCodigoOriginal()) != 0)
+		{
+			ProvaEscrita prova = edital.pegaProvaEscritaCodigo(form.getCodigo());
+			
+			if (prova != null)
+	    			result.addError(new FieldError("form", "codigo", messageSource.getMessage("edital.form.prova.form.erro.codigo.duplicado", null, locale)));
+		}
+		
+		if (form.getNome().length() == 0)
+	    		result.addError(new FieldError("form", "nome", messageSource.getMessage("edital.form.prova.form.erro.nome.branco", null, locale)));
+		
+		if (form.getNome().length() > 80)
+			result.addError(new FieldError("form", "nome", messageSource.getMessage("edital.form.prova.form.erro.nome.longo", null, locale)));
+		
+		if (form.getNotaMinimaAprovacao() <= 0)
+	    		result.addError(new FieldError("form", "notaMinimaAprovacao", messageSource.getMessage("edital.form.prova.form.erro.nota.minima.menor.zero", null, locale)));
+		
+		if (form.getNotaMinimaAprovacao() >= 100)
+			result.addError(new FieldError("form", "notaMinimaAprovacao", messageSource.getMessage("edital.form.prova.form.erro.nota.minima.maior.cem", null, locale)));
+		
+		int soma = 0;
+		
+		for (int i = 0; i < form.getPesosQuestoes().size(); i++)
+		{
+			Integer peso = form.getPesosQuestoes().get(i);
+			
+			if (peso == null || peso <= 0)
+		    		result.addError(new FieldError("form", "pesosQuestoes", messageSource.getMessage("edital.form.prova.form.erro.peso.negativo.zero", null, locale)));
+			
+			else if (peso > 100)
+				result.addError(new FieldError("form", "pesosQuestoes", messageSource.getMessage("edital.form.prova.form.erro.peso.maior.cem", null, locale)));
+			
+			else
+				soma += peso;
+		}
+		
+		if (soma != 100)
+			result.addError(new FieldError("form", "pesosQuestoes", messageSource.getMessage("edital.form.prova.form.erro.peso.soma.diferente.cem", null, locale)));
+	
+		ProvaEscrita prova;
+		
+		if (form.getCodigoOriginal().length() > 0)
+		{
+			prova = edital.pegaProvaEscritaCodigo(form.getCodigoOriginal());
+			
+			if (prova == null)
+				result.addError(new FieldError("form", "codigo", messageSource.getMessage("edital.form.prova.form.erro.prova.nao.encontrada", null, locale)));
+		}
+		else
+		{
+			prova = new ProvaEscrita();
+			edital.adicionaProvaEscrita(prova);
+		}
+		
+		if (result.hasErrors())
+			return "edital/formProva";
+
+		prova.setCodigo(form.getCodigo());
+		prova.setNome(form.getNome());
+		prova.setNotaMinimaAprovacao(form.getNotaMinimaAprovacao());
+		prova.setDispensavel(form.isDispensavel());
+		prova.limpaQuestoes();
+		
+		for (Integer peso : form.getPesosQuestoes())
+			prova.adicionaQuestao(peso);
+		
+		editalDAO.atualiza(edital);
+		return "redirect:/edital/edit/" + form.getIdEdital() + "?message=edital.form.prova.atualizada";
+	}
+
+	/**
+	 * Ação que remove uma prova escrita
+	 */
+	@Secured("ROLE_ADMIN")
+	@RequestMapping(value = "/edital/{id}/prova/remove/{codigo}", method = RequestMethod.GET)
+	public String removeProvaEscrita(@PathVariable int id, @PathVariable String codigo, Locale locale)
+	{
+		Edital edital = editalDAO.carregaEditalId(id, userDAO);
+		
+		if (edital == null)
+	        return "redirect:/edital/list?message=edital.form.edital.nao.encontrado";
+		
+		ProvaEscrita prova = edital.pegaProvaEscritaCodigo(codigo);
+		
+		if (prova == null)
+	        return "redirect:/edital/edit/" + id + "?message=edital.form.prova.nao.encontrada";
+		
+		edital.removeProvaEscrita(codigo);
+		editalDAO.atualiza(edital);
+		return "redirect:/edital/edit/" + id + "?message=edital.form.prova.removida.sucesso";
 	}
 
 	
