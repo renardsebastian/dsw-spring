@@ -11,12 +11,13 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import br.unirio.dsw.selecaoppgi.model.edital.Edital;
 import br.unirio.dsw.selecaoppgi.model.edital.StatusEdital;
+import br.unirio.dsw.selecaoppgi.service.json.JsonEditalReader;
+import br.unirio.dsw.selecaoppgi.service.json.JsonEditalWriter;
 
 /**
  * Classe responsavel pela persistencia de editais
@@ -53,7 +54,8 @@ public class EditalDAO extends AbstractDAO
 		if (sJson.length() > 0)
 		{
 			JsonObject json = (JsonObject) new JsonParser().parse(sJson);
-			Edital edital = new Gson().fromJson(json, Edital.class);
+			JsonEditalReader reader = new JsonEditalReader();
+			Edital edital = reader.execute(json, userDAO);
 			return carregaResumo(rs, edital);
 		}
 
@@ -203,11 +205,14 @@ public class EditalDAO extends AbstractDAO
 
 		try
 		{
+			JsonEditalWriter writer = new JsonEditalWriter();
+			String jsonEdital = writer.execute(edital).toString();
+			
 			CallableStatement cs = c.prepareCall("{call EditalAtualiza(?, ?, ?, ?, ?)}");
 			cs.setInt(1, edital.getId());
 			cs.setString(2, edital.getNome());
 			cs.setInt(3, edital.getStatus().getCodigo());
-			cs.setString(4, new Gson().toJson(edital));
+			cs.setString(4, jsonEdital);
 			cs.registerOutParameter(5, Types.INTEGER);
 			
 			cs.execute();

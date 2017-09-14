@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.springframework.beans.factory.annotation.Value;
+import br.unirio.dsw.selecaoppgi.configuration.Configuration;
 
 /**
  * Superclasse de todas as classes que realizam persistencia de informacoes. Todas
@@ -16,24 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 abstract class AbstractDAO
 {
 	/**
-	 * String de conexão ao banco de dados
-	 */
-	@Value("${CONNECTION_STRING}")
-	private String databaseConnection;
-	
-	/**
-	 * Usuário do banco de dados
-	 */
-	@Value("${CONNECTION_USER}")
-	private String databaseUser;
-	
-	/**
-	 * Senha de acesso ao banco de dados
-	 */
-	@Value("${CONNECTION_PASSWORD}")
-	private String databasePassword;
-
-	/**
 	 * Cria uma conexao com o banco de dados
 	 */
 	protected Connection getConnection()
@@ -41,7 +23,7 @@ abstract class AbstractDAO
 		try
 		{
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
-			return DriverManager.getConnection(databaseConnection, databaseUser, databasePassword);
+			return DriverManager.getConnection(Configuration.getDatabaseConnection(), Configuration.getDatabaseUser(), Configuration.getDatabasePassword());
 			
 		} catch (SQLException e)
 		{

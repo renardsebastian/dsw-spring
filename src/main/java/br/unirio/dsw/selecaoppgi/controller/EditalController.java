@@ -308,7 +308,7 @@ public class EditalController
 		if (edital == null)
 			result.addError(new FieldError("form", "codigo", messageSource.getMessage("edital.form.edital.nao.encontrado", null, locale)));
 		
-		if (form.getCodigo().length() != 4)
+		if (form.getCodigo().length() != 3)
 	    		result.addError(new FieldError("form", "codigo", messageSource.getMessage("edital.form.prova.form.erro.codigo.invalido", null, locale)));
 		
 		if (form.getCodigo().compareToIgnoreCase(form.getCodigoOriginal()) != 0)

@@ -5,10 +5,7 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 
-import com.google.gson.annotations.JsonAdapter;
-
 import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
-import br.unirio.dsw.selecaoppgi.service.json.EditalComissaoTypeAdapterFactory;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,8 +22,8 @@ public class Edital
 	private @Getter @Setter DateTime dataTermino;
 	private @Getter @Setter StatusEdital status;
 	private @Getter @Setter int notaMinimaAlinhamento;
-	@JsonAdapter(EditalComissaoTypeAdapterFactory.class) private List<Usuario> comissaoSelecao;
-	@JsonAdapter(EditalComissaoTypeAdapterFactory.class) private List<Usuario> comissaoRecurso;
+	private List<Usuario> comissaoSelecao;
+	private List<Usuario> comissaoRecurso;
 	private List<ProvaEscrita> provasEscritas;
 	private List<ProjetoPesquisa> projetosPesquisa;
 	private List<CriterioAlinhamento> criteriosAlinhamento;

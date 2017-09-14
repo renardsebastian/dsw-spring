@@ -34,6 +34,39 @@ public class Configuration
 	}
 	
 	/**
+	 * Retorna a string de conexão ao banco de dados
+	 */
+	public static String getDatabaseConnection()
+	{
+		if (configuracao == null)
+			carregaConfiguracao();
+		
+		return configuracao.getProperty("CONNECTION_STRING").trim(); 
+	}
+
+	/**
+	 * Retorna o usuário do banco de dados
+	 */
+	public static String getDatabaseUser()
+	{
+		if (configuracao == null)
+			carregaConfiguracao();
+		
+		return configuracao.getProperty("CONNECTION_USER").trim(); 
+	}
+
+	/**
+	 * Retorna a senha de acesso ao banco de dados
+	 */
+	public static String getDatabasePassword()
+	{
+		if (configuracao == null)
+			carregaConfiguracao();
+		
+		return configuracao.getProperty("CONNECTION_PASSWORD").trim(); 
+	}
+
+	/**
 	 * Retorna o endereco do host
 	 */
 	public static String getHostname()
