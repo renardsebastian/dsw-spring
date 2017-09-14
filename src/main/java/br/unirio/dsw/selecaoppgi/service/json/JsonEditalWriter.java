@@ -31,8 +31,8 @@ public class JsonEditalWriter
 		JsonObject json = new JsonObject();
 		json.addProperty("id", edital.getId());
 		json.addProperty("nome", edital.getNome());
-		json.addProperty("status", edital.getStatus().getCodigo());
-		json.addProperty("nomeStatus", edital.getStatus().getNome());
+		json.addProperty("codigoStatus", edital.getStatus().getCodigo());
+		json.addProperty("status", edital.getStatus().getNome());
 		json.addProperty("notaMinimaAlinhamento", edital.getNotaMinimaAlinhamento());
 		
 		if (edital.getDataInicio() != null)

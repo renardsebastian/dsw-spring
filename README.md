@@ -2,20 +2,8 @@
 # dsw-spring
 # =============================
 
-* criação do edital do 2017
+* criação do edital do Doutorado de 2017
 
-* implementar a ação que retorna a lista de professores
-
-* pegar modelos de relatórios com o Gleison
-
-* além dos relatórios, temos as atas das Comissões, certo?
+* pegar modelos de relatórios e atas das Comissões
 
 * escrever os casos de uso
-
-===
-
-* não salvar a inscrição em bloco por conta do acesso concorrente
-
-* implementar o DAO de inscrição
-
-* revisar as tabelas de inscrição no Edital
