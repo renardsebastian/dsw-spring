@@ -1,5 +1,7 @@
 CREATE DATABASE selecaoppgi;
 
+USE selecaoppgi;
+
 --
 -- USUARIO
 --
