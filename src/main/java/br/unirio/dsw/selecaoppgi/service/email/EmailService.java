@@ -68,14 +68,16 @@ public class EmailService
 		"</table>";
 	
 	/**
-	 * Chave de autenticação aos serviços do SENDGRID
-	 */
-	private static final String SENDGRID_KEY = "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";
-	
-	/**
 	 * Conta dos desenvolvedores
 	 */
-	private static final String DEVELOPERS_ACCOUNT = "marcio.barros@gmail.com";
+	@Value("${EMAIL_DESENVOLVEDOR}")
+	private String developerAccount;
+
+	/**
+	 * Prefixo para envio de e-mails, vindo do arquivo de configuração da aplicação
+	 */
+	@Value("${SENDGRID_KEY}")
+	private String sendGridKey;
 
 	/**
 	 * Prefixo para envio de e-mails, vindo do arquivo de configuração da aplicação
@@ -112,7 +114,7 @@ public class EmailService
 	 */
 	public boolean sendToDevelopers(String title, String contents)
 	{
-		return send(DEVELOPERS_ACCOUNT, title, contents);
+		return send(developerAccount, title, contents);
 	}
 
 	/**
@@ -131,7 +133,7 @@ public class EmailService
 		
 		// Poca-yoke para evitar o envio de e-mails de desenvolvimento para usuários finais
 		if (Configuration.isStaggingEnvironment())
-			email = DEVELOPERS_ACCOUNT;
+			email = developerAccount;
 		
 		// Registra assunto do email
 		JsonObject personalizacao = new JsonObject();
@@ -184,7 +186,7 @@ public class EmailService
 				.post(reqBody);
 		
 		builder.addHeader("Cache-Control", "no-cache");
-		builder.addHeader("Authorization", "Bearer " + SENDGRID_KEY);
+		builder.addHeader("Authorization", "Bearer " + sendGridKey);
 		builder.addHeader("Content-Type", "application/json");
 		
 		Request request = builder.build();

@@ -1,4 +1,6 @@
-CREATE DATABASE selecaoppgi;
+CREATE DATABASE selecaoppgi
+CHARACTER SET UTF8 
+COLLATE utf8_general_ci;
 
 USE selecaoppgi;
 

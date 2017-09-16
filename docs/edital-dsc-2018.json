@@ -1,6 +1,6 @@
 {
 	"id": 1,
-	"nome": "PPGI Mestrado 2018",
+	"nome": "PPGI Doutorado 2018",
 	"codigoStatus": 0,
 	"status": "Preparacao",
 	"notaMinimaAlinhamento": 70,
@@ -26,51 +26,9 @@
 	],
 	"provasEscritas": [
 	    {
-	    		"codigo": "FSI",
-	    		"nome": "Fundamentos de Sistemas de Informação",
-	    		"dispensavel": false,
-	    		"notaMinimaAprovacao": 70,
-	    		"pesosQuestoes": [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
-	    },
-	    {
 	    		"codigo": "ING",
 	    		"nome": "Inglês",
 	    		"dispensavel": true,
-	    		"notaMinimaAprovacao": 70,
-	    		"pesosQuestoes": [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
-	    },
-	    {
-	    		"codigo": "EDG",
-	    		"nome": "Estruturas de Dados e Grafos",
-	    		"dispensavel": false,
-	    		"notaMinimaAprovacao": 70,
-	    		"pesosQuestoes": [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
-	    },
-	    {
-	    		"codigo": "EDP",
-	    		"nome": "Estrutura de Dados e Programação",
-	    		"dispensavel": false,
-	    		"notaMinimaAprovacao": 70,
-	    		"pesosQuestoes": [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
-	    },
-	    {
-	    		"codigo": "ENS",
-	    		"nome": "Engenharia de Software",
-	    		"dispensavel": false,
-	    		"notaMinimaAprovacao": 70,
-	    		"pesosQuestoes": [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
-	    },
-	    {
-	    		"codigo": "RDP",
-	    		"nome": "Redes",
-	    		"dispensavel": false,
-	    		"notaMinimaAprovacao": 70,
-	    		"pesosQuestoes": [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
-	    },
-	    {
-	    		"codigo": "WEB",
-	    		"nome": "Desenvolvimento para Web",
-	    		"dispensavel": false,
 	    		"notaMinimaAprovacao": 70,
 	    		"pesosQuestoes": [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
 	    }
@@ -86,7 +44,7 @@
 	    				"nome": "Sean W. Siqueira"
 	    			}
 	    		],
-			"provasEscritas": ["FSI", "ING"]
+			"provasEscritas": ["ING"]
 	    },
 	    {
 	    		"codigo": "ALIC",
@@ -102,31 +60,31 @@
 	    				"nome": "Kate Cerqueira Revoredo"
 	    			}
 	    		],
-			"provasEscritas": ["FSI", "ING"]
-	    },
-	    {
-	    		"codigo": "ASOA",
-	    		"nome": "Desenvolvimento ágil em arquitetura orientada a serviços",
-	    		"exigeProvaOral": false,
-	    		"professores": [
-	    			{
-	    				"id": 10,
-	    				"nome": "Leonardo Guerreiro Azevedo"
-	    			}
-	    		],
-			"provasEscritas": ["FSI", "ING", "ENS"]
+			"provasEscritas": ["ING"]
 	    },
 	    {
 	    		"codigo": "CHIC",
 	    		"nome": "Computação humana e inteligência coletiva: novos paradigmas da computação",
-	    		"exigeProvaOral": false,
+	    		"exigeProvaOral": true,
 	    		"professores": [
 	    			{
 	    				"id": 2,
 	    				"nome": "Ana Cristina B. Garcia"
 	    			}
 	    		],
-			"provasEscritas": ["FSI", "ING"]
+			"provasEscritas": ["ING"]
+	    },
+	    {
+	    		"codigo": "CUIA",
+	    		"nome": "Computação ubíqua e inteligência artificial",
+	    		"exigeProvaOral": true,
+	    		"professores": [
+	    			{
+	    				"id": 2,
+	    				"nome": "Ana Cristina B. Garcia"
+	    			}
+	    		],
+			"provasEscritas": ["ING"]
 	    },
 	    {
 	    		"codigo": "CRED",
@@ -138,79 +96,55 @@
 	    				"nome": "Mariano Gomes Pimentel"
 	    			}
 	    		],
-			"provasEscritas": ["FSI", "ING", "WEB"]
-	    },
-	    {
-	    		"codigo": "CUIA",
-	    		"nome": "Computação ubíqua e inteligência artificial",
-	    		"exigeProvaOral": false,
-	    		"professores": [
-	    			{
-	    				"id": 2,
-	    				"nome": "Ana Cristina B. Garcia"
-	    			}
-	    		],
-			"provasEscritas": ["FSI", "ING", "ENS"]
+			"provasEscritas": ["ING"]
 	    },
 	    {
 	    		"codigo": "ECOS",
 	    		"nome": "Ecossistemas digitais de apoio à democracia",
-	    		"exigeProvaOral": false,
+	    		"exigeProvaOral": true,
 	    		"professores": [
 	    			{
 	    				"id": 13,
 	    				"nome": "Renata Mendes Araújo"
 	    			}
 	    		],
-			"provasEscritas": ["FSI", "ING"]
+			"provasEscritas": ["ING"]
+	    },
+	    {
+	    		"codigo": "ICED",
+	    		"nome": "Internet das coisas e educação",
+	    		"exigeProvaOral": true,
+	    		"professores": [
+	    			{
+	    				"id": 12,
+	    				"nome": "Mariano Gomes Pimentel"
+	    			}
+	    		],
+			"provasEscritas": ["ING"]
+	    },
+	    {
+	    		"codigo": "IARS",
+	    		"nome": "Investigação e análise de redes sociais online",
+	    		"exigeProvaOral": true,
+	    		"professores": [
+	    			{
+	    				"id": 1,
+	    				"nome": "Adriana C.F. Alvim"
+	    			}
+	    		],
+			"provasEscritas": ["ING"]
 	    },
 	    {
 	    		"codigo": "GOTI",
 	    		"nome": "Gestão organizacional através de tecnologia da informação",
-	    		"exigeProvaOral": false,
+	    		"exigeProvaOral": true,
 	    		"professores": [
 	    			{
 	    				"id": 6,
 	    				"nome": "Claudia Cappelli Alló"
 	    			}
 	    		],
-			"provasEscritas": ["FSI", "ING"]
-	    },
-	    {
-	    		"codigo": "HEUR",
-	    		"nome": "Heurísticas na resolução de problemas de otimização combinatória complexos",
-	    		"exigeProvaOral": false,
-	    		"professores": [
-	    			{
-	    				"id": 1,
-	    				"nome": "Adriana C.F. Alvim"
-	    			}
-	    		],
-			"provasEscritas": ["FSI", "ING", "EDG"]
-	    },
-	    {
-	    		"codigo": "IARS",
-	    		"nome": "Investigação e análise de redes sociais online",
-	    		"exigeProvaOral": false,
-	    		"professores": [
-	    			{
-	    				"id": 1,
-	    				"nome": "Adriana C.F. Alvim"
-	    			}
-	    		],
-			"provasEscritas": ["FSI", "ING", "EDG"]
-	    },
-	    {
-	    		"codigo": "JOGO",
-	    		"nome": "Jogos digitais para participação cidadã em processos de prestação de serviços públicos",
-	    		"exigeProvaOral": false,
-	    		"professores": [
-	    			{
-	    				"id": 13,
-	    				"nome": "Renata Mendes Araújo"
-	    			}
-	    		],
-			"provasEscritas": ["FSI", "ING"]
+			"provasEscritas": ["ING"]
 	    },
 	    {
 	    		"codigo": "MUST",
@@ -222,31 +156,23 @@
 	    				"nome": "Carlos Alberto Campos"
 	    			},
 	    			{
-	    				"id": 5,
-	    				"nome": "Carlos Eduardo R. Mello"
-	    			},
-	    			{
 	    				"id": 16,
 	    				"nome": "Sidney P. Lucena"
 	    			}
 	    		],
-			"provasEscritas": ["FSI", "ING", "EDP"]
+			"provasEscritas": ["ING"]
 	    },
 	    {
 	    		"codigo": "OBID",
 	    		"nome": "Observatório da informação para democracia",
-	    		"exigeProvaOral": false,
+	    		"exigeProvaOral": true,
 	    		"professores": [
-	    			{
-	    				"id": 5,
-	    				"nome": "Carlos Alberto Campos"
-	    			},
 	    			{
 	    				"id": 13,
 	    				"nome": "Renata Mendes Araújo"
 	    			}
 	    		],
-			"provasEscritas": ["FSI", "ING"]
+			"provasEscritas": ["ING"]
 	    },
 	    {
 	    		"codigo": "OPER",
@@ -262,48 +188,24 @@
 	    				"nome": "Sidney P. Lucena"
 	    			}
 	    		],
-			"provasEscritas": ["FSI", "ING", "RDP"]
+			"provasEscritas": ["ING"]
 	    },
 	    {
 	    		"codigo": "PROC",
 	    		"nome": "Processos de alinhamento dos requisitos de usabilidade com as diretrizes de acessibilidade",
-	    		"exigeProvaOral": false,
+	    		"exigeProvaOral": true,
 	    		"professores": [
 	    			{
 	    				"id": 17,
 	    				"nome": "Simone B.L. Ferreira"
 	    			}
 	    		],
-			"provasEscritas": ["FSI", "ING"]
-	    },
-	    {
-	    		"codigo": "RECO",
-	    		"nome": "Sistemas de recomendação: sob a perspectiva das aplicações",
-	    		"exigeProvaOral": false,
-	    		"professores": [
-	    			{
-	    				"id": 5,
-	    				"nome": "Carlos Eduardo R. Mello"
-	    			}
-	    		],
-			"provasEscritas": ["FSI", "ING"]
-	    },
-	    {
-	    		"codigo": "SBSE",
-	    		"nome": "Engenharia de software baseada em buscas",
-	    		"exigeProvaOral": false,
-	    		"professores": [
-	    			{
-	    				"id": 11,
-	    				"nome": "Marcio de Oliveira Barros"
-	    			}
-	    		],
-			"provasEscritas": ["FSI", "ING", "ENS"]
+			"provasEscritas": ["ING"]
 	    },
 	    {
 	    		"codigo": "SIGS",
 	    		"nome": "Sistemas de informação para gestão social",
-	    		"exigeProvaOral": false,
+	    		"exigeProvaOral": true,
 	    		"professores": [
 	    			{
 	    				"id": 12,
@@ -317,28 +219,16 @@
 			"provasEscritas": ["FSI", "ING"]
 	    },
 	    {
-	    		"codigo": "SUST",
-	    		"nome": "Coordenação de requisitos para otimizar sustentabilidade em ecossistemas de software",
-	    		"exigeProvaOral": false,
-	    		"professores": [
-	    			{
-	    				"id": 14,
-	    				"nome": "Rodrigo Pereira Santos"
-	    			}
-	    		],
-			"provasEscritas": ["FSI", "ING", "ENS"]
-	    },
-	    {
 	    		"codigo": "TRAN",
 	    		"nome": "Transparência (pública e privada)",
-	    		"exigeProvaOral": false,
+	    		"exigeProvaOral": true,
 	    		"professores": [
 	    			{
 	    				"id": 6,
 	    				"nome": "Claudia Cappelli Alló"
 	    			}
 	    		],
-			"provasEscritas": ["FSI", "ING"]
+			"provasEscritas": ["ING"]
 	    }
 	],
 	"criteriosAlinhamento": [

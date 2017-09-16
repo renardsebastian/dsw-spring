@@ -32,6 +32,36 @@ public class Configuration
 			System.out.println(e.getMessage());
 		}
 	}
+
+	/**
+	 * Retorna o endereco do host
+	 */
+	public static String getHostname()
+	{
+		if (configuracao == null)
+			carregaConfiguracao();
+		
+		return configuracao.getProperty("HOSTNAME").trim(); 
+	}
+
+	/**
+	 * Retorna o nome do ambiente
+	 */
+	public static String getEnvironmentName()
+	{
+		if (configuracao == null)
+			carregaConfiguracao();
+		
+		return configuracao.getProperty("ENVIRONMENT_NAME").trim(); 
+	}
+	
+	/**
+	 * Verifica se esta executando em ambiente de homologacao
+	 */
+	public static boolean isStaggingEnvironment()
+	{
+		return getEnvironmentName().trim().length() > 0; 
+	}
 	
 	/**
 	 * Retorna a string de conexão ao banco de dados
@@ -64,35 +94,5 @@ public class Configuration
 			carregaConfiguracao();
 		
 		return configuracao.getProperty("CONNECTION_PASSWORD").trim(); 
-	}
-
-	/**
-	 * Retorna o endereco do host
-	 */
-	public static String getHostname()
-	{
-		if (configuracao == null)
-			carregaConfiguracao();
-		
-		return configuracao.getProperty("HOSTNAME").trim(); 
-	}
-
-	/**
-	 * Retorna o nome do ambiente
-	 */
-	public static String getEnvironmentName()
-	{
-		if (configuracao == null)
-			carregaConfiguracao();
-		
-		return configuracao.getProperty("ENVIRONMENT_NAME").trim(); 
-	}
-	
-	/**
-	 * Verifica se esta executando em ambiente de homologacao
-	 */
-	public static boolean isStaggingEnvironment()
-	{
-		return getEnvironmentName().trim().length() > 0; 
 	}
 }

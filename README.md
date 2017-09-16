@@ -1,10 +1,9 @@
-﻿# Tarefas
+﻿# Importante
 
-* criação do edital do Doutorado de 2017
-* pegar modelos de relatórios e atas das Comissões
-* escrever os casos de uso
+Antes de rodar a aplicação, copie o arquivo "configuration-default.properties" do diretório /src/main/java para o arquivo "configuration.properties" no mesmo diretório.
 
-# Grupos de trabalho
+
+## Grupos de trabalho
 
 * G1: Bernardo Severo, Carolina Marchioro, Júlio Campos
 * G2: Luiz Carlos, Leonardo, Felipe
