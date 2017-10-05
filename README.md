@@ -12,3 +12,12 @@ Antes de rodar a aplicação, copie o arquivo "configuration-default.properties"
 * G5: Bruno Brigagão, Michel, Rômulo (issues #3, #4 e #5)
 * G6: Thiago, Renard, Victor (issue #2)
 * G7: Rodrigo César, Gabriel Teixeira, Vitor Lourenço (issues #14 e #15)
+
+
+## Entrega dos trabalhos
+
+Primeira rodada de avaliação (G1, G2, G3, G4): 17/outubro
+Primeira rodada de avaliação (G5, G6, G7): 19/outubro
+
+Segunda rodada de avaliação (G1, G2, G3, G4): 31/outubro
+Segunda rodada de avaliação (G5, G6, G7): 09/novembro

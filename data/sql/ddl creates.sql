@@ -71,14 +71,25 @@ CREATE TABLE IF NOT EXISTS Inscricao
 	idCandidato INT NOT NULL,
 	cotaNegros INT NOT NULL,
 	cotaDeficientes INT NOT NULL,
- 	homologadoInicial INT NOT NULL,
+	
+	-- homologacao
+ 	homologadoInicial INT NOT NULL DEFAULT 0,
  	justificativaHomologacaoInicial VARCHAR(4096),
- 	homologadoRecurso INT NOT NULL,
+ 	homologadoRecurso INT NOT NULL DEFAULT 0,
  	justificativaHomologacaoRecurso VARCHAR(4096),
- 	dispensadoProvaInicial INT NOT NULL,
+ 	homologado INT NOT NULL DEFAULT 0,
+ 	
+ 	-- dispensa
+ 	dispensadoProvaInicial INT NOT NULL DEFAULT 0,
  	justificativaDispensaInicial VARCHAR(4096),
- 	dispensadoProvaRecurso INT NOT NULL,
+ 	dispensadoProvaRecurso INT NOT NULL DEFAULT 0,
  	justificativaDispensaRecurso VARCHAR(4096),
+ 	dispensado INT NOT NULL DEFAULT 0,
+ 	
+ 	-- provas escritas
+ 	aprovadoProvas INT NOT NULL DEFAULT 0,
+ 	
+ 	-- inscricao em projetos
 	jsonProjetos LONGTEXT NOT NULL,					-- vetor de codigos de projeto de pesquisa e intencoes de pesquisa
 	
 	PRIMARY KEY(id),
