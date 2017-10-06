@@ -21,3 +21,15 @@ Primeira rodada de avaliação (G5, G6, G7): 19/outubro
 
 Segunda rodada de avaliação (G1, G2, G3, G4): 31/outubro
 Segunda rodada de avaliação (G5, G6, G7): 09/novembro
+
+
+## Instruçoes para sincronizar seu fork com o master do projeto
+
+Acesse a pasta aonde você clonou o projeto e rode o comando:
+git add upstream https://github.com/unirio/dsw-spring.git
+
+Depois faca um fetch:
+git fetch upstream
+
+E finalmente um pull no seu master local:
+git pull upstream master
