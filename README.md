@@ -16,11 +16,11 @@ Antes de rodar a aplicação, copie o arquivo "configuration-default.properties"
 
 ## Entrega dos trabalhos
 
-Primeira rodada de avaliação (G1, G3, G4): 17/outubro
-Primeira rodada de avaliação (G2, G5, G6, G7): 19/outubro
+* Primeira rodada de avaliação (G1, G3, G4): 17/outubro
+* Primeira rodada de avaliação (G2, G5, G6, G7): 19/outubro
 
-Segunda rodada de avaliação (G1, G3, G4): 31/outubro
-Segunda rodada de avaliação (G2, G5, G6, G7): 09/novembro
+* Segunda rodada de avaliação (G1, G3, G4): 31/outubro
+* Segunda rodada de avaliação (G2, G5, G6, G7): 09/novembro
 
 
 ## Instruçoes para sincronizar seu fork com o master do projeto
