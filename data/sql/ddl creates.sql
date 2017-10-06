@@ -71,32 +71,31 @@ CREATE TABLE IF NOT EXISTS Inscricao
 	idCandidato INT NOT NULL,
 	cotaNegros INT NOT NULL,
 	cotaDeficientes INT NOT NULL,
- 	homologadoInicial INT NOT NULL,
+	
+	-- homologacao
+ 	homologadoInicial INT NOT NULL DEFAULT 0,
  	justificativaHomologacaoInicial VARCHAR(4096),
- 	homologadoRecurso INT NOT NULL,
+ 	homologadoRecurso INT NOT NULL DEFAULT 0,
  	justificativaHomologacaoRecurso VARCHAR(4096),
- 	dispensadoProvaInicial INT NOT NULL,
+ 	homologado INT NOT NULL DEFAULT 0,
+ 	
+ 	-- dispensa
+ 	dispensadoProvaInicial INT NOT NULL DEFAULT 0,
  	justificativaDispensaInicial VARCHAR(4096),
- 	dispensadoProvaRecurso INT NOT NULL,
+ 	dispensadoProvaRecurso INT NOT NULL DEFAULT 0,
  	justificativaDispensaRecurso VARCHAR(4096),
-	jsonProjetos LONGTEXT NOT NULL,
+ 	dispensado INT NOT NULL DEFAULT 0,
+ 	
+ 	-- provas escritas
+ 	aprovadoProvas INT NOT NULL DEFAULT 0,
+ 	
+ 	-- inscricao em projetos
+	jsonProjetos LONGTEXT NOT NULL,					-- vetor de codigos de projeto de pesquisa e intencoes de pesquisa
 	
 	PRIMARY KEY(id),
     FOREIGN KEY(idEdital) REFERENCES Edital(id),
     FOREIGN KEY(idCandidato) REFERENCES Usuario(id)
 );
-
--- CREATE TABLE IF NOT EXISTS InscricaoProjetoPesquisa
--- (
--- 	id INT NOT NULL AUTO_INCREMENT,
--- 	idInscricao INT NOT NULL,
--- 	numeroOrdem INT NOT NULL,
--- 	codigoProjetoPesquisa VARCHAR(8) NOT NULL,
--- 	intencoes VARCHAR(8192) NOT NULL,
--- 	
--- 	PRIMARY KEY(id),
--- 	FOREIGN KEY(idInscricao) REFERENCES Inscricao(id)
--- );
 
 CREATE TABLE IF NOT EXISTS InscricaoProvaEscrita
 (
@@ -105,24 +104,12 @@ CREATE TABLE IF NOT EXISTS InscricaoProvaEscrita
 	codigoProvaEscrita VARCHAR(8) NOT NULL,
 	presente INT NOT NULL,
 	notaFinal INT,
-	jsonQuestoes LONGTEXT NOT NULL,
+	jsonQuestoesInicial LONGTEXT NOT NULL,			-- vetor de notas na avaliacao inicial
+	jsonQuestoesRecurso LONGTEXT NOT NULL,			-- vetor de notas na avaliacao do recurso
 	
 	PRIMARY KEY(id),
     FOREIGN KEY(idInscricao) REFERENCES Inscricao(id)
 );
-
--- CREATE TABLE IF NOT EXISTS InscricaoProvaEscritaQuestao
--- (
--- 	id INT NOT NULL AUTO_INCREMENT,
--- 	idInscricaoProva INT NOT NULL,
--- 	idQuestao INT NOT NULL,
--- 	notaInicial INT NOT NULL,
--- 	notaRecurso INT NOT NULL,
--- 	
--- 	PRIMARY KEY(id),
--- 	FOREIGN KEY(idInscricaoProva) REFERENCES InscricaoProvaEscrita(id),
--- 	FOREIGN KEY(idQuestao) REFERENCES InscricaoProvaEscritaQuestao(id)
--- );
 
 CREATE TABLE IF NOT EXISTS InscricaoProvaAlinhamento
 (
@@ -133,23 +120,12 @@ CREATE TABLE IF NOT EXISTS InscricaoProvaAlinhamento
  	justificativaNotasInicial VARCHAR(4096),
  	justificativaNotasRecurso VARCHAR(4096),
 	notaFinal INT,
-	jsonSubcriterios LONGTEXT NOT NULL,
+	jsonSubcriteriosInicial LONGTEXT NOT NULL,		-- vetor de pares de código de subcriterio e nota na avaliacao inicial
+	jsonSubcriteriosRecurso LONGTEXT NOT NULL,		-- vetor de pares de código de subcriterio e nota na avaliacao por recurso
 	
 	PRIMARY KEY(id),
     FOREIGN KEY(idInscricao) REFERENCES Inscricao(id)
 );
-
--- CREATE TABLE IF NOT EXISTS InscricaoProvaAlinhamentoSubcriterio
--- (
--- 	id INT NOT NULL AUTO_INCREMENT,
--- 	idInscricaoAlinhamento INT NOT NULL,
--- 	codigoSubcriterio VARCHAR(8) NOT NULL,
--- 	notaInicial INT,
--- 	notaRecurso INT,
--- 	
--- 	PRIMARY KEY(id),
--- 	FOREIGN KEY(idInscricaoAlinhamento) REFERENCES InscricaoProvaAlinhamento(id)
--- );
 
 --
 -- FASE FINAL DO PROCESSO DE SELECAO (FORA DO NOSSO ESCOPO)
