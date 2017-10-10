@@ -79,6 +79,18 @@ public class InscricaoEdital
 	{
 		return projetosPesquisa;
 	}
+
+	/**
+	 * Pega a inscrição em um projeto de pesquisa
+	 */
+	public InscricaoProjetoPesquisa pegaInscricaoProjetoPesquisa(ProjetoPesquisa projeto)
+	{
+		for (InscricaoProjetoPesquisa inscricaoProjeto : projetosPesquisa)
+			if (inscricaoProjeto.getProjetoPesquisa() == projeto)
+				return inscricaoProjeto;
+		
+		return null;
+	}
 	
 	/**
 	 * Adiciona a inscrição em um projeto de pesquisa
@@ -96,7 +108,7 @@ public class InscricaoEdital
 		
 		return inscricaoProjeto;
 	}
-	
+
 	/**
 	 * Remove a inscrição em um projeto de pesquisa
 	 */

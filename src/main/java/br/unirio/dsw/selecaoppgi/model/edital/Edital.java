@@ -132,11 +132,27 @@ public class Edital
 	}
 
 	/**
+	 * Conta o número de projetos de pesquisa no edital
+	 */
+	public int contaProjetosPesquisa()
+	{
+		return projetosPesquisa.size();
+	}
+
+	/**
 	 * Retorna a lista de projetos de pesquisa
 	 */
 	public Iterable<ProjetoPesquisa> getProjetosPesquisa()
 	{
 		return projetosPesquisa;
+	}
+
+	/**
+	 * Retorna um projeto de pesquisa, dado seu índice
+	 */
+	public ProjetoPesquisa pegaProjetoPesquisaCodigo(int indice)
+	{
+		return projetosPesquisa.get(indice);
 	}
 
 	/**
