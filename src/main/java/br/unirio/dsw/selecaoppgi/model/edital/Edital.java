@@ -215,6 +215,11 @@ public class Edital
 	{
 		this.criteriosAlinhamento.add(criterio);
 	}
+	
+	public void removeCriterioAlinhamento(String codigo){
+		for(int index = 0; index < this.criteriosAlinhamento.size() ; index++)
+			if(this.criteriosAlinhamento.get(index).getCodigo().compareToIgnoreCase(codigo) == 0) this.criteriosAlinhamento.remove(index);
+	}
 
 	/**
 	 * Adiciona um novo critério de alinhamento

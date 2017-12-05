@@ -898,4 +898,30 @@ a > button > i.material-icons {
 }
 
 
-
+/*
+ * Form customizado na edição dos critérios de alinhamento
+ */
+ .alinhamento-pertence-prova-oral{
+ 	margin-bottom: 20px;
+ }
+ #tbSubcriterios{
+ 	margin-bottom: 20px;
+ }
+#tbSubcriterios tbody td{
+	height:auto;
+}
+#tbSubcriterios td.alinhamento-codigo, #tbSubcriterios td.alinhamento-peso{
+	width: 7%;
+}
+#tbSubcriterios td.alinhamento-nome{
+	width: 35%;
+}
+#tbSubcriterios td.alinhamento-descricao{
+	width: 100%;
+}
+#tbSubcriterios ::-webkit-input-placeholder{ /* Chrome/Opera/Safari */
+	color:#d0d0d0;
+}
+#tbSubcriterios ::-moz-placeholder{ /* Firefox 19+ */
+ 	color:#d0d0d0;
+}

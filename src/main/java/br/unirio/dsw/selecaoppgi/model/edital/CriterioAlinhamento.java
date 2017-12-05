@@ -55,7 +55,7 @@ public class CriterioAlinhamento
 	public SubcriterioAlinhamento pegaSubcriterioAlinhamentoCodigo(String codigo2)
 	{
 		for (SubcriterioAlinhamento subcriterio : subcriterios)
-			if (subcriterio.getCodigo().compareToIgnoreCase(codigo) == 0)
+			if (subcriterio.getCodigo().compareToIgnoreCase(codigo2) == 0)
 				return subcriterio;
 		
 		return null;
@@ -88,5 +88,13 @@ public class CriterioAlinhamento
 		subcriterio.setDescricao(descricao);
 		subcriterio.setPeso(peso);
 		subcriterios.add(subcriterio);
+	}
+	/**
+	 * Adiciona um conjunto de subcritérios
+	 */
+	public void adicionaSubcriterios(Iterable<SubcriterioAlinhamento> subcriterios) 
+	{		
+		for (SubcriterioAlinhamento subcriterio : subcriterios)
+			this.subcriterios.add(subcriterio);
 	}
 }

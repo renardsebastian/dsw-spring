@@ -44,6 +44,11 @@ var id = "${id}";
 			        <!-- Form buttons -->
 			        <div class="mdl-card__actions mdl-card--border">
 			       	 	<div class="left">
+		       	 			<a href="${pageContext.request.contextPath}/edital/${id}/selecao/create">
+			       	 			<button type="button" class="mdl-button mdl-js-button mdl-button--colored mdl-button--raised mdl-js-ripple-effect">
+									<spring:message code="edital.form.edital.botao.relatorio"/>
+								</button>
+							</a>
 			            </div>
 			            <div class="right">
 							<button type="submit" class="mdl-button mdl-js-button mdl-button--colored mdl-button--raised mdl-js-ripple-effect">
@@ -360,11 +365,11 @@ var id = "${id}";
 				<td class="mdl-data-table__cell--non-numeric">${criterio.pesoComProvaOral}</td>
 				<td class="mdl-data-table__cell--non-numeric">${criterio.pertenceProvaOral ? "S" : "N"}</td>
 				<td>
-					<a href="${pageContext.request.contextPath}/edital/${id}/criterio/edit/${projeto.codigo}">
+					<a href="${pageContext.request.contextPath}/edital/${id}/criterio/edit/${criterio.codigo}">
 						<button class="mdl-button mdl-js-button mdl-button--icon">
 							<i class="material-icons">edit</i>
 						</button></a>
-					<a href="${pageContext.request.contextPath}/edital/${id}/criterio/remove/${projeto.codigo}">
+					<a href="${pageContext.request.contextPath}/edital/${id}/criterio/remove/${criterio.codigo}">
 						<button class="mdl-button mdl-js-button mdl-button--icon">
 							<i class="material-icons">delete</i>
 						</button></a>

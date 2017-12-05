@@ -1,5 +1,6 @@
 package br.unirio.dsw.selecaoppgi.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -20,13 +21,16 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import br.unirio.dsw.selecaoppgi.model.edital.CriterioAlinhamento;
 import br.unirio.dsw.selecaoppgi.model.edital.Edital;
 import br.unirio.dsw.selecaoppgi.model.edital.ProvaEscrita;
+import br.unirio.dsw.selecaoppgi.model.edital.SubcriterioAlinhamento;
 import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
 import br.unirio.dsw.selecaoppgi.service.dao.EditalDAO;
 import br.unirio.dsw.selecaoppgi.service.dao.UsuarioDAO;
 import br.unirio.dsw.selecaoppgi.service.message.ExposedResourceMessageBundleSource;
 import br.unirio.dsw.selecaoppgi.utils.JsonUtils;
+import br.unirio.dsw.selecaoppgi.view.edital.AlinhamentoForm;
 import br.unirio.dsw.selecaoppgi.view.edital.EditalForm;
 import br.unirio.dsw.selecaoppgi.view.edital.ProvaEscritaForm;
 
@@ -45,7 +49,7 @@ public class EditalController
 	private UsuarioDAO userDAO; 
 
 	@Autowired
-	private EditalDAO editalDAO; 
+	private EditalDAO editalDAO;
 
 	/**
 	 * Ação que redireciona o usuário para a lista de editais
@@ -97,8 +101,7 @@ public class EditalController
 			jsonEdital.addProperty("id", edital.getId());
 			jsonEdital.addProperty("nome", edital.getNome());
 			jsonEditais.add(jsonEdital);
-		}
-		
+		}		
 		return JsonUtils.ajaxSuccess(jsonEditais);
 	}
 	
@@ -403,7 +406,221 @@ public class EditalController
 		return "redirect:/edital/edit/" + id + "?message=edital.form.prova.removida.sucesso";
 	}
 
+	/**
+	 * Ação que apresenta o formulário de edição de um critério de alinhamento
+	 */
+	@Secured("ROLE_ADMIN")
+	@RequestMapping(value = "/edital/{id}/criterio/edit/{codigo}", method = RequestMethod.GET)
+	public ModelAndView editaCriterioAlinhamento(@PathVariable int id, @PathVariable String codigo, Locale locale)
+	{
+		List<String> subcriteriosCodigo, subcriteriosNome, subcriteriosPeso, subcriteriosDescricao;
+		subcriteriosCodigo = new ArrayList<String>();
+		subcriteriosNome = new ArrayList<String>();
+		subcriteriosPeso = new ArrayList<String>();
+		subcriteriosDescricao = new ArrayList<String>();
+		
+		ModelAndView model = new ModelAndView("edital/formAlinhamento");
+		Edital edital = editalDAO.carregaEditalId(id, userDAO);
+		
+		if (edital == null)
+		{
+			model.setViewName("redirect:/edital/list?message=edital.form.edital.nao.encontrado");
+	        return model;
+		}
+		
+		CriterioAlinhamento criterio = edital.pegaCriterioAlinhamentoCodigo(codigo);
+		
+		if (criterio == null)
+		{
+			model.setViewName("redirect:/edital/edit/" + id + "?message=edital.form.criterio.nao.encontrado");
+	        return model;
+		}
+			
+		AlinhamentoForm form = new AlinhamentoForm();
+		form.setIdEdital(id);
+		form.setCodigoOriginal(codigo);
+		form.setCodigo(codigo);
+		form.setNome(criterio.getNome());
+		form.setPertenceProvaOral(criterio.isPertenceProvaOral());
+		form.setPesoSemProvaOral(criterio.getPesoSemProvaOral());
+		form.setPesoComProvaOral(criterio.getPesoComProvaOral());
+		List<SubcriterioAlinhamento> subcriterios = (List<SubcriterioAlinhamento>) criterio.getSubcriterios();
+		for(SubcriterioAlinhamento subcriterio : subcriterios){
+			subcriteriosCodigo.add(subcriterio.getCodigo());
+			subcriteriosNome.add(subcriterio.getNome());
+			subcriteriosPeso.add(subcriterio.getPeso()+"");
+			subcriteriosDescricao.add(subcriterio.getDescricao());
+		}
+		form.setSubcriteriosCodigo(subcriteriosCodigo);
+		form.setSubcriteriosNome(subcriteriosNome);
+		form.setSubcriteriosPeso(subcriteriosPeso);
+		form.setSubcriteriosDescricao(subcriteriosDescricao);	
+		
+		model.getModel().put("form", form);
+		return model;
+	}
 	
-//	/edital/abertura
-//	/edital/inscricao/encerramento
+	/*
+	* Ação que apresenta o formulário de criação de um critério de alinhamento
+	 */
+	@Secured("ROLE_ADMIN")
+	@RequestMapping(value = "/edital/{id}/criterio/create", method = RequestMethod.GET)
+	public ModelAndView adicionaCriterioAlinhamento(@PathVariable int id, Locale locale)
+	{
+		ModelAndView model = new ModelAndView("edital/formAlinhamento");
+		Edital edital = editalDAO.carregaEditalId(id, userDAO);
+		
+		if (edital == null)
+		{
+			model.setViewName("redirect:/edital/list?message=edital.form.edital.nao.encontrado");
+	        return model;
+		}
+		
+		CriterioAlinhamento criterio = new CriterioAlinhamento();		
+		
+		AlinhamentoForm form = new AlinhamentoForm();
+		form.setIdEdital(id);
+		form.setCodigoOriginal("");
+		form.setCodigo("");
+		form.setNome(criterio.getNome());		
+		form.setPertenceProvaOral(criterio.isPertenceProvaOral());
+		form.setPesoSemProvaOral(criterio.getPesoSemProvaOral());
+		form.setPesoComProvaOral(criterio.getPesoComProvaOral());
+		criterio.adicionaSubcriterio("", "", "", 0);		
+		model.getModel().put("form", form);
+		return model;
+	}
+	
+	 /*
+	 * Ação AJAX que atualiza um critério de alinhamento em um edital
+	 */
+	@Secured("ROLE_ADMIN")
+	@RequestMapping(value = "/edital/alinhamento/save", method = RequestMethod.POST)
+	public String atualizaCriterioAlinhamento(@ModelAttribute("form") AlinhamentoForm form, BindingResult result, Locale locale)
+	{
+		System.out.println(form.getCodigo());
+		System.out.println(form.isPertenceProvaOral());				
+		System.out.println("Lista de subcritérios:");
+		/*for (SubcriterioAlinhamento subcriterio : form.getSubcriterios())
+			System.out.println(subcriterio.getCodigo() + "-" + subcriterio.getNome() + "-" + subcriterio.getDescricao());*/
+		System.out.println(form.getSubcriteriosCodigo().toString());
+		System.out.println(form.getSubcriteriosNome().toString());
+		System.out.println(form.getSubcriteriosPeso().toString());
+		System.out.println(form.getSubcriteriosDescricao().toString());
+		
+		form.removeSubcriterios();		
+		
+		for( int index = 0 ; index < form.getSubcriteriosCodigo().size() ; index++ ){
+			SubcriterioAlinhamento subcriterio = new SubcriterioAlinhamento();
+			subcriterio.setCodigo(form.getSubcriteriosCodigo().get(index));
+			subcriterio.setNome(form.getSubcriteriosNome().get(index));
+			subcriterio.setPeso(Integer.parseInt(form.getSubcriteriosPeso().get(index)));			
+			subcriterio.setDescricao(form.getSubcriteriosDescricao().get(index));
+			form.adicionaSubcriterio(subcriterio);
+		}		
+		
+		System.out.println(form.getSubcriterios());
+		
+		
+		Edital edital = editalDAO.carregaEditalId(form.getIdEdital(), userDAO);
+		 		
+		if (edital == null)
+			result.addError(new FieldError("form", "codigo", messageSource.getMessage("edital.form.edital.nao.encontrado", null, locale)));
+		
+		if (form.getCodigo().length() != 3)
+	    		result.addError(new FieldError("form", "codigo", messageSource.getMessage("edital.form.prova.form.erro.codigo.invalido", null, locale)));
+		
+		if (form.getCodigo().compareToIgnoreCase(form.getCodigoOriginal()) != 0)
+		{
+			CriterioAlinhamento criterio = edital.pegaCriterioAlinhamentoCodigo(form.getCodigo());
+			
+			if (criterio != null)
+	    			result.addError(new FieldError("form", "codigo", messageSource.getMessage("edital.form.prova.form.erro.codigo.duplicado", null, locale)));
+		}
+		
+		if (form.getNome().length() == 0)
+	    		result.addError(new FieldError("form", "nome", messageSource.getMessage("edital.form.criterio.form.erro.nome.branco", null, locale)));
+		
+		if (form.getNome().length() > 80)
+			result.addError(new FieldError("form", "nome", messageSource.getMessage("edital.form.criterio.form.erro.nome.longo", null, locale)));
+		
+		if (form.getPesoComProvaOral() < 0 || form.getPesoSemProvaOral() < 0)
+	    		result.addError(new FieldError("form", "peso", messageSource.getMessage("edital.form.prova.form.erro.nota.minima.menor.zero", null, locale)));
+		
+		//Verifica se a soma dos subcritérios de alinhamento é igual a 100
+		int soma = 0;
+		for (int i = 0; i < form.getSubcriterios().size(); i++)
+		{
+			Integer peso = form.getSubcriterios().get(i).getPeso();
+			
+			if (peso == null || peso <= 0)
+		    		result.addError(new FieldError("form", "subcriterios", messageSource.getMessage("edital.form.subcriterio.form.erro.peso.negativo.zero", null, locale)));
+			
+			else if (peso > 100)
+				result.addError(new FieldError("form", "subcriterios", messageSource.getMessage("edital.form.subcriterio.form.erro.peso.maior.cem", null, locale)));
+			
+			else
+				soma += peso;
+		}
+		
+		if (soma > 100)
+			result.addError(new FieldError("form", "subcriterios", messageSource.getMessage("edital.form.subcriterios.form.erro.peso.soma.diferente.cem", null, locale)));
+	
+		CriterioAlinhamento criterio;		
+		if (form.getCodigoOriginal().length() > 0)
+		{
+			criterio = edital.pegaCriterioAlinhamentoCodigo(form.getCodigoOriginal());
+			
+			if (criterio == null)
+				result.addError(new FieldError("form", "codigo", messageSource.getMessage("edital.form.prova.form.erro.prova.nao.encontrada", null, locale)));
+		}
+		else
+		{
+			criterio = new CriterioAlinhamento();
+			edital.adicionaCriterioAlinhamento(criterio);
+		}
+		
+		if (result.hasErrors()){
+			System.out.println(result.toString());
+			return "edital/formAlinhamento";
+		}
+		
+
+		CriterioAlinhamento criterioAtualizado = new CriterioAlinhamento();
+		criterioAtualizado.setCodigo(form.getCodigo());
+		criterioAtualizado.setNome(form.getNome());
+		criterioAtualizado.setPertenceProvaOral(form.isPertenceProvaOral());
+		criterioAtualizado.setPesoComProvaOral(form.getPesoComProvaOral());
+		criterioAtualizado.setPesoSemProvaOral(form.getPesoSemProvaOral());
+		criterioAtualizado.adicionaSubcriterios(form.getSubcriterios());
+	
+		edital.removeCriterioAlinhamento(form.getCodigoOriginal());
+		edital.adicionaCriterioAlinhamento(criterioAtualizado);
+		
+		editalDAO.atualiza(edital);
+		return "redirect:/edital/edit/" + form.getIdEdital() + "?message=edital.form.prova.atualizada";
+	}
+	
+	/**
+	 * Ação que remove um critério de alinhamento
+	 */
+	@Secured("ROLE_ADMIN")
+	@RequestMapping(value = "/edital/{id}/criterio/remove/{codigo}", method = RequestMethod.GET)
+	public String removeCriterioAlinhamento(@PathVariable int id, @PathVariable String codigo, Locale locale)
+	{
+		Edital edital = editalDAO.carregaEditalId(id, userDAO);
+		
+		if (edital == null)
+	        return "redirect:/edital/list?message=edital.form.edital.nao.encontrado";
+		
+		CriterioAlinhamento criterio = edital.pegaCriterioAlinhamentoCodigo(codigo);
+		
+		if (criterio == null)
+	        return "redirect:/edital/edit/" + id + "?message=edital.form.prova.nao.encontrada";
+		
+		edital.removeCriterioAlinhamento(codigo);
+		editalDAO.atualiza(edital);
+		return "redirect:/edital/edit/" + id + "?message=edital.form.prova.removida.sucesso";
+	}
+	
 }
