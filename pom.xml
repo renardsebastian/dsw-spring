@@ -125,7 +125,45 @@
 	    <version>1.10.19</version>
 	    <scope>test</scope>
 	</dependency>
+	
+	<!-- always needed -->
+    <dependency>
+        <groupId>com.itextpdf</groupId>
+        <artifactId>kernel</artifactId>
+        <version>7.0.5</version>
+    </dependency>
+
+    <!-- always needed -->
+    <dependency>
+        <groupId>com.itextpdf</groupId>
+        <artifactId>io</artifactId>
+        <version>7.0.5</version>
+    </dependency>
+
+    <!-- always needed -->
+    <dependency>
+        <groupId>com.itextpdf</groupId>
+        <artifactId>layout</artifactId>
+        <version>7.0.5</version>
+    </dependency>
+
+    <!-- only needed for PDF/A -->
+    <dependency>
+        <groupId>com.itextpdf</groupId>
+        <artifactId>pdfa</artifactId>
+        <version>7.0.5</version>
+    </dependency>
+
+    <!-- only needed for hyphenation -->
+    <dependency>
+        <groupId>com.itextpdf</groupId>
+        <artifactId>hyph</artifactId>
+        <version>7.0.5</version>
+    </dependency>
+	
     </dependencies>
+    
+    
 
     <build>
         <plugins>

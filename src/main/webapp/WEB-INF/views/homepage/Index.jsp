@@ -74,10 +74,10 @@
 	            <p class="homepage-title">
 	                <spring:message code="homepage.titulo.relatorios.homologacao"/>
 	            </p>
-			    <a class="homepage-link" href="${pageContext.request.contextPath}/relatorio/homologacao/homologacao/original">
+			    <a class="homepage-link" href="#" onclick="relatorioHomologacao(this, 'recurso')">
 			    		<spring:message code="homepage.relatorio.inscricoes.homologadas.original"/>
 			    	</a>
-			    <a class="homepage-link" href="${pageContext.request.contextPath}/relatorio/homologacao/homologacao/recurso">
+			    <a class="homepage-link" href="${pageContext.request.contextPath}/relatorio/homologacao/homologacao/recurso" onclick="relatorioHomologacao(this.event, 'recurso')">
 			    		<spring:message code="homepage.relatorio.inscricoes.homologadas.recurso"/>
 			    	</a>
 			    <a class="homepage-link" href="${pageContext.request.contextPath}/relatorio/homologacao/dispensa/original">
@@ -126,4 +126,38 @@
 		   </c:if>
 		</div>
 	</div>
+</div>
+<div class="custom-js">
+	<script>
+		//toDo: loading gif while waiting response, better UX
+		function relatorioHomologacao(element, tipoDeRelatorio){
+			console.log(element)
+			json = getJSON("${pageContext.request.contextPath}/relatorio/homologacao/homologacao/original");			
+		}
+	
+		var getJSON = function(url, successHandler, errorHandler) {
+			var xhr = typeof XMLHttpRequest != 'undefined'
+				? new XMLHttpRequest()
+				: new ActiveXObject('Microsoft.XMLHTTP');
+			xhr.open('get', url, true);
+			xhr.onreadystatechange = function() {
+				var status;
+				var data;			
+				if (xhr.readyState == 4) { // `DONE`
+					status = xhr.status;
+					if (status == 200) {						
+						response = JSON.parse(xhr.responseText);
+						console.log(response.data.nomeArquivo);
+						window.open("${pageContext.request.contextPath}/download/relatorio/" + response.data.nomeArquivo, "_blank")
+						//successHandler && successHandler(data);
+					} else {
+						alert("Erro ao processar requisição");
+						//errorHandler && errorHandler(status);
+					}
+					//console.log(data);
+				}
+			};
+			xhr.send();
+		};
+	</script>
 </div>
