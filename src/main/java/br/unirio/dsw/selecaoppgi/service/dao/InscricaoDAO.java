@@ -1,12 +1,23 @@
 package br.unirio.dsw.selecaoppgi.service.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import br.unirio.dsw.selecaoppgi.model.edital.Edital;
 import br.unirio.dsw.selecaoppgi.model.inscricao.AvaliacaoProvaEscrita;
 import br.unirio.dsw.selecaoppgi.model.inscricao.InscricaoEdital;
 import br.unirio.dsw.selecaoppgi.model.inscricao.InscricaoProjetoPesquisa;
+import br.unirio.dsw.selecaoppgi.model.usuario.PapelUsuario;
+import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
+import br.unirio.dsw.selecaoppgi.service.dao.UsuarioDAO.CampoOrdenacaoUsuario;
+import br.unirio.dsw.selecaoppgi.service.dao.UsuarioDAO.CriterioOrdenacaoUsuario;
+import br.unirio.dsw.selecaoppgi.utils.DateUtils;
 
 /**
  * Classe responsavel pela persistencia de inscrições em edital de seleção
@@ -16,6 +27,60 @@ import br.unirio.dsw.selecaoppgi.model.inscricao.InscricaoProjetoPesquisa;
 @Service("inscricaoDAO")
 public class InscricaoDAO extends AbstractDAO
 {
+	
+	/**
+	 * Carrega os dados de uma inscricaoEdital a partir do resultado de uma consulta
+	 */
+	private InscricaoEdital carregaInscricaoEdital(ResultSet rs, Edital edital) throws SQLException
+	{
+		InscricaoEdital inscEdital = new InscricaoEdital(edital);
+		inscEdital.setId(rs.getInt("id"));
+		inscEdital.setNomeCandidato(rs.getString("nome"));
+		inscEdital.setHomologadoOriginal(rs.getBoolean("homologadoInicial"));
+		inscEdital.setJustificativaHomologacaoOriginal(rs.getString("justificativaHomologacaoInicial"));
+		inscEdital.setHomologadoRecurso(rs.getBoolean("homologadoRecurso"));
+		inscEdital.setJustificativaHomologacaoRecurso(rs.getString("justificativaHomologacaoRecurso"));		
+		return inscEdital;
+	}
+	
+	/**
+	 * Lista as inscricoesEdital de um edital
+	 */
+	public List<InscricaoEdital> carregaInscricoesEdital(Edital edital)
+	{
+		int idEdital = edital.getId();
+		
+		String SQL = "SELECT * FROM Inscricao INNER JOIN usuario ON Inscricao.idCandidato = usuario.id "
+				+ "WHERE idEdital = ?";
+		
+		Connection c = getConnection();
+		
+		if (c == null)
+			return null;
+		
+		List<InscricaoEdital> lista = new ArrayList<InscricaoEdital>();
+		
+		try
+		{
+			PreparedStatement ps = c.prepareStatement(SQL);
+			ps.setString(1, idEdital + "");
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next())
+			{
+				InscricaoEdital item = carregaInscricaoEdital(rs, edital);
+				lista.add(item);
+			}
+			c.close();
+
+		} catch (SQLException e)
+		{
+			log("UserDAO.lista: " + e.getMessage());
+		}
+		    
+		return lista;
+	}
+	
 	/**
 	 * Registra uma nova inscrição de um candidato, incluindo os projetos de pesquisa, provas e critérios de alinhamento
 	 */

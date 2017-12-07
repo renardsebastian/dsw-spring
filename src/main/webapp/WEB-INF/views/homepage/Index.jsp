@@ -77,7 +77,7 @@
 			    <a class="homepage-link" href="#" onclick="relatorioHomologacao(this, 'recurso')">
 			    		<spring:message code="homepage.relatorio.inscricoes.homologadas.original"/>
 			    	</a>
-			    <a class="homepage-link" href="${pageContext.request.contextPath}/relatorio/homologacao/homologacao/recurso" onclick="relatorioHomologacao(this.event, 'recurso')">
+			    <a class="homepage-link" href="#" onclick="relatorioRecurso(this.event, 'recurso')">
 			    		<spring:message code="homepage.relatorio.inscricoes.homologadas.recurso"/>
 			    	</a>
 			    <a class="homepage-link" href="${pageContext.request.contextPath}/relatorio/homologacao/dispensa/original">
@@ -128,11 +128,16 @@
 	</div>
 </div>
 <div class="custom-js">
-	<script>
+	<script>		
 		//toDo: loading gif while waiting response, better UX
 		function relatorioHomologacao(element, tipoDeRelatorio){
 			console.log(element)
-			json = getJSON("${pageContext.request.contextPath}/relatorio/homologacao/homologacao/original");			
+			json = getJSON("${pageContext.request.contextPath}/relatorio/edital/${sessionScope.edital.id}/homologacao/original/");			
+		}
+	
+		function relatorioRecurso(element, tipoDeRelatorio){
+			console.log(element)
+			json = getJSON("${pageContext.request.contextPath}/relatorio/edital/${sessionScope.edital.id}/homologacao/recurso/");			
 		}
 	
 		var getJSON = function(url, successHandler, errorHandler) {

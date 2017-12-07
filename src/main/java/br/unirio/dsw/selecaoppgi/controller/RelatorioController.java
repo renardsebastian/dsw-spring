@@ -1,6 +1,5 @@
 package br.unirio.dsw.selecaoppgi.controller;
 
-import java.awt.geom.GeneralPath;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,29 +21,55 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import br.unirio.dsw.selecaoppgi.model.edital.Edital;
-import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
+import br.unirio.dsw.selecaoppgi.model.inscricao.InscricaoEdital;
+import br.unirio.dsw.selecaoppgi.service.dao.EditalDAO;
+import br.unirio.dsw.selecaoppgi.service.dao.InscricaoDAO;
+import br.unirio.dsw.selecaoppgi.service.dao.UsuarioDAO;
 import br.unirio.dsw.selecaoppgi.service.relatorio.GeradorRelatorio;
 import br.unirio.dsw.selecaoppgi.utils.JsonUtils;
-import br.unirio.dsw.selecaoppgi.utils.PdfBuilder;
 
 @Controller
 public class RelatorioController
 {
-//	/relatorio/homologacao/homologacao/original
+	@Autowired
+	private UsuarioDAO userDAO; 
+
+	@Autowired
+	private EditalDAO editalDAO;
+	
+	@Autowired
+	private InscricaoDAO inscricaoDAO;
+	
 	/**
 	 * Ação AJAX que gera o relatório de homologação original e redireciona o usuário para o link de download
 	 */	
 	@ResponseBody
-	@RequestMapping(value = "/relatorio/homologacao/homologacao/original", method = RequestMethod.GET, produces = "application/json")
-	public String geraRelatorioHomologacaoOriginal()
-	{	
-		//toDo: Retrieve nas listas de inscritos/homologados/não homologados e passar para o método correspondente
-		GeradorRelatorio geradorRelatorio = new GeradorRelatorio();		
-		String nomeArquivo = geradorRelatorio.relatorioInscricoesHomologadas(new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>());		
+	@Secured("ROLE_ADMIN")
+	@RequestMapping(value = "/relatorio/edital/{id}/homologacao/original/", method = RequestMethod.GET, produces = "application/json")
+	public String geraRelatorioHomologacaoOriginal(@PathVariable("id") int id)
+	{
+		List<String> listaAprovados = new ArrayList<String>();
+		List<String> listaReprovados = new ArrayList<String>();
+		List<String> listaJustificativas = new ArrayList<String>();		
+		
+		GeradorRelatorio geradorRelatorio = new GeradorRelatorio();
+		Edital edital = editalDAO.carregaEditalId(id, userDAO);		
+		List<InscricaoEdital> listaInscricoes = new InscricaoDAO().carregaInscricoesEdital(edital);		
+		for(InscricaoEdital inscrEdital : listaInscricoes){
+			if(inscrEdital.getHomologadoOriginal()){
+				listaAprovados.add(inscrEdital.getNomeCandidato());
+			}else{
+				listaReprovados.add(inscrEdital.getNomeCandidato());
+				//Se justificativa == null, define texto padrão
+	            if(inscrEdital.getJustificativaHomologacaoOriginal() == null) 
+	            	inscrEdital.setJustificativaHomologacaoOriginal("Sem justificativa definida");
+				listaJustificativas.add(inscrEdital.getJustificativaHomologacaoOriginal());
+			}
+		}
+		String nomeArquivo = geradorRelatorio.relatorioInscricoesHomologadas(listaAprovados, listaReprovados, listaJustificativas);		
 		JsonObject jsonEdital = new JsonObject();
 		jsonEdital.addProperty("nomeArquivo", nomeArquivo);
 		System.out.println(jsonEdital);
@@ -55,15 +80,39 @@ public class RelatorioController
 	 * Ação AJAX que gera o relatório de homologação após recurso e redireciona o usuário para o link de download
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/relatorio/homologacao/homologacao/recurso", method = RequestMethod.GET, produces = "application/json")
-	public String geraRelatorioHomologacaoRecurso()
+	@Secured("ROLE_ADMIN")
+	@RequestMapping(value = "/relatorio/edital/{id}/homologacao/recurso", method = RequestMethod.GET, produces = "application/json")
+	public String geraRelatorioHomologacaoRecurso(@PathVariable("id") int id)
 	{		
-		//toDo: Análogo ao método anterior
+		List<String> listaAprovados = new ArrayList<String>();
+		List<String> listaReprovados = new ArrayList<String>();
+		List<String> listaJustificativas = new ArrayList<String>();		
+		
+		GeradorRelatorio geradorRelatorio = new GeradorRelatorio();
+		Edital edital = editalDAO.carregaEditalId(id, userDAO);		
+		List<InscricaoEdital> listaInscricoes = new InscricaoDAO().carregaInscricoesEdital(edital);		
+		for(InscricaoEdital inscrEdital : listaInscricoes){
+			if(!inscrEdital.getHomologadoOriginal() && inscrEdital.getHomologadoRecurso()){
+				listaAprovados.add(inscrEdital.getNomeCandidato());
+			}else if(!inscrEdital.getHomologadoOriginal() && !inscrEdital.getHomologadoRecurso()){
+				listaReprovados.add(inscrEdital.getNomeCandidato());
+				//Se justificativa == null, define texto padrão
+				if(inscrEdital.getJustificativaHomologacaoRecurso() == null) inscrEdital.setJustificativaHomologacaoRecurso("Sem justificativa definida");
+				listaJustificativas.add(inscrEdital.getJustificativaHomologacaoRecurso());
+			}
+		}
+		System.out.println(listaAprovados);
+		System.out.println(listaReprovados);
+		String nomeArquivo = geradorRelatorio.relatorioInscricoesHomologadasAposRecurso(listaAprovados, listaReprovados, listaJustificativas);		
 		JsonObject jsonEdital = new JsonObject();
-		jsonEdital.addProperty("purpose", "teste");
+		jsonEdital.addProperty("nomeArquivo", nomeArquivo);
+		System.out.println(jsonEdital);
 		return JsonUtils.ajaxSuccess(jsonEdital);
 	}		
 	
+	/**
+	 * Servlet para downloads dos relatórios disponíveis em pdf
+	 */
 	@RestController
 	@Secured("ROLE_ADMIN")
 	@RequestMapping("/download")
